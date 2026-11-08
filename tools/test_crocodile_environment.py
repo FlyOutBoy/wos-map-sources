@@ -117,8 +117,8 @@ class Environment(unittest.TestCase):
         ending = self.tree(2250)
         self.assertTrue(self.vm.run('CrocodileR_Begin',(self.c,2000,0)))
         self.fixture.step(90)
-        self.assertEqual(9,len(self.decor)) # Eight full 0.3s spans and the final remainder.
-        for i,entry in enumerate(self.decor[:8],1):
+        self.assertEqual(7,len(self.decor)) # Seven full 0.3s spans of the 2.1 sec tornado.
+        for i,entry in enumerate(self.decor[:7],1):
             self.assertAlmostEqual(i*.3,entry[0],places=6)
             self.assertEqual(50,entry[7])
         self.assertTrue(beginning.hits)

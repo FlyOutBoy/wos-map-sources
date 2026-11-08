@@ -332,7 +332,7 @@ library InoriSpells uses GearSystems
                                 set y1 = GetUnitY(c) + 30 * Sin(a)
                                 call SetUnitAnimationByIndex(c, 3)
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_Alucard bulletfire.mdl", x1 + 35 * Cos(a), y1 + 35 * Sin(a), a * bj_RADTODEG, 1, 3, 100))
-                                call MakeSound("war3mapimported\\HeroInori_Q2")
+                                call MakeSound("war3mapimported\\Hero_Inori_Q2")
                                 set e = EffectSpawn("war3mapImported\\wos_Alucard bullet.mdl", x1, y1, a * bj_RADTODEG, 1, 0.7, 150)
                                 set e2 = EffectSpawn("war3mapImported\\wos_Marco bullet.mdl", x1, y1, a * bj_RADTODEG, 0.5, 0.7, 150)
                                 call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_alucard bullet_backward.mdl", x1 + 130 * Cos(a), GetUnitY(c) + 130 * Sin(a), GetRandomReal(0, 359), 1, 1, 0), 1, 255, 255, 255, 1)
@@ -961,7 +961,7 @@ library InoriSpells uses GearSystems
                         call SaveInteger(hs, GetHandleId(c), SH_INORI_E, check3 + 1 )
                     endif
                 endif
-                call MakeSound("war3mapimported\\HeroInori_W3")
+                call MakeSound("war3mapimported\\Hero_Inori_W 3")
                 set e = EffectSpawn("war3mapImported\\wos_[sz]shizhilvzhe3.mdl", x, y, 1, 1, 2, 1)
                 set e2 = EffectSpawnColor("war3mapImported\\wos_tx-tsqyuanxing2.mdl", x, y, 1, 0.5, 1.7, 4, 255, 255, 255, 100)
                 set e3 = AddSpecialEffectTarget("war3mapImported\\wos_az_airfloww111_pink.mdl", c, "origin")
@@ -2454,7 +2454,7 @@ endfunction
         if clicked == inori_frame_pas5[k2] then
             call SaveInteger(hs, GetHandleId(Hero[k2]), SH_CURRENT_T, InoriT_ID)
             if GetLocalPlayer() == p then
-                call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm.tga", 0, true)
+                call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm.blp", 0, true)
             endif
             call BlzFrameSetEnable(inori_frame_pas10[k2], true)
             // Checkpoint 25: a click on the weapon confirms it right away.
@@ -2463,7 +2463,7 @@ endfunction
         if clicked == inori_frame_pas7[k2] then
             call SaveInteger(hs, GetHandleId(Hero[k2]), SH_CURRENT_T, InoriT2_ID)
             if GetLocalPlayer() == p then
-                call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm.tga", 0, true)
+                call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm.blp", 0, true)
             endif
             call BlzFrameSetEnable(inori_frame_pas10[k2], true)
             // Checkpoint 25: a click on the weapon confirms it right away.
@@ -2553,7 +2553,7 @@ endfunction
             set inori_frame_pas9[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas9[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x + 0.0025, y)
             call BlzFrameSetSize(inori_frame_pas9[k2], 0.045, 0.045)
-            call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm-off.tga", 0, true)
+            call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm-off.blp", 0, true)
             set inori_frame_pas10[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)
             call BlzFrameSetPoint(inori_frame_pas10[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x, y)
             call BlzFrameSetSize(inori_frame_pas10[k2], 0.04, 0.04)
@@ -2600,7 +2600,7 @@ endfunction
             set inori_frame_pas8[k2] = BlzCreateFrameByType("BACKDROP", "WOSInoriCloseGlyph", inori_frame_pas11[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_TOPLEFT, inori_frame_pas11[k2], FRAMEPOINT_TOPLEFT, 0.003, -0.003)
             call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMRIGHT, inori_frame_pas11[k2], FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
-            call BlzFrameSetTexture(inori_frame_pas8[k2], "UI\\WOS\\glyph-close.tga", 0, true)
+            call BlzFrameSetTexture(inori_frame_pas8[k2], "UI\\WOS\\glyph-close.blp", 0, true)
             call BlzFrameSetEnable(inori_frame_pas8[k2], false)
             set inori_frame_pas8[k2] = WUI_GoldFrame("WOSInoriCloseEdge", inori_frame_pas11[k2], 0.0024, 0.0000)
             set inori_frame_pas8[k2] = WUI_IconFrame(inori_frame_pas4[k2], WUI_ICON_FRAME)
@@ -2641,7 +2641,7 @@ endfunction
         else
             call BlzFrameSetVisible(inori_frame_pas8[k2], false)
             call BlzFrameSetEnable(inori_frame_pas10[k2], false)
-            call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm-off.tga", 0, true)
+            call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm-off.blp", 0, true)
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(inori_frame_pas1[k2], true)
             endif

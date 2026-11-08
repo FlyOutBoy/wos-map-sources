@@ -285,6 +285,7 @@ function CastHero_Conditions takes nothing returns boolean
     local real manaBeforeEffects = 0.0
     local real manaScriptBeforeEffects = 0.0
     local integer i = GetPlayerId(GetOwningPlayer(c))
+    local boolean failedCast = false
     // Dummy casters (stun/slow/silence dummies...) belong to players too: leave at once.
     if not IsUnitType(c, UNIT_TYPE_HERO) then
         set c = null
@@ -300,7 +301,13 @@ if b then // non-heroes already left above
     call GearManaFloorApply(c)
     set manaBeforeEffects = GetUnitState(c,UNIT_STATE_MANA)
     set manaScriptBeforeEffects = LoadReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)
+    // Ainz Q/Q2 on a blocked spot is refunded: no item cast procs (Black Heart stacks, CDR...).
+    if heroType == Ainz_ID and ((id == AinzQ_ID and not AinzQ_IsMinePositionFree(x,y)) or (id == AinzQ2_ID and not AinzQ2_IsMineRingFree(x,y))) then
+    set failedCast = true
+    set SacredGearBooster_Proc = false
+    else
     call ItemsCast(c,td,x,y,id)
+    endif
 call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1))
 
     if GearSpellDispatch() then
@@ -1154,6 +1161,10 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     set check = 1
     call KiritoG2_Start(c)
     endif
+    // Level 35: own abilities (not items, not the G2 switch) speed up the G heal; R strikes count once per cast.
+    if check == 1 and id != KiritoG2_ID then
+    call KiritoG_CastReduce(c)
+    endif
     endif
     if heroType == Bambietta_ID then 
     if id == BambiettaQ_ID then // Barragan T2 Ability
@@ -1539,6 +1550,10 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     endif
     endif
     endif // shared dispatch
+    // A refunded cast is not a cast: no passive stacks, CDR or a delayed cooldown restart.
+    if failedCast then
+    set check = 0
+    endif
     if heroType == Starrk_ID and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 then
     call StarrkPas(c)
     endif

@@ -1927,9 +1927,8 @@ library RaidenSpells uses GearSystems
                             call BlzSetUnitSkin(c, Raiden_ID)
                         endif
                         call BlzSetAbilityIcon(Raiden_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_Icon.blp")
-                        if k3 == 0 then
-                            call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0, BlzGetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0) - RaidenT_AdditionalDmg)
-                        endif
+                        // k3 is already reset above, so subtracting here hit twice after T2 (0 attack).
+                        call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0, check2)
                         call AddUnitAnimationProperties(c, "alternate", false)
                         call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_ATTACK_TYPE, 0, 6)
                         call FixAura(c)

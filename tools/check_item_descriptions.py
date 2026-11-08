@@ -82,6 +82,8 @@ class Audit:
             for field, stat in fields.items():
                 inherited = NATIVE_STAT_DEFAULTS.get(self.base_ids.get(ability), {}).get(field, 0)
                 totals[stat] += self.abilities[ability].get((field, 1), inherited)
+            if self.base_ids.get(ability) == 'AIsx':
+                totals['attack speed'] += round(self.abilities[ability].get(('Isx1', 1), 0.15) * 100, 2)
         totals.update(self.extra[identity])
         for id_, rating in (('I00K', 10), ('I00L', 20), ('I020', 20)):
             if identity == id_:
@@ -113,11 +115,11 @@ class Audit:
             used.add(stat)
             value = totals.get(stat, 0)
             if value:
-                percent = '%' if stat == 'magic damage reduction' else ''
+                percent = '%' if stat in ('magic damage reduction', 'attack speed') else ''
                 lines.append('+'+number(value)+percent+' '+stat)
         for stat, value in totals.items():
             if value and stat not in used:
-                percent = '%' if stat == 'magic damage reduction' else ''
+                percent = '%' if stat in ('magic damage reduction', 'attack speed') else ''
                 lines.append('+'+number(value)+percent+' '+stat)
         return lines
 
@@ -142,13 +144,13 @@ class Audit:
             'I013': f"Passive: Taking magic or physical ability damage grants a stack. Each stack grants +{n('A07D','Inf2')} physical resistance and +4 magic resistance and {v('BlackClover_StackReduce')}% damage reduction.\nMax stacks: 6.\nDuration: {n('A07D','ahdu')} sec.",
             'I017': chogurt(False), 'I03U': chogurt(True),
             'I019': f"Passive: Dealing at least {v('Earth_Power_MinDmg')} physical damage summons an earth hand that strikes after a short delay, dealing {v('Earth_Power_DamageBase')}x main stat physical damage.\nCooldown: {v('Earth_Power_CD')} sec per target.",
-            'I01K': f"Passive: Each decoration you destroy restores {v('FrozenHeart_hp')} HP and {v('FrozenHeart_mp')} MP. After {v('FrozenHeart_stack')} uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within {n('A07M','aare')} range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within {n('A10F','aare')} range receive {v('FrozenHeart_ManaAmp')}% more mana regeneration and mana restoration.\nCooldown: {v('FrozenHeart_cd')} sec.",
+            'I01K': f"Passive: Each decoration you destroy restores {v('FrozenHeart_hp')} HP and {v('FrozenHeart_mp')} MP. After {v('FrozenHeart_stack')} uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within {n('A07M','aare')} range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within {n('A10F','aare')} range receive {v('FrozenHeart_ManaAmp')}% more mana regeneration and mana restoration, and slows on them are {v('FrozenHeart_SlowResist')}% weaker (45% becomes 30%; a 15% slow is ignored). Slow duration is unchanged. Slow auras are not weakened.\nCooldown: {v('FrozenHeart_cd')} sec.",
             'I01L': f"Passive: Your attacks and magic ability damage apply a debuff that lowers the target's magic resistance by {v('TrueZangetsu_Decrease')}%.\nDuration: {n('A07L','ahdu')} sec.",
             'I04E': f"Passive: Physical and magic damage from abilities, items and periodic effects grants a stack of that damage type. Attacks and clones do not grant stacks.\nEach stack: +{v('CoreDrill_BonusPerStack')}% damage of its type; up to {v('CoreDrill_MaxStacks')} stacks.\nDuration: {v('CoreDrill_Duration')} sec, refreshed by further hits of that type.",
             'I01M': f"Passive: Your attacks and physical ability damage apply a debuff that lowers the target's physical resistance by {v('Nichirin_Decrease')}%.\nDuration: {n('A01H','ahdu',2)} sec.",
             'I01P': f"Passive: Applying Water also applies Lightning and, if the stat bonus is not already active, grants +15 allstats for 10 sec. The bonus does not stack or refresh while active.\nCooldown: {v('SogyoNoKotowari_CD')} sec per target.",
-            'I021': f"Aura: Allies within {n('A09X','aare')} range gain 15% movement speed. During combat, affected allied heroes restore {v('HolyGrail_HpRegen')} HP and {v('HolyGrail_MpRegen')} MP per second.",
-            'I02B': f"Aura: Allies within {n('A0CY','aare')} range gain 20% movement speed. During combat, affected allied heroes restore {v('DarkHolyGrail_HpRegen')} HP and {v('DarkHolyGrail_MpRegen')} MP per second. Enemies in the same area receive {v('DarkHolyGrail_HpRegenReduce')}% less active healing.",
+            'I021': f"Aura: Allies within {n('A09X','aare')} range gain {number(self.native('A09X', 'Uau1') * 100)}% movement speed. During combat, affected allied heroes restore {v('HolyGrail_HpRegen')} HP and {v('HolyGrail_MpRegen')} MP per second.",
+            'I02B': f"Aura: Allies within {n('A0CY','aare')} range gain {number(self.native('A0CY', 'Uau1') * 100)}% movement speed. During combat, affected allied heroes restore {v('DarkHolyGrail_HpRegen')} HP and {v('DarkHolyGrail_MpRegen')} MP per second. Enemies in the same area receive {v('DarkHolyGrail_HpRegenReduce')}% less active healing.",
             'I02N': f"Passive: Accumulates damage taken while ready. After accumulating {v('SusanooShield_TresholdDamage')} damage, spends {v('SusanooShield_Manacost')} MP to grant a full damage shield for {n('A0F6','ahdu')} sec. If mana is insufficient, keeps the accumulated amount until a later hit can trigger it.\nCooldown: {v('SusanooShield_CD')} sec.",
             'I02O': f"Passive: During combat, restores {v('ElixirOfLife_HpRegen')} HP per second while ready. Taking damage interrupts this restoration for {v('ElixirOfLife_CD')} sec.",
             'I041': f"Passive: Dealing at least {v('DemonDwellerSword_MinDmg')} physical or magic damage grants +{v('DemonDwellerSword_Bonus')}% damage of the opposite type.\nDuration: {n('A0HX','ahdu')} sec.\nCooldown: {v('DemonDwellerSword_CD')} sec.",

@@ -366,7 +366,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Holy Grail",
-    "extended_tooltip": "+15 hp/sec\n+4 mp/sec\n+20% MS",
+    "extended_tooltip": "+10 HP/sec (heroes only)\n+4 MP/sec\n+10% movement speed\nAura radius: 1200",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_Holy_Grail.blp",
     "target_art": ""
   },
@@ -581,7 +581,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Dark Holy Grail",
-    "extended_tooltip": "+20 HP/sec (heroes only)\n+6 MP/sec\n+20% movement speed\nAura radius: 1500",
+    "extended_tooltip": "+20 HP/sec (heroes only)\n+6 MP/sec\n+15% movement speed\nAura radius: 1500",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_DarkGrail.blp",
     "target_art": ""
   },
@@ -1156,7 +1156,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Frozen Heart Blessing",
-    "extended_tooltip": "Receives 15% more mana regeneration and mana restoration.",
+    "extended_tooltip": "Receives 15% more mana regeneration and mana restoration. Slows are 15% weaker (slow auras are not).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Frozen_Heart.blp",
     "target_art": ""
   },
@@ -1164,7 +1164,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Ashisogi Jizo",
-    "extended_tooltip": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 4 sec. Can be dispelled.",
+    "extended_tooltip": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_AshisogiJizo.blp",
     "target_art": ""
   },
@@ -1274,7 +1274,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (1/5)",
     "extended_tooltip": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1283,7 +1282,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (2/5)",
     "extended_tooltip": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1292,7 +1290,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (3/5)",
     "extended_tooltip": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1301,7 +1298,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (4/5)",
     "extended_tooltip": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1310,7 +1306,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (5/5)",
     "extended_tooltip": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1319,7 +1314,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (1/5)",
     "extended_tooltip": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1328,7 +1322,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (2/5)",
     "extended_tooltip": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1337,7 +1330,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (3/5)",
     "extended_tooltip": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1346,7 +1338,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (4/5)",
     "extended_tooltip": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1355,7 +1346,6 @@
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (5/5)",
     "extended_tooltip": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-    "extended_tooltip [fube]": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1607,16 +1597,9 @@
     "name": "Heaven Severed",
     "base_id": "BHds",
     "tooltip": "Heaven Severed",
-    "tooltip [ftip]": "Heaven Severed",
     "extended_tooltip": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled.",
-    "extended_tooltip [fube]": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp",
-    "icon [fart]": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp",
-    "target_art": "",
-    "target_art [ftat]": "",
-    "name [fnam]": "Heaven Severed",
-    "field_feat": "",
-    "field_feat [feat]": ""
+    "target_art": ""
   },
   "B0F0": {
     "name": "Frostnova E - Frozen Shelter",

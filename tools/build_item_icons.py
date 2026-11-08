@@ -136,6 +136,8 @@ SOURCES['ice_coffin_art.png'] = "bleach.fandom.com File:239Hyorinmaru_stands.png
 SOURCES['return_by_death_art.png'] = "rezero.fandom.com File:Subaru_-_Return_by_Death.gif (frame 53)"
 ICONS['InvertedSpear'] = ('inverted_spear_of_heaven_art.webp', (0.01, 0.0, 0.61, 1.0), None)
 SOURCES['inverted_spear_of_heaven_art.webp'] = 'https://theswordstall.co.uk/blogs/news/unraveling-the-mysteries-of-the-inverted-spear-of-heaven-in-jujutsu-kaisen (anime frame)'
+ICONS['DarkRepulser'] = ('dark_repulser_art.png', (0.0, 0.0, 1.0, 1.0), None)
+SOURCES['dark_repulser_art.png'] = 'swordartonline.fandom.com File:Dark_Repulser_lost_song.png (white background removed, dark glow added)'
 TINTS = {
     'fire': ('#1a0200', '#ff4a00', '#ffe27a'),
     'water': ('#000a1c', '#1e78ff', '#d2f4ff'),

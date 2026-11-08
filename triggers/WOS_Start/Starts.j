@@ -325,7 +325,9 @@ function WOS_SelectMode takes integer mode returns nothing
     set CaptainDraftPreRoundUnlimitedSwap = CaptainDraftMode
     if TestMode then
         static if LIBRARY_DamageStats then
-            call DamageStatsEnableForTest()
+            static if DAMAGE_STATS_ENABLED then
+                call DamageStatsEnableForTest()
+            endif
         endif
         call TestComm()
     elseif CaptainMode then
@@ -699,6 +701,8 @@ local real scale = 20
              //   call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
             //    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
 // Permanent instruction texttags are now in the scrollable TestMode panel.
+// HUD "+N" = next round gold (lumber); round 1 ends with 2000 + 2 * 250.
+set k2 = 2500
 set i = 0
 loop
 exitwhen i == 15

@@ -17,8 +17,8 @@ Frame "EDITBOX" "LMPLinkEditTemplate" {
     }
     ControlBackdrop "LMPLinkEditBack",
     Frame "BACKDROP" "LMPLinkEditBack" {
-        BackdropBackground "UI\WOS\button.tga",
-        BackdropEdgeFile "UI\WOS\border.tga",
+        BackdropBackground "UI\WOS\button.blp",
+        BackdropEdgeFile "UI\WOS\border.blp",
         BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
         BackdropCornerSize 0.006,
         BackdropBackgroundInsets 0.002 0.002 0.002 0.002,
@@ -39,13 +39,13 @@ Frame "SLIDER" "LMPHorizontalSliderTemplate" {
     // diamond thumb) instead of the stock yellow escape-menu bar.
     ControlBackdrop "LMPBar",
     Frame "BACKDROP" "LMPBar" {
-        BackdropBackground "UI\WOS\slider-clean-h.tga",
+        BackdropBackground "UI\WOS\slider-clean-h.blp",
         BackdropBlendAll,
     }
 
     ControlDisabledBackdrop "LMPBarDisabled",
     Frame "BACKDROP" "LMPBarDisabled" {
-        BackdropBackground "UI\WOS\slider-clean-h.tga",
+        BackdropBackground "UI\WOS\slider-clean-h.blp",
         BackdropBlendAll,
     }
 
@@ -57,13 +57,13 @@ Frame "SLIDER" "LMPHorizontalSliderTemplate" {
         ControlBackdrop "LMPThumbBackdrop",
         Frame "BACKDROP" "LMPThumbBackdrop" {
             BackdropBlendAll,
-            BackdropBackground "UI\WOS\slider-thumb.tga",
+            BackdropBackground "UI\WOS\slider-thumb.blp",
         }
 
         ControlDisabledBackdrop "LMPThumbDisabled",
         Frame "BACKDROP" "LMPThumbDisabled" {
             BackdropBlendAll,
-            BackdropBackground "UI\WOS\slider-thumb.tga",
+            BackdropBackground "UI\WOS\slider-thumb.blp",
         }
     }
 }

@@ -56,7 +56,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
         real AkainuR_DamageAgiBase = 5.00
         real AkainuR_DamageAgiStep = 1.00
         real AkainuR_DamageAoe = 480.00
-        real AkainuR_Stun = 1.50
+        real AkainuR_Stun = 1.00
         real AkainuR_PushRange = 600.00
         real AkainuR_PushDuration = 0.30
         real AkainuR_Move = 165.00
@@ -69,7 +69,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
         integer AkainuT_ID = 'A06Z'
         integer AkainuT_Fists = 36
         integer AkainuT_AimedFists = 5
-        real AkainuT_FistPeriod = 0.15
+        real AkainuT_FistPeriod = 0.12 // was 0.15 (-20%)
         real AkainuT_DamageAgiBase = 1.4
         real AkainuT_DamageAoe = 2000.00
         real AkainuT_DamageAoePunch = 500.00

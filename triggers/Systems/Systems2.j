@@ -1866,13 +1866,15 @@ endstruct
         call BlzSetSpecialEffectPosition(e, GetEffX(e) + sr * Cos(a), GetEffY(e) + sr * Sin(a), BlzGetLocalSpecialEffectZ(e))
     endfunction
     
+    // Ability add/remove refreshes the command card of a selected unit and cancels
+    // the owner's targeting mode (the next left click then selects the unit under
+    // the cursor). The Arav trick is needed once per unit (heroes get it in
+    // SetFlyInit), so it is repeated only when the height did not apply.
     function SetFly takes unit c, real fly returns nothing
-    
-        if GetUnitAbilityLevel(c, 'Arav') == 0 then
+        call SetUnitFlyHeight(c, fly, 0)
+        if RAbsBJ(GetUnitFlyHeight(c) - fly) > 1.0 and GetUnitAbilityLevel(c, 'Arav') == 0 then
             call UnitAddAbility(c, 'Arav')
-            call SetUnitFlyHeight(c, fly, 0)
             call UnitRemoveAbility(c, 'Arav')
-        else
             call SetUnitFlyHeight(c, fly, 0)
         endif
     endfunction
@@ -1880,7 +1882,6 @@ endstruct
      
             call UnitAddAbility(c, 'Arav')
             call UnitRemoveAbility(c, 'Arav')
-            
             call SetUnitFlyHeight(c, 9999, 0)
             call SetUnitFlyHeight(c, 0, 0)
     endfunction
@@ -4980,6 +4981,10 @@ endfunction
 
     function MyItemStacks takes unit c, integer item_id, integer stack_amount, real r ,boolean add_or_remove returns nothing
         call KS_ItemStacks.MyAddStacks_Start(c, item_id, stack_amount, r,add_or_remove)
+    endfunction
+    // Wrath Sin / Lust Sin also pierce survival effects (Will of D., Patriot's revive).
+    function SinPiercesSurvival takes unit c returns boolean
+        return c != null and (HasCachedItem(c, 'I02E') > 0 or GetUnitAbilityLevel(c, 'A07O') > 0)
     endfunction
     function LustSin takes unit c, unit td, real triggerDmg, real shieldDmg returns real
     local real pierce = 0.0

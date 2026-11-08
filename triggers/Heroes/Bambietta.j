@@ -1867,7 +1867,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             call EffectSpawn2("war3mapImported\\wos_JY-Shio_Super_Saiyan_JN_ZiRed.mdx", GetUnitX(c), GetUnitY(c), 120, 1, 5.65, 15, rmax)
                         endif
                         if r == 0.65 then
-                            call MakeSound("war3mapimported\\HeroBambietta_T2")
+                            call MakeSound("war3mapimported\\Hero_Bambietta_T2")
                         endif
                         if r >= 0 then
                             if r2 > 0.1 then

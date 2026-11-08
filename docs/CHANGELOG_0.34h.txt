@@ -1,0 +1,43 @@
+Anime WoS2 0.34h (changes since 0.34g)
+
+HEROES
+- Akainu: R stun reduced from 1.5 to 1 second. T fist strikes are 20% faster (every 0.12 instead of 0.15 seconds).
+- Crocodile: W duration reduced from 3 to 2 seconds; damage increased from 0.75x to 1x Agility. R tornado now waits 0.35 seconds next to Crocodile before flying, so W can be cast ahead of it; travel time reduced from 2.5 to 2.1 seconds (same distance).
+- Frostnova: E cast time reduced from 0.75 to 0.35 seconds; no extra invulnerability after the cast. TW no longer makes Frostnova invulnerable.
+- Kyoraku: E2 damage changed from 2/3/4/5/6x to 4.5x Agility at every level. E4 speed increased by 25% (2500 -> 3125) and now always flies straight into the cage before slashing. R dash now homes onto the target, so it always reaches it.
+- Frieren: G shield duration reduced by 0.5 seconds from 2.5 to 2 seconds (all 3 levels). TW orb now forms over 0.5 seconds and deals no damage until it is formed; the window between hits on the same target increased from 0.5 to 0.62 seconds.
+- Kirito: at hero level 35, every own ability cast reduces the time to the next G heal by 1 second.
+- Alucard: at hero level 35, W self-heal gains +1.5x Agility.
+- Starrk: G stack tiers unlock earlier (second tier at level 12, third at 25), plus a new tier at level 35. HP/MP restored per proc increased from 0.85/1.05/1.25% to 1/1.2/1.4%.
+- Raiden: fixed base attack damage dropping to 0 after T2.
+
+ITEMS
+- New item: Dark Repulser (Attack tab). Recipe: Lostvayne + Elucidator + 4250 gold. +20 all stats, +50% attack speed. Passive: attacks trigger an extra hit after 0.5 seconds for 1x ATK; cooldown 0.75 seconds (Lostvayne: 1 second). Replaces Lostvayne's effect.
+- Kusanagi: each enemy struck reduces the cooldown by 1 second. Elemental versions (Fire/Water/Electro) are now invulnerable while dashing.
+- Frozen Heart: the aura now also makes slows on allies 15% weaker (45% becomes 30%, a 15% slow is ignored). Slow duration is unchanged; slow auras are not affected.
+- Wrath Sin and Lust Sin now pierce survival effects: they ignore Will of D. and finish Patriot during his revive.
+- Inverted Spear of Heaven: cast range increased from 800 to 1600.
+- Hiraishin: jump range reduced from 1600 to 1350.
+- Holy Grail: aura movement speed reduced from 15% to 10%.
+- Dark Holy Grail: aura movement speed reduced from 20% to 15%.
+- Hyorinmaru Ice Coffin: cooldown reduced from 50 to 45 seconds.
+- Kurikara: burn duration increased from 4 to 5 seconds.
+- Ashisogi Jizo: poison duration increased from 4 to 5 seconds.
+
+GAMEPLAY
+- All heroes turn faster: turn rate increased from 1.0 to 1.75.
+- Units inside the base now walk through each other (no body blocking).
+- Toggle items (Prison Realm, slimes) swap after the cast; the hero's order no longer gets stuck.
+- Ainz Q/Q2 on a blocked spot is refunded and no longer procs item effects (Black Heart stacks, cooldown reduction).
+- ESC no longer resets Inori E cooldowns.
+- Damage Stats are temporarily disabled for performance (including Test mode); they will return in a later version.
+
+UI
+- Final statistics screen: wider scoreboard shifted left, chat shown on the freed left side.
+- Item icons scaled to 0.88 like ability buttons.
+- Fixed charge counters disappearing on all heroes and cooldown squares appearing in the wrong place (pause, swaps).
+- Ally ability row shows "not enough mana" with a blue tint.
+- Music player and Career History close on a second click of their button.
+- Shop auto-buy queue: a part that is also an earlier goal (e.g. Tsuchikage Hat before Tsuchikage Hat Evolved) is no longer bought twice.
+- Fixed the chat column appearing in the screen centre on some windowed/minimized starts.
+- Minor text fixes.

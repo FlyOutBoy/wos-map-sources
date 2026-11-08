@@ -12,7 +12,7 @@ Frame "SLIDER" "WOSVerticalSlider" {
 
     ControlBackdrop "WOSVerticalSliderTrack",
     Frame "BACKDROP" "WOSVerticalSliderTrack" {
-        BackdropBackground "UI\WOS\slider-clean-v.tga",
+        BackdropBackground "UI\WOS\slider-clean-v.blp",
         BackdropBlendAll,
     }
 
@@ -23,7 +23,7 @@ Frame "SLIDER" "WOSVerticalSlider" {
 
         ControlBackdrop "WOSVerticalSliderThumbBack",
         Frame "BACKDROP" "WOSVerticalSliderThumbBack" {
-            BackdropBackground "UI\WOS\slider-thumb.tga",
+            BackdropBackground "UI\WOS\slider-thumb.blp",
             BackdropBlendAll,
         }
     }
@@ -36,11 +36,11 @@ Frame "SIMPLEFRAME" "WOSNativeMenuSkin" {
     Height 0.021,
     Layer "ARTWORK" {
         Texture "WOSNativeMenuSkinFill" {
-            File "UI\WOS\fill-normal.tga",
+            File "UI\WOS\fill-normal.blp",
             AlphaMode "BLEND",
         }
         Texture "WOSNativeMenuSkinEdge" {
-            File "UI\WOS\border.tga",
+            File "UI\WOS\border.blp",
             AlphaMode "BLEND",
         }
         String "WOSNativeMenuSkinText" {
@@ -66,19 +66,19 @@ Frame "BUTTON" "WOSTextButtonTemplate" {
 
     ControlBackdrop "WOSTextButtonBack",
     Frame "BACKDROP" "WOSTextButtonBack" {
-        BackdropBackground "UI\WOS\fill-normal.tga",
+        BackdropBackground "UI\WOS\fill-normal.blp",
         BackdropBlendAll,
     }
 
     ControlPushedBackdrop "WOSTextButtonPushed",
     Frame "BACKDROP" "WOSTextButtonPushed" {
-        BackdropBackground "UI\WOS\fill-pressed.tga",
+        BackdropBackground "UI\WOS\fill-pressed.blp",
         BackdropBlendAll,
     }
 
     ControlDisabledBackdrop "WOSTextButtonDisabled",
     Frame "BACKDROP" "WOSTextButtonDisabled" {
-        BackdropBackground "UI\WOS\fill-disabled.tga",
+        BackdropBackground "UI\WOS\fill-disabled.blp",
         BackdropBlendAll,
     }
 
@@ -87,7 +87,7 @@ Frame "BUTTON" "WOSTextButtonTemplate" {
         // Checkpoint 24: exactly the button rectangle (it spilled outside).
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\hover-glow.tga",
+        HighlightAlphaFile "UI\WOS\hover-glow.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -101,7 +101,7 @@ Frame "EDITBOX" "WOSEditBox" {
 
     ControlBackdrop "WOSEditBoxBack",
     Frame "BACKDROP" "WOSEditBoxBack" {
-        BackdropBackground "UI\WOS\field.tga",
+        BackdropBackground "UI\WOS\field.blp",
         BackdropBlendAll,
     }
 
@@ -141,7 +141,7 @@ Frame "BUTTON" "WOSIconButtonTemplate" {
     Frame "HIGHLIGHT" "WOSIconButtonHover" {
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\hover-glow.tga",
+        HighlightAlphaFile "UI\WOS\hover-glow.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -153,24 +153,24 @@ Frame "BUTTON" "WOSQBaddTemplate" {
     ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
     ControlBackdrop "WOSQBaddBack",
     Frame "BACKDROP" "WOSQBaddBack" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-add-normal.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-add-normal.blp",
         BackdropBlendAll,
     }
     ControlPushedBackdrop "WOSQBaddPushed",
     Frame "BACKDROP" "WOSQBaddPushed" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-add-active.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-add-active.blp",
         BackdropBlendAll,
     }
     ControlDisabledBackdrop "WOSQBaddDisabled",
     Frame "BACKDROP" "WOSQBaddDisabled" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-add-disabled.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-add-disabled.blp",
         BackdropBlendAll,
     }
     ControlMouseOverHighlight "WOSQBaddHover",
     Frame "HIGHLIGHT" "WOSQBaddHover" {
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\QuickBuy\qb-add-hover.tga",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-add-hover.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -182,24 +182,24 @@ Frame "BUTTON" "WOSQBremoveTemplate" {
     ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
     ControlBackdrop "WOSQBremoveBack",
     Frame "BACKDROP" "WOSQBremoveBack" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-remove-normal.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-remove-normal.blp",
         BackdropBlendAll,
     }
     ControlPushedBackdrop "WOSQBremovePushed",
     Frame "BACKDROP" "WOSQBremovePushed" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-remove-active.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-remove-active.blp",
         BackdropBlendAll,
     }
     ControlDisabledBackdrop "WOSQBremoveDisabled",
     Frame "BACKDROP" "WOSQBremoveDisabled" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-remove-disabled.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-remove-disabled.blp",
         BackdropBlendAll,
     }
     ControlMouseOverHighlight "WOSQBremoveHover",
     Frame "HIGHLIGHT" "WOSQBremoveHover" {
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\QuickBuy\qb-remove-hover.tga",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-remove-hover.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -210,24 +210,24 @@ Frame "BUTTON" "WOSQBhudremoveTemplate" {
     ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
     ControlBackdrop "WOSQBhudremoveBack",
     Frame "BACKDROP" "WOSQBhudremoveBack" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-normal.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-normal.blp",
         BackdropBlendAll,
     }
     ControlPushedBackdrop "WOSQBhudremovePushed",
     Frame "BACKDROP" "WOSQBhudremovePushed" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-active.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-active.blp",
         BackdropBlendAll,
     }
     ControlDisabledBackdrop "WOSQBhudremoveDisabled",
     Frame "BACKDROP" "WOSQBhudremoveDisabled" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-disabled.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-disabled.blp",
         BackdropBlendAll,
     }
     ControlMouseOverHighlight "WOSQBhudremoveHover",
     Frame "HIGHLIGHT" "WOSQBhudremoveHover" {
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\QuickBuy\qb-hud-remove-hover.tga",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-hud-remove-hover.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -239,24 +239,24 @@ Frame "BUTTON" "WOSQBclearTemplate" {
     ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
     ControlBackdrop "WOSQBclearBack",
     Frame "BACKDROP" "WOSQBclearBack" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-clear-normal.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-clear-normal.blp",
         BackdropBlendAll,
     }
     ControlPushedBackdrop "WOSQBclearPushed",
     Frame "BACKDROP" "WOSQBclearPushed" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-clear-active.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-clear-active.blp",
         BackdropBlendAll,
     }
     ControlDisabledBackdrop "WOSQBclearDisabled",
     Frame "BACKDROP" "WOSQBclearDisabled" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-clear-disabled.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-clear-disabled.blp",
         BackdropBlendAll,
     }
     ControlMouseOverHighlight "WOSQBclearHover",
     Frame "HIGHLIGHT" "WOSQBclearHover" {
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\QuickBuy\qb-clear-hover.tga",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-clear-hover.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -268,24 +268,24 @@ Frame "BUTTON" "WOSQBprevTemplate" {
     ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
     ControlBackdrop "WOSQBprevBack",
     Frame "BACKDROP" "WOSQBprevBack" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-prev-normal.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-prev-normal.blp",
         BackdropBlendAll,
     }
     ControlPushedBackdrop "WOSQBprevPushed",
     Frame "BACKDROP" "WOSQBprevPushed" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-prev-active.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-prev-active.blp",
         BackdropBlendAll,
     }
     ControlDisabledBackdrop "WOSQBprevDisabled",
     Frame "BACKDROP" "WOSQBprevDisabled" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-prev-disabled.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-prev-disabled.blp",
         BackdropBlendAll,
     }
     ControlMouseOverHighlight "WOSQBprevHover",
     Frame "HIGHLIGHT" "WOSQBprevHover" {
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\QuickBuy\qb-prev-hover.tga",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-prev-hover.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -297,24 +297,24 @@ Frame "BUTTON" "WOSQBnextTemplate" {
     ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
     ControlBackdrop "WOSQBnextBack",
     Frame "BACKDROP" "WOSQBnextBack" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-next-normal.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-next-normal.blp",
         BackdropBlendAll,
     }
     ControlPushedBackdrop "WOSQBnextPushed",
     Frame "BACKDROP" "WOSQBnextPushed" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-next-active.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-next-active.blp",
         BackdropBlendAll,
     }
     ControlDisabledBackdrop "WOSQBnextDisabled",
     Frame "BACKDROP" "WOSQBnextDisabled" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-next-disabled.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-next-disabled.blp",
         BackdropBlendAll,
     }
     ControlMouseOverHighlight "WOSQBnextHover",
     Frame "HIGHLIGHT" "WOSQBnextHover" {
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\QuickBuy\qb-next-hover.tga",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-next-hover.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -325,24 +325,24 @@ Frame "BUTTON" "WOSQBrec-addTemplate" {
     ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
     ControlBackdrop "WOSQBrec-addBack",
     Frame "BACKDROP" "WOSQBrec-addBack" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-normal.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-normal.blp",
         BackdropBlendAll,
     }
     ControlPushedBackdrop "WOSQBrec-addPushed",
     Frame "BACKDROP" "WOSQBrec-addPushed" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-active.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-active.blp",
         BackdropBlendAll,
     }
     ControlDisabledBackdrop "WOSQBrec-addDisabled",
     Frame "BACKDROP" "WOSQBrec-addDisabled" {
-        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-disabled.tga",
+        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-disabled.blp",
         BackdropBlendAll,
     }
     ControlMouseOverHighlight "WOSQBrec-addHover",
     Frame "HIGHLIGHT" "WOSQBrec-addHover" {
         SetAllPoints,
         HighlightType "FILETEXTURE",
-        HighlightAlphaFile "UI\WOS\QuickBuy\qb-rec-add-hover.tga",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-rec-add-hover.blp",
         HighlightAlphaMode "ADD",
     }
 }
@@ -353,10 +353,10 @@ Frame "BUTTON" "WOSQBslotTemplate" {
     ControlStyle "AUTOTRACK",
 }
 
-Texture "WOSQBHUDRemoveNormal" { File "UI\WOS\QuickBuy\qb-hud-remove-normal.tga", AlphaMode "BLEND", }
-Texture "WOSQBHUDRemoveActive" { File "UI\WOS\QuickBuy\qb-hud-remove-active.tga", AlphaMode "BLEND", }
-Texture "WOSQBHUDRemoveDisabled" { File "UI\WOS\QuickBuy\qb-hud-remove-disabled.tga", AlphaMode "BLEND", }
-Texture "WOSQBHUDRemoveHover" { File "UI\WOS\QuickBuy\qb-hud-remove-hover.tga", AlphaMode "ADD", }
+Texture "WOSQBHUDRemoveNormal" { File "UI\WOS\QuickBuy\qb-hud-remove-normal.blp", AlphaMode "BLEND", }
+Texture "WOSQBHUDRemoveActive" { File "UI\WOS\QuickBuy\qb-hud-remove-active.blp", AlphaMode "BLEND", }
+Texture "WOSQBHUDRemoveDisabled" { File "UI\WOS\QuickBuy\qb-hud-remove-disabled.blp", AlphaMode "BLEND", }
+Texture "WOSQBHUDRemoveHover" { File "UI\WOS\QuickBuy\qb-hud-remove-hover.blp", AlphaMode "ADD", }
 Frame "SIMPLEBUTTON" "WOSQBHUDRemove" {
     Width 0.014,
     Height 0.00525,

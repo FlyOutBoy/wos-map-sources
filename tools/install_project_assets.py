@@ -24,6 +24,9 @@ SOURCES = [
     (ROOT / 'assets/FrostnovaRelease/files', 'war3mapImported'),
     (ROOT / 'assets/optimized', 'war3mapImported'),
     (ROOT / 'assets/optimized', 'land_wos'),
+    # Stock cooldown sprite shrunk x0.88 to the HUD icon size (resize_frostnova_te_model.resized);
+    # overrides the game path for command and item buttons alike.
+    (ROOT / 'assets/CooldownModel', 'UI'),
 ]
 
 

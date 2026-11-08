@@ -12,7 +12,7 @@ function Trig_NeviSound_Actions takes nothing returns nothing
   call DisplayTimedTextToPlayer(Player(i),0,0,0.1,"|c00FF0303Neuvillette|r |c00FFFF00voice line changed to |c00FF0303English|r")
   call SaveInteger(hs,GetHandleId(Player(i)),SH_NeviSound_NEVI_SOUND,1)
   else
-  call DisplayTimedTextToPlayer(Player(i),0,0,0.1,"|c00FF0303Neuvillette|r |c00FFFF00voice line changed to |c00FF0303Japan|r")
+  call DisplayTimedTextToPlayer(Player(i),0,0,0.1,"|c00FF0303Neuvillette|r |c00FFFF00voice line changed to |c00FF0303Japanese|r")
   call SaveInteger(hs,GetHandleId(Player(i)),SH_NeviSound_NEVI_SOUND,0)  
   endif
   endif

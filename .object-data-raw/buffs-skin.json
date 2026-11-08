@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "c0f708eb59641ae743042b06950c87b76e9b47ed8ffe2ab26e70e2ad006b3440",
+  "source_sha256": "c5b5d6a2e8de4a0c693b718c64213b92a8d46e2419d235d537906b618f374d7d",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -1064,12 +1064,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8586",
-            "_original_value": "TRIGSTR_8586",
+            "value": "TRIGSTR_10391",
+            "_original_value": "TRIGSTR_10391",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTg2",
+            "_raw_base64": "VFJJR1NUUl8xMDM5MQ==",
             "resolved_value": "Takes 12% additional physical damage. Physical damage from a Kyoka Suigetsu wielder deals 24% additional physical damage instead.",
-            "_original_resolved_value": "unit take additional physical damage by 9%"
+            "_original_resolved_value": "Takes 12% additional physical damage. Physical damage from a Kyoka Suigetsu wielder deals 24% additional physical damage instead."
           },
           "sanity_check": {
             "text": "",
@@ -1690,7 +1690,12 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "Kurikara Flame"
+            "value": "TRIGSTR_7206",
+            "_original_value": "TRIGSTR_7206",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83MjA2",
+            "resolved_value": "Kurikara Flame",
+            "_original_resolved_value": "Kurikara Flame"
           },
           "sanity_check": {
             "text": "",
@@ -1705,7 +1710,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Unit burns"
+            "value": "TRIGSTR_3249",
+            "_original_value": "TRIGSTR_3249",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMjQ5",
+            "resolved_value": "Unit burns",
+            "_original_resolved_value": "Unit burns"
           },
           "sanity_check": {
             "text": "",
@@ -1976,10 +1986,10 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9214",
-            "_original_value": "TRIGSTR_9214",
+            "value": "TRIGSTR_9106",
+            "_original_value": "TRIGSTR_9106",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MjE0",
+            "_raw_base64": "VFJJR1NUUl85MTA2",
             "resolved_value": "Allies within 1400 radius gain 5% physical resistance and 5% magic resistance.",
             "_original_resolved_value": "Allies within 1400 radius gain 5% physical resistance and 5% magic resistance."
           },
@@ -3564,10 +3574,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6013",
-            "_original_value": "TRIGSTR_6013",
+            "value": "TRIGSTR_6772",
+            "_original_value": "TRIGSTR_6772",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82MDEz",
+            "_raw_base64": "VFJJR1NUUl82Nzcy",
             "resolved_value": "6",
             "_original_resolved_value": "6"
           },
@@ -4446,12 +4456,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1775",
-            "_original_value": "TRIGSTR_1775",
+            "value": "TRIGSTR_3966",
+            "_original_value": "TRIGSTR_3966",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xNzc1",
-            "resolved_value": "+15 hp/sec\n+4 mp/sec\n+20% MS",
-            "_original_resolved_value": "+15 hp/sec\n+4 mp/sec\n+20% MS"
+            "_raw_base64": "VFJJR1NUUl8zOTY2",
+            "resolved_value": "+10 HP/sec (heroes only)\n+4 MP/sec\n+10% movement speed\nAura radius: 1200",
+            "_original_resolved_value": "+10 HP/sec (heroes only)\n+4 MP/sec\n+10% movement speed\nAura radius: 1200"
           },
           "sanity_check": {
             "text": "",
@@ -6428,10 +6438,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6772",
-            "_original_value": "TRIGSTR_6772",
+            "value": "TRIGSTR_4012",
+            "_original_value": "TRIGSTR_4012",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82Nzcy",
+            "_raw_base64": "VFJJR1NUUl80MDEy",
             "resolved_value": "6",
             "_original_resolved_value": "6"
           },
@@ -6820,12 +6830,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2454",
-            "_original_value": "TRIGSTR_2454",
+            "value": "TRIGSTR_4013",
+            "_original_value": "TRIGSTR_4013",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNDU0",
-            "resolved_value": "+20 HP/sec (heroes only)\n+6 MP/sec\n+20% movement speed\nAura radius: 1500",
-            "_original_resolved_value": "+20 HP/sec (heroes only)\n+6 MP/sec\n+20% movement speed\nAura radius: 1500"
+            "_raw_base64": "VFJJR1NUUl80MDEz",
+            "resolved_value": "+20 HP/sec (heroes only)\n+6 MP/sec\n+15% movement speed\nAura radius: 1500",
+            "_original_resolved_value": "+20 HP/sec (heroes only)\n+6 MP/sec\n+15% movement speed\nAura radius: 1500"
           },
           "sanity_check": {
             "text": "",
@@ -13936,12 +13946,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_10218",
-            "_original_value": "TRIGSTR_10218",
+            "value": "TRIGSTR_4031",
+            "_original_value": "TRIGSTR_4031",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIxOA==",
-            "resolved_value": "Receives 15% more mana regeneration and mana restoration.",
-            "_original_resolved_value": "Receives 15% more mana regeneration and mana restoration."
+            "_raw_base64": "VFJJR1NUUl80MDMx",
+            "resolved_value": "Receives 15% more mana regeneration and mana restoration. Slows are 15% weaker (slow auras are not).",
+            "_original_resolved_value": "Receives 15% more mana regeneration and mana restoration. Slows are 15% weaker (slow auras are not)."
           },
           "sanity_check": {
             "text": "",
@@ -14008,7 +14018,12 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "Ashisogi Jizo"
+            "value": "TRIGSTR_1950",
+            "_original_value": "TRIGSTR_1950",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xOTUw",
+            "resolved_value": "Ashisogi Jizo",
+            "_original_resolved_value": "Ashisogi Jizo"
           },
           "sanity_check": {
             "text": "",
@@ -14023,7 +14038,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 4 sec. Can be dispelled."
+            "value": "TRIGSTR_4032",
+            "_original_value": "TRIGSTR_4032",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MDMy",
+            "resolved_value": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled.",
+            "_original_resolved_value": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled."
           },
           "sanity_check": {
             "text": "",
@@ -15936,6 +15956,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10393",
+            "_original_value": "TRIGSTR_10393",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM5Mw==",
+            "resolved_value": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -15948,21 +15988,6 @@
             "_raw_base64": "VFJJR1NUUl8yODU2",
             "resolved_value": "Core Drill: Physical (1/5)",
             "_original_resolved_value": "Core Drill: Physical (1/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16043,6 +16068,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10394",
+            "_original_value": "TRIGSTR_10394",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM5NA==",
+            "resolved_value": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16055,21 +16100,6 @@
             "_raw_base64": "VFJJR1NUUl8zMDE5",
             "resolved_value": "Core Drill: Physical (2/5)",
             "_original_resolved_value": "Core Drill: Physical (2/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16150,6 +16180,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10395",
+            "_original_value": "TRIGSTR_10395",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM5NQ==",
+            "resolved_value": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16162,21 +16212,6 @@
             "_raw_base64": "VFJJR1NUUl8zMTAz",
             "resolved_value": "Core Drill: Physical (3/5)",
             "_original_resolved_value": "Core Drill: Physical (3/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16257,6 +16292,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10396",
+            "_original_value": "TRIGSTR_10396",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM5Ng==",
+            "resolved_value": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16269,21 +16324,6 @@
             "_raw_base64": "VFJJR1NUUl8zMjI3",
             "resolved_value": "Core Drill: Physical (4/5)",
             "_original_resolved_value": "Core Drill: Physical (4/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16364,6 +16404,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10397",
+            "_original_value": "TRIGSTR_10397",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM5Nw==",
+            "resolved_value": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16376,21 +16436,6 @@
             "_raw_base64": "VFJJR1NUUl8zMjg0",
             "resolved_value": "Core Drill: Physical (5/5)",
             "_original_resolved_value": "Core Drill: Physical (5/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16471,6 +16516,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10398",
+            "_original_value": "TRIGSTR_10398",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM5OA==",
+            "resolved_value": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16483,21 +16548,6 @@
             "_raw_base64": "VFJJR1NUUl8zNTIw",
             "resolved_value": "Core Drill: Magic (1/5)",
             "_original_resolved_value": "Core Drill: Magic (1/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16578,6 +16628,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10399",
+            "_original_value": "TRIGSTR_10399",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM5OQ==",
+            "resolved_value": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16590,21 +16660,6 @@
             "_raw_base64": "VFJJR1NUUl8zNjEx",
             "resolved_value": "Core Drill: Magic (2/5)",
             "_original_resolved_value": "Core Drill: Magic (2/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16685,6 +16740,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10400",
+            "_original_value": "TRIGSTR_10400",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQwMA==",
+            "resolved_value": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16697,21 +16772,6 @@
             "_raw_base64": "VFJJR1NUUl8zNjM4",
             "resolved_value": "Core Drill: Magic (3/5)",
             "_original_resolved_value": "Core Drill: Magic (3/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16792,6 +16852,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10401",
+            "_original_value": "TRIGSTR_10401",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQwMQ==",
+            "resolved_value": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16804,21 +16884,6 @@
             "_raw_base64": "VFJJR1NUUl8zNzE2",
             "resolved_value": "Core Drill: Magic (4/5)",
             "_original_resolved_value": "Core Drill: Magic (4/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16899,6 +16964,26 @@
       "modifications": [
         {
           "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10402",
+            "_original_value": "TRIGSTR_10402",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQwMg==",
+            "resolved_value": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
@@ -16911,21 +16996,6 @@
             "_raw_base64": "VFJJR1NUUl82MjQz",
             "resolved_value": "Core Drill: Magic (5/5)",
             "_original_resolved_value": "Core Drill: Magic (5/5)"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "data": {
-            "value": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -18248,10 +18318,10 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9269",
-            "_original_value": "TRIGSTR_9269",
+            "value": "TRIGSTR_9102",
+            "_original_value": "TRIGSTR_9102",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MjY5",
+            "_raw_base64": "VFJJR1NUUl85MTAy",
             "resolved_value": "Allies within 1400 radius gain 1% physical resistance and 5% magic resistance.",
             "_original_resolved_value": "Allies within 1400 radius gain 1% physical resistance and 5% magic resistance."
           },
@@ -18360,10 +18430,10 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9281",
-            "_original_value": "TRIGSTR_9281",
+            "value": "TRIGSTR_9103",
+            "_original_value": "TRIGSTR_9103",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Mjgx",
+            "_raw_base64": "VFJJR1NUUl85MTAz",
             "resolved_value": "Allies within 1400 radius gain 2% physical resistance and 5% magic resistance.",
             "_original_resolved_value": "Allies within 1400 radius gain 2% physical resistance and 5% magic resistance."
           },
@@ -18472,10 +18542,10 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9284",
-            "_original_value": "TRIGSTR_9284",
+            "value": "TRIGSTR_9104",
+            "_original_value": "TRIGSTR_9104",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Mjg0",
+            "_raw_base64": "VFJJR1NUUl85MTA0",
             "resolved_value": "Allies within 1400 radius gain 3% physical resistance and 5% magic resistance.",
             "_original_resolved_value": "Allies within 1400 radius gain 3% physical resistance and 5% magic resistance."
           },
@@ -18584,10 +18654,10 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9288",
-            "_original_value": "TRIGSTR_9288",
+            "value": "TRIGSTR_9105",
+            "_original_value": "TRIGSTR_9105",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Mjg4",
+            "_raw_base64": "VFJJR1NUUl85MTA1",
             "resolved_value": "Allies within 1400 radius gain 4% physical resistance and 5% magic resistance.",
             "_original_resolved_value": "Allies within 1400 radius gain 4% physical resistance and 5% magic resistance."
           },
@@ -18696,10 +18766,10 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9297",
-            "_original_value": "TRIGSTR_9297",
+            "value": "TRIGSTR_9119",
+            "_original_value": "TRIGSTR_9119",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Mjk3",
+            "_raw_base64": "VFJJR1NUUl85MTE5",
             "resolved_value": "Allies within 1400 radius gain 10% physical resistance and 10% magic resistance.",
             "_original_resolved_value": "Allies within 1400 radius gain 10% physical resistance and 10% magic resistance."
           },
@@ -20014,13 +20084,38 @@
       "modifications": [
         {
           "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10403",
+            "_original_value": "TRIGSTR_10403",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQwMw==",
+            "resolved_value": "Heaven Severed",
+            "_original_resolved_value": "Heaven Severed"
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
+          }
+        },
+        {
+          "field": {
             "text": "ftip",
             "hex": "66746970"
           },
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "Heaven Severed"
+            "value": "TRIGSTR_10404",
+            "_original_value": "TRIGSTR_10404",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQwNA==",
+            "resolved_value": "Heaven Severed",
+            "_original_resolved_value": "Heaven Severed"
           },
           "sanity_check": {
             "text": "",
@@ -20035,22 +20130,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled."
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "ftat",
-            "hex": "66746174"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
+            "value": "TRIGSTR_10405",
+            "_original_value": "TRIGSTR_10405",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQwNQ==",
+            "resolved_value": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled.",
+            "_original_resolved_value": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled."
           },
           "sanity_check": {
             "text": "",
@@ -20065,7 +20150,10 @@
           "field_name": "Icon / Иконка",
           "type": "string",
           "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp"
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0ludmVydGVkU3BlYXIuYmxw"
           },
           "sanity_check": {
             "text": "",
@@ -20074,36 +20162,24 @@
         },
         {
           "field": {
-            "text": "fnam",
-            "hex": "666E616D"
+            "text": "ftat",
+            "hex": "66746174"
           },
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Heaven Severed"
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
           },
           "sanity_check": {
-            "text": "B074",
-            "hex": "42303734"
-          }
-        },
-        {
-          "field": {
-            "text": "feat",
-            "hex": "66656174"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "B074",
-            "hex": "42303734"
+            "text": "",
+            "hex": "00000000"
           }
         }
       ],
-      "display_name": ""
+      "display_name": "Heaven Severed"
     }
   ]
 }

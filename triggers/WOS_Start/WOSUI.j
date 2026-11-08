@@ -100,6 +100,14 @@ globals
     private integer WUI_ModalCount = 0
     private framehandle array WUI_Modal
     private framehandle array WUI_Command
+    // Stock cooldown sprite (child 0) of each command button, cached synchronously.
+    private framehandle array WUI_CommandCD
+    // Same for the six inventory buttons.
+    private framehandle array WUI_ItemCD
+    // Tas charge boxes on command/item buttons (never a cooldown sprite).
+    private framehandle array WUI_ChargeBox
+    private integer WUI_ChargeBoxCount = 0
+    private constant boolean WUI_PIN_NATIVE_COOLDOWN = false
     private framehandle array WUI_Item
     private framehandle array WUI_System
     private framehandle WUI_SystemBar = null
@@ -342,7 +350,8 @@ globals
     constant real WUI_ICON_SIZE = 0.034
     // Checkpoint 22: items as large as the cell allows, "Inventory" above.
     // 2026-10-28: 0.008 gap between the rows (CHANGE / Quick Buy minus sit under a cell).
-    constant real WUI_ITEM_SIZE = 0.031
+    // 2026-11-03: 0.88 of the stock 0.031 item art, like the ability buttons (0.034 of 0.039).
+    constant real WUI_ITEM_SIZE = 0.0273
     constant real WUI_ITEM_X = 0.676
     constant real WUI_ITEM_STEP_X = 0.0355
     constant real WUI_ITEM_Y = 0.0625
@@ -351,7 +360,11 @@ globals
     // sits in its TOP-LEFT corner (screenshots: icon 80% of the cell, shifted
     // up-left). Scale by the icon and shift the wrapper so the icon is centred.
     constant real WUI_NATIVE_ITEM_ICON = 0.031
-    constant real WUI_NATIVE_ITEM_SHIFT = 0.004
+    // SetSize at scale 1: a .0353 wrapper drew .0302 art, so the art is the
+    // wrapper minus ~.005 - half of that is the shift.
+    constant real WUI_NATIVE_ITEM_SHIFT = 0.0025
+    // Item art at scale 1: 73 px against a 65 px (0.0273) cell in game.
+    constant real WUI_NATIVE_ITEM_ART = 0.0307
     // Chassis (native graphite surface) and the minimap block to its left.
     constant real WUI_CHASSIS_LEFT = 0.160
     constant real WUI_CHASSIS_RIGHT = 0.830
@@ -420,16 +433,16 @@ globals
     constant real WUI_MINIMAP_SIZE = 0.136
     constant real WUI_MINIMAP_RIGHT = 0.160
     constant real WUI_MINIMAP_TOP = 0.144
-    constant string WUI_PANEL_TEXTURE = "UI\\WOS\\panel.tga"
-    constant string WUI_BORDER_TEXTURE = "UI\\WOS\\border.tga"
+    constant string WUI_PANEL_TEXTURE = "UI\\WOS\\panel.blp"
+    constant string WUI_BORDER_TEXTURE = "UI\\WOS\\border.blp"
     constant string WUI_EMPTY_TEXTURE = "UI\\WOS\\empty.tga"
-    constant string WUI_FILL_NORMAL = "UI\\WOS\\fill-normal.tga"
-    constant string WUI_FILL_HOVER = "UI\\WOS\\fill-hover.tga"
-    constant string WUI_FILL_PRESSED = "UI\\WOS\\fill-pressed.tga"
-    constant string WUI_FILL_SELECTED = "UI\\WOS\\fill-selected.tga"
+    constant string WUI_FILL_NORMAL = "UI\\WOS\\fill-normal.blp"
+    constant string WUI_FILL_HOVER = "UI\\WOS\\fill-hover.blp"
+    constant string WUI_FILL_PRESSED = "UI\\WOS\\fill-pressed.blp"
+    constant string WUI_FILL_SELECTED = "UI\\WOS\\fill-selected.blp"
     constant real WUI_ORNAMENT_SCALE = 1.00
-    constant string WUI_ICON_FRAME = "UI\\WOS\\icon-frame.tga"
-    constant string WUI_ICON_FRAME_BAN = "UI\\WOS\\icon-frame-ban.tga"
+    constant string WUI_ICON_FRAME = "UI\\WOS\\icon-frame.blp"
+    constant string WUI_ICON_FRAME_BAN = "UI\\WOS\\icon-frame-ban.blp"
     constant string WUI_GOLD = "|cffd5b876"
     constant string WUI_TEXT = "|cffe1e5eb"
     // CP44_SHARED_UI: passive state for direct cross-owner UI closing.
@@ -452,7 +465,6 @@ globals
     // Local-only vote presentation; never used by shared voting decisions.
     integer MV_View = -1
     boolean array WOS_STATS_IsOpen
-    boolean array WOS_STATS_OldHeroStatsVisible
     boolean array lmpVisible
     boolean array ss_HelpOpen
     real array ss_HelpLeft
@@ -576,8 +588,16 @@ endfunction
 
 
 // Geometry helpers precede the cached preference/menu presentation paths.
+// Some clients report 0 width/height (minimised or windowed start): that put the
+// left column (chat) in the screen centre. Fall back to 16:9, never narrower than 4:3.
 function WUI_ScreenRight takes nothing returns real
-    return 0.400 + 0.300 * I2R(BlzGetLocalClientWidth()) / RMaxBJ(1.00, I2R(BlzGetLocalClientHeight()))
+    local integer w = BlzGetLocalClientWidth()
+    local integer h = BlzGetLocalClientHeight()
+    local real aspect = 16.0 / 9.0
+    if w > 0 and h > 0 then
+        set aspect = RMaxBJ(4.0 / 3.0, I2R(w) / I2R(h))
+    endif
+    return 0.400 + 0.300 * aspect
 endfunction
 
 function WUI_TopActionX takes integer index returns real
@@ -707,9 +727,9 @@ function WUI_ApplyPanelPreferences takes nothing returns nothing
         call BlzFrameSetVisible(WUI_MinimapToggle, true)
         call WUI_SetToggleState(WUI_MinimapToggle, WUI_MinimapHiddenOf[pid])
         if WUI_MinimapHiddenOf[pid] then
-            call WUI_SetToggleGlyph(WUI_MinimapToggle, "UI\\WOS\\minimap-hide-on.tga")
+            call WUI_SetToggleGlyph(WUI_MinimapToggle, "UI\\WOS\\minimap-hide-on.blp")
         else
-            call WUI_SetToggleGlyph(WUI_MinimapToggle, "UI\\WOS\\minimap-hide-off.tga")
+            call WUI_SetToggleGlyph(WUI_MinimapToggle, "UI\\WOS\\minimap-hide-off.blp")
         endif
     endif
     if WUI_InfoToggle != null then
@@ -722,9 +742,9 @@ function WUI_ApplyPanelPreferences takes nothing returns nothing
         endif
         call WUI_SetToggleState(WUI_InfoToggle, WUI_InfoHiddenOf[pid])
         if WUI_InfoHiddenOf[pid] then
-            call WUI_SetToggleGlyph(WUI_InfoToggle, "UI\\WOS\\info-panel-hide-on.tga")
+            call WUI_SetToggleGlyph(WUI_InfoToggle, "UI\\WOS\\info-panel-hide-on.blp")
         else
-            call WUI_SetToggleGlyph(WUI_InfoToggle, "UI\\WOS\\info-panel-hide-off.tga")
+            call WUI_SetToggleGlyph(WUI_InfoToggle, "UI\\WOS\\info-panel-hide-off.blp")
         endif
     endif
     set i = 1
@@ -1301,16 +1321,25 @@ endfunction
 // Resize the entire wrapper subtree; changing just its width leaves stock art.
 function WUI_PlaceNativeButton takes framehandle control, real x, real y, real size returns nothing
     if control != null then
+        // 0.34g way (back 2026-11-03): SetSize only shrank the button frame,
+        // the icon art stayed stock 0.039. The scale shrinks art and cooldown.
         call BlzFrameSetScale(control, size / 0.039)
         call WUI_Place(control, x, y, 0.039, 0.039)
     endif
 endfunction
 
+// The item art sits in the top-left of its button. SetSize does not resize the
+// art (stock ~0.0307 at scale 1, screenshots 2026-11-03/04), only the scale does.
+// The wrapper keeps the same on-screen box as the unscaled layout (its size is
+// divided by the scale; 0.34g shows absolute points are not scaled).
 function WUI_PlaceNativeItem takes framehandle control, real x, real y, real size returns nothing
-    local real scale = size / WUI_NATIVE_ITEM_ICON
+    local real scale = size / WUI_NATIVE_ITEM_ART
+    local real box = size + 2.00 * WUI_NATIVE_ITEM_SHIFT
     if control != null then
         call BlzFrameSetScale(control, scale)
-        call WUI_Place(control, x + WUI_NATIVE_ITEM_SHIFT * scale, y - WUI_NATIVE_ITEM_SHIFT * scale, 0.039, 0.039)
+        call BlzFrameClearAllPoints(control)
+        call BlzFrameSetAbsPoint(control, FRAMEPOINT_CENTER, x + WUI_NATIVE_ITEM_SHIFT, y - WUI_NATIVE_ITEM_SHIFT)
+        call BlzFrameSetSize(control, box / scale, box / scale)
     endif
 endfunction
 
@@ -1367,44 +1396,44 @@ function WUI_OrnateBorderPathEx takes string name, framehandle owner, real corne
     local real rail = c * 0.125
     call BlzFrameSetAllPoints(edge, owner)
     call BlzFrameSetEnable(edge, false)
-    set piece = WUI_Piece(name + "Top", edge, prefix + "top.tga")
+    set piece = WUI_Piece(name + "Top", edge, prefix + "top.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_LEFT, owner, FRAMEPOINT_TOPLEFT, c * 0.70, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_RIGHT, owner, FRAMEPOINT_TOPRIGHT, -c * 0.70, 0.00)
     call BlzFrameSetSize(piece, 0.00, rail)
-    set piece = WUI_Piece(name + "Bottom", edge, prefix + "bottom.tga")
+    set piece = WUI_Piece(name + "Bottom", edge, prefix + "bottom.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_LEFT, owner, FRAMEPOINT_BOTTOMLEFT, c * 0.70, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_RIGHT, owner, FRAMEPOINT_BOTTOMRIGHT, -c * 0.70, 0.00)
     call BlzFrameSetSize(piece, 0.00, rail)
     // Mask bits 16/32 omit internal left/right rails of split HUD owners.
     if ModuloInteger(mask, 32) < 16 then
-        set piece = WUI_Piece(name + "Left", edge, prefix + "left.tga")
+        set piece = WUI_Piece(name + "Left", edge, prefix + "left.blp")
         call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, owner, FRAMEPOINT_TOPLEFT, 0.00, -c * 0.66)
         call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_BOTTOMLEFT, 0.00, c * 0.66)
         call BlzFrameSetSize(piece, rail, 0.00)
     endif
     if ModuloInteger(mask, 64) < 32 then
-        set piece = WUI_Piece(name + "Right", edge, prefix + "right.tga")
+        set piece = WUI_Piece(name + "Right", edge, prefix + "right.blp")
         call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, owner, FRAMEPOINT_TOPRIGHT, 0.00, -c * 0.66)
         call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_BOTTOMRIGHT, 0.00, c * 0.66)
         call BlzFrameSetSize(piece, rail, 0.00)
     endif
     if ModuloInteger(mask, 2) == 1 then
-        set piece = WUI_Piece(name + "tl", edge, prefix + "tl.tga")
+        set piece = WUI_Piece(name + "tl", edge, prefix + "tl.blp")
         call BlzFrameSetPoint(piece, FRAMEPOINT_TOPLEFT, owner, FRAMEPOINT_TOPLEFT, -c * 0.207, c * 0.293)
         call BlzFrameSetSize(piece, c, c)
     endif
     if ModuloInteger(mask, 4) >= 2 then
-        set piece = WUI_Piece(name + "tr", edge, prefix + "tr.tga")
+        set piece = WUI_Piece(name + "tr", edge, prefix + "tr.blp")
         call BlzFrameSetPoint(piece, FRAMEPOINT_TOPRIGHT, owner, FRAMEPOINT_TOPRIGHT, c * 0.207, c * 0.293)
         call BlzFrameSetSize(piece, c, c)
     endif
     if ModuloInteger(mask, 8) >= 4 then
-        set piece = WUI_Piece(name + "bl", edge, prefix + "bl.tga")
+        set piece = WUI_Piece(name + "bl", edge, prefix + "bl.blp")
         call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOMLEFT, owner, FRAMEPOINT_BOTTOMLEFT, -c * 0.207, -c * 0.307)
         call BlzFrameSetSize(piece, c, c)
     endif
     if mask >= 8 then
-        set piece = WUI_Piece(name + "br", edge, prefix + "br.tga")
+        set piece = WUI_Piece(name + "br", edge, prefix + "br.blp")
         call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOMRIGHT, owner, FRAMEPOINT_BOTTOMRIGHT, c * 0.207, -c * 0.307)
         call BlzFrameSetSize(piece, c, c)
     endif
@@ -1434,22 +1463,22 @@ function WUI_GoldFrame takes string name, framehandle owner, real thickness, rea
     local framehandle piece
     call BlzFrameSetAllPoints(edge, owner)
     call BlzFrameSetEnable(edge, false)
-    set piece = WUI_Piece(name + "T", edge, "UI\\WOS\\divider-h.tga")
+    set piece = WUI_Piece(name + "T", edge, "UI\\WOS\\divider-h.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_LEFT, owner, FRAMEPOINT_TOPLEFT, 0.00, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_RIGHT, owner, FRAMEPOINT_TOPRIGHT, 0.00, 0.00)
     call BlzFrameSetSize(piece, 0.00, 0.003)
     call BlzFrameSetAlpha(piece, 170)
-    set piece = WUI_Piece(name + "B", edge, "UI\\WOS\\divider-h.tga")
+    set piece = WUI_Piece(name + "B", edge, "UI\\WOS\\divider-h.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_LEFT, owner, FRAMEPOINT_BOTTOMLEFT, 0.00, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_RIGHT, owner, FRAMEPOINT_BOTTOMRIGHT, 0.00, 0.00)
     call BlzFrameSetSize(piece, 0.00, 0.003)
     call BlzFrameSetAlpha(piece, 170)
-    set piece = WUI_Piece(name + "L", edge, "UI\\WOS\\divider-v.tga")
+    set piece = WUI_Piece(name + "L", edge, "UI\\WOS\\divider-v.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, owner, FRAMEPOINT_TOPLEFT, 0.00, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_BOTTOMLEFT, 0.00, 0.00)
     call BlzFrameSetSize(piece, 0.003, 0.00)
     call BlzFrameSetAlpha(piece, 170)
-    set piece = WUI_Piece(name + "R", edge, "UI\\WOS\\divider-v.tga")
+    set piece = WUI_Piece(name + "R", edge, "UI\\WOS\\divider-v.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, owner, FRAMEPOINT_TOPRIGHT, 0.00, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_BOTTOMRIGHT, 0.00, 0.00)
     call BlzFrameSetSize(piece, 0.003, 0.00)
@@ -1473,10 +1502,10 @@ endfunction
 function WUI_Divider takes string name, framehandle parent, real x, real y, real length, boolean vertical returns framehandle
     local framehandle line
     if vertical then
-        set line = WUI_Piece(name, parent, "UI\\WOS\\divider-v.tga")
+        set line = WUI_Piece(name, parent, "UI\\WOS\\divider-v.blp")
         call WUI_Place(line, x, y, 0.004, length)
     else
-        set line = WUI_Piece(name, parent, "UI\\WOS\\divider-h.tga")
+        set line = WUI_Piece(name, parent, "UI\\WOS\\divider-h.blp")
         call WUI_Place(line, x, y, length, 0.004)
     endif
     return line
@@ -1533,11 +1562,11 @@ function WUI_HeroMeter takes framehandle panel, framehandle back, framehandle ba
         set edge = WUI_GoldFrame("WOSHeroMeterEdge", panel, 0.0032, 0.0070)
         set edge = null
     endif
-    call BlzFrameSetTexture(back, "UI\\WOS\\bar-back.tga", 0, true)
+    call BlzFrameSetTexture(back, "UI\\WOS\\bar-back.blp", 0, true)
     call WUI_Pin(back, panel, 0.012, -0.004, 0.104, 0.007)
     call BlzFrameSetScale(bar, 1.00)
     // Checkpoint 24: purple fill (meter.tga is a thin rail and looked empty).
-    call BlzFrameSetTexture(bar, "UI\\WOS\\meter-fill.tga", 0, true)
+    call BlzFrameSetTexture(bar, "UI\\WOS\\meter-fill.blp", 0, true)
     call BlzFrameSetLevel(back, 1)
     call BlzFrameSetLevel(bar, 2)
     call BlzFrameSetLevel(title, 3)
@@ -1549,7 +1578,7 @@ function WUI_HeroMeter takes framehandle panel, framehandle back, framehandle ba
         call WUI_Pin(bar, panel, 0.012, -0.004, 0.104, 0.007)
         if not HaveSavedHandle(WUI_BarInfo, GetHandleId(bar), 2) then
             set edge = BlzCreateFrameByType("BACKDROP", "WOSMeterFill", panel, "", 0)
-            call BlzFrameSetTexture(edge, "UI\\WOS\\meter-fill.tga", 0, true)
+            call BlzFrameSetTexture(edge, "UI\\WOS\\meter-fill.blp", 0, true)
             call BlzFrameSetPoint(edge, FRAMEPOINT_LEFT, panel, FRAMEPOINT_CENTER, -0.040, -0.004)
             call BlzFrameSetEnable(edge, false)
             call BlzFrameSetLevel(edge, 2)
@@ -1911,13 +1940,13 @@ function WUI_HeroProgressCharge takes unit hero, integer abilityId, string title
     local integer pid = GetPlayerId(GetOwningPlayer(hero))
     local integer index
     local framehandle fill
-    local string texture = "UI\\WOS\\meter-fill.tga"
+    local string texture = "UI\\WOS\\meter-fill.blp"
     local real scale = 0.66
     call WUI_RenderHeroProgress(hero, abilityId, title, charge, maximum, false, R2SW(charge, 0, 1) + "%", false, false)
     set index = LoadInteger(WUI_ProgressKeys, pid, abilityId)
     if index > 0 and GetLocalPlayer() == Player(pid) then
         if overcharged then
-            set texture = "UI\\WOS\\meter-fill-red.tga"
+            set texture = "UI\\WOS\\meter-fill-red.blp"
             set scale = 0.92
         endif
         call BlzFrameSetTexture(WUI_ProgressBar[index], texture, 0, true)
@@ -1964,8 +1993,8 @@ private function WUI_HeroDualRow takes unit hero, integer abilityId, real amount
     set panel = WUI_ProgressPanel[index]
     set key = GetHandleId(panel)
     if not HaveSavedHandle(WUI_MeterEdges, key, 21) then
-        call SaveFrameHandle(WUI_MeterEdges, key, 20, WUI_Piece("WOSDualBack", panel, "UI\\WOS\\bar-back.tga"))
-        call SaveFrameHandle(WUI_MeterEdges, key, 21, WUI_CreateFill("WOSDualFill", panel, 0.104, 0.008, RMaxBJ(1.00, maximum), "UI\\WOS\\meter-fill-red.tga"))
+        call SaveFrameHandle(WUI_MeterEdges, key, 20, WUI_Piece("WOSDualBack", panel, "UI\\WOS\\bar-back.blp"))
+        call SaveFrameHandle(WUI_MeterEdges, key, 21, WUI_CreateFill("WOSDualFill", panel, 0.104, 0.008, RMaxBJ(1.00, maximum), "UI\\WOS\\meter-fill-red.blp"))
         call SaveFrameHandle(WUI_MeterEdges, key, 22, BlzCreateFrameByType("TEXT", "WOSDualValue", panel, "", 0))
         call BlzFrameSetEnable(LoadFrameHandle(WUI_MeterEdges, key, 22), false)
         call BlzFrameSetLevel(LoadFrameHandle(WUI_MeterEdges, key, 20), 1)
@@ -2832,7 +2861,7 @@ function WUI_RegisterHotkeyEx takes integer channel, trigger keyTrigger, oskeyty
     call BlzFrameSetLevel(WUI_HotkeyButton[channel], 30)
     set part = BlzCreateFrameByType("BACKDROP", "WOSHotkeyBadgeBack", WUI_HotkeyButton[channel], "", channel)
     call BlzFrameSetAllPoints(part, WUI_HotkeyButton[channel])
-    call BlzFrameSetTexture(part, "UI\\WOS\\keycap.tga", 0, true)
+    call BlzFrameSetTexture(part, "UI\\WOS\\keycap.blp", 0, true)
     call BlzFrameSetEnable(part, false)
     set WUI_HotkeyLabel[channel] = BlzCreateFrameByType("TEXT", "WOSHotkeyBadgeText", WUI_HotkeyButton[channel], "", channel)
     call BlzFrameSetAllPoints(WUI_HotkeyLabel[channel], WUI_HotkeyButton[channel])
@@ -2881,7 +2910,7 @@ private function WUI_RefreshMenuSkins takes nothing returns nothing
                 // Checkpoint 25b: local mouse test (no network events) gives
                 // the rows the blue hover of the stock game menu.
                 if RAbsBJ(BlzPixelToFrameX(BlzGetMouseScreenPosX()) - WUI_MenuDropX()) <= WUI_MenuButtonWidth() * 0.5 and RAbsBJ(BlzPixelToFrameY(BlzGetMouseScreenPosY()) - WUI_MenuRowY(i)) <= 0.00925 then
-                    call BlzFrameSetTexture(fill, "UI\\WOS\\fill-hover-blue.tga", 0, true)
+                    call BlzFrameSetTexture(fill, "UI\\WOS\\fill-hover-blue.blp", 0, true)
                 else
                     call BlzFrameSetTexture(fill, WUI_FILL_NORMAL, 0, true)
                 endif
@@ -2893,7 +2922,7 @@ private function WUI_RefreshMenuSkins takes nothing returns nothing
                     call WUI_SetText(text, WUI_TEXT + "Log  |cffd5b876[F12]|r")
                 endif
             else
-                call BlzFrameSetTexture(fill, "UI\\WOS\\fill-disabled.tga", 0, true)
+                call BlzFrameSetTexture(fill, "UI\\WOS\\fill-disabled.blp", 0, true)
                 if i == 0 then
                     call WUI_SetText(text, "|cff6a6e76Menu  [F10]|r")
                 elseif i == 1 then
@@ -3203,7 +3232,7 @@ struct WOSHeroMeter
         set owner = playerId
         set panel = WUI_Window("WOSHeroMeter", WUI_GetRoot(), 0, 0)
         set back = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", panel, "", 0)
-        set bar = WUI_CreateFill("WOSMeterFill", panel, 0.104, 0.007, maximum, "UI\\WOS\\meter.tga")
+        set bar = WUI_CreateFill("WOSMeterFill", panel, 0.104, 0.007, maximum, "UI\\WOS\\meter.blp")
         set icon = BlzCreateFrameByType("BACKDROP", "WOSMeterIcon", panel, "", 0)
         set title = BlzCreateFrameByType("TEXT", "WOSMeterTitle", panel, "", 0)
         set value = BlzCreateFrameByType("TEXT", "WOSMeterValue", panel, "", 0)
@@ -3281,14 +3310,14 @@ function WUI_BindNativePortrait takes framehandle parent returns framehandle
     if WUI_InvisBacking == null then
         // A separate dark translucent strip keeps the label pixels crisp.
         set WUI_InvisBacking = BlzCreateFrameByType("BACKDROP", "WOSInvisBacking", parent, "", 0)
-        call BlzFrameSetTexture(WUI_InvisBacking, "UI\\WOS\\bar-back.tga", 0, true)
+        call BlzFrameSetTexture(WUI_InvisBacking, "UI\\WOS\\bar-back.blp", 0, true)
         call WUI_Pin(WUI_InvisBacking, parent, 0.00, -0.0175, 0.049, 0.013)
         call BlzFrameSetVertexColor(WUI_InvisBacking, BlzConvertColor(115, 0, 0, 0))
         call BlzFrameSetLevel(WUI_InvisBacking, 19)
         call BlzFrameSetEnable(WUI_InvisBacking, false)
         call BlzFrameSetVisible(WUI_InvisBacking, false)
         set WUI_InvisLabel = BlzCreateFrameByType("BACKDROP", "WOSInvisLabel", parent, "", 0)
-        call BlzFrameSetTexture(WUI_InvisLabel, "UI\\WOS\\invis-label.tga", 0, true)
+        call BlzFrameSetTexture(WUI_InvisLabel, "UI\\WOS\\invis-label.blp", 0, true)
         call WUI_Pin(WUI_InvisLabel, parent, 0.00, -0.0175, 0.049, 0.013)
         call BlzFrameSetLevel(WUI_InvisLabel, 20)
         call BlzFrameSetEnable(WUI_InvisLabel, false)
@@ -3297,7 +3326,7 @@ function WUI_BindNativePortrait takes framehandle parent returns framehandle
     if WUI_SilenceLabel == null then
         // Transparent lettering is centered over the native portrait; INVIS stays below.
         set WUI_SilenceLabel = BlzCreateFrameByType("BACKDROP", "WOSSilenceLabel", parent, "", 0)
-        call BlzFrameSetTexture(WUI_SilenceLabel, "UI\\WOS\\silence-label.tga", 0, true)
+        call BlzFrameSetTexture(WUI_SilenceLabel, "UI\\WOS\\silence-label.blp", 0, true)
         call WUI_Pin(WUI_SilenceLabel, parent, 0.00, 0.0018, 0.059, 0.016)
         call BlzFrameSetLevel(WUI_SilenceLabel, 20)
         call BlzFrameSetEnable(WUI_SilenceLabel, false)
@@ -3366,10 +3395,10 @@ function WUI_StyleButton takes framehandle control returns nothing
     if BlzFrameGetChildrenCount(control) < 5 then
         return
     endif
-    call BlzFrameSetTexture(BlzFrameGetChild(control, 0), "UI\\WOS\\button.tga", 0, true)
-    call BlzFrameSetTexture(BlzFrameGetChild(control, 1), "UI\\WOS\\pressed.tga", 0, true)
-    call BlzFrameSetTexture(BlzFrameGetChild(control, 2), "UI\\WOS\\disabled.tga", 0, true)
-    call BlzFrameSetTexture(BlzFrameGetChild(control, 3), "UI\\WOS\\disabled.tga", 0, true)
+    call BlzFrameSetTexture(BlzFrameGetChild(control, 0), "UI\\WOS\\button.blp", 0, true)
+    call BlzFrameSetTexture(BlzFrameGetChild(control, 1), "UI\\WOS\\pressed.blp", 0, true)
+    call BlzFrameSetTexture(BlzFrameGetChild(control, 2), "UI\\WOS\\disabled.blp", 0, true)
+    call BlzFrameSetTexture(BlzFrameGetChild(control, 3), "UI\\WOS\\disabled.blp", 0, true)
     call BlzFrameSetAlpha(BlzFrameGetChild(control, 4), 110)
 endfunction
 
@@ -3421,6 +3450,23 @@ endfunction
 
 function WUI_AbilityX takes integer slot returns real
     return WUI_COMMAND_X + WUI_HudShift + I2R(slot) * WUI_COMMAND_STEP
+endfunction
+
+// The stock cooldown sprite keeps its own engine anchor; when the button is
+// re-scaled/re-placed (new ability, morph, swap) it could detach and grow in the
+// middle of the screen. Pin it to the button centre. An explicit child scale is
+// absolute (not multiplied by the button's), so it gets the button's icon size.
+private function WUI_PinCommandCooldown takes integer i returns nothing
+    local real size = WUI_ICON_SIZE
+    if WUI_Command[i] != null and WUI_CommandCD[i] != null then
+        if not WUI_CompactCommands and i >= 5 then
+            set size = 0.030
+        endif
+        call BlzFrameClearAllPoints(WUI_CommandCD[i])
+        // Models ignore frame size; Tasyen: scale = button width / 0.039.
+        call BlzFrameSetAllPoints(WUI_CommandCD[i], WUI_Command[i])
+        call BlzFrameSetScale(WUI_CommandCD[i], size / 0.039)
+    endif
 endfunction
 
 function WUI_LayoutCommands takes boolean compact returns nothing
@@ -3476,6 +3522,12 @@ function WUI_LayoutCommands takes boolean compact returns nothing
             set slot = slot + 1
         endloop
     endif
+    set i = 0
+    loop
+        exitwhen i >= 12
+        call WUI_PinCommandCooldown(i)
+        set i = i + 1
+    endloop
 endfunction
 
 
@@ -3556,16 +3608,90 @@ private function WUI_ControlClick takes nothing returns nothing
     call WUI_ResetClickedButtonFocus()
 endfunction
 
+// The cooldown sprite of a native command/item button. The Tas charge boxes
+// (TasBox.j context 0-11, Ice Coffin badges 40-45) are SetAllPoints children
+// of the same buttons and also 0.039 wide: caching one as the "cooldown" gave
+// it the cooldown scale and alpha 0, so the counters vanished on all heroes.
+private function WUI_FindNativeCooldown takes framehandle owner returns framehandle
+    local integer i = 0
+    local integer count = 0
+    local integer ctx
+    local framehandle child
+    local boolean box
+    set count = BlzFrameGetChildrenCount(owner)
+    loop
+        exitwhen i >= count
+        set child = BlzFrameGetChild(owner, i)
+        if child != null and BlzFrameGetWidth(child) >= 0.020 then
+            set box = false
+            set ctx = 0
+            loop
+                exitwhen ctx > 45 or box
+                if ctx < 12 or ctx >= 40 then
+                    set box = child == BlzGetFrameByName("TasAbilityChargeBox", ctx)
+                endif
+                set ctx = ctx + 1
+            endloop
+            set ctx = 1
+            loop
+                exitwhen ctx > WUI_ChargeBoxCount or box
+                set box = child == WUI_ChargeBox[ctx]
+                set ctx = ctx + 1
+            endloop
+            if not box then
+                return child
+            endif
+        endif
+        set i = i + 1
+    endloop
+    return null
+endfunction
+
+// Synchronous: TasBox / Ice Coffin register each box they create on a native
+// button. A box cached earlier as a "cooldown" is released and made visible.
+function WUI_RegisterChargeBox takes framehandle box returns nothing
+    local integer i = 0
+    if box == null then
+        return
+    endif
+    set WUI_ChargeBoxCount = WUI_ChargeBoxCount + 1
+    set WUI_ChargeBox[WUI_ChargeBoxCount] = box
+    loop
+        exitwhen i >= 12
+        if WUI_CommandCD[i] == box then
+            set WUI_CommandCD[i] = null
+        endif
+        if i < 6 and WUI_ItemCD[i] == box then
+            set WUI_ItemCD[i] = null
+        endif
+        set i = i + 1
+    endloop
+    call BlzFrameSetScale(box, 1.00)
+    call BlzFrameSetAlpha(box, 255)
+endfunction
+
 private function WUI_CacheNativeSlots takes nothing returns nothing
     local integer i = 0
+    local framehandle child
     loop
         exitwhen i >= 12
         set WUI_Command[i] = BlzGetFrameByName("CommandButton_" + I2S(i), 0)
         if WUI_Command[i] == null then
             set WUI_Command[i] = BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i)
         endif
+        // 2026-11-03: off for command buttons - the Tas boxes vanished on every
+        // hero; their scaled buttons already fit the 0.88 cooldown model.
+        if WUI_PIN_NATIVE_COOLDOWN and WUI_CommandCD[i] == null and WUI_Command[i] != null then
+            // Charge labels are smaller; only the full-size model is the cooldown.
+            set child = WUI_FindNativeCooldown(WUI_Command[i])
+            if child != null then
+                set WUI_CommandCD[i] = child
+                call WUI_PinCommandCooldown(i)
+            endif
+        endif
         set i = i + 1
     endloop
+    set child = null
     set i = 0
     loop
         exitwhen i >= 6
@@ -3573,8 +3699,16 @@ private function WUI_CacheNativeSlots takes nothing returns nothing
         if WUI_Item[i] == null then
             set WUI_Item[i] = BlzGetOriginFrame(ORIGIN_FRAME_ITEM_BUTTON, i)
         endif
+        if WUI_PIN_NATIVE_COOLDOWN and WUI_ItemCD[i] == null and WUI_Item[i] != null then
+            set child = WUI_FindNativeCooldown(WUI_Item[i])
+            if child != null then
+                set WUI_ItemCD[i] = child
+                call WUI_PlaceNativeItem(WUI_Item[i], WUI_ItemX(i), WUI_ItemY(i), WUI_ITEM_SIZE)
+            endif
+        endif
         set i = i + 1
     endloop
+    set child = null
 endfunction
 
 // Local, presentation only: compact column above the ability row.
@@ -3839,12 +3973,51 @@ function WUI_ShowNativeAbilitySlot takes integer slot, boolean visible returns n
     if WUI_NativeSlotState[slot] == state then
         return
     endif
+    if state == 1 and WUI_NativeSlotState[slot] == 3 then
+        // Held through a pause: already placed and pinned, only show the sprite.
+        set WUI_NativeSlotState[slot] = 1
+        if WUI_CommandCD[WUI_CommandSlot(slot)] != null then
+            call BlzFrameSetAlpha(WUI_CommandCD[WUI_CommandSlot(slot)], 255)
+        endif
+        return
+    endif
     set WUI_NativeSlotState[slot] = state
     set WUI_NativeSlotAge[slot] = 0
     if visible then
         call WUI_PlaceNativeButton(WUI_Command[WUI_CommandSlot(slot)], WUI_AbilityX(slot), WUI_AbilityY(slot), WUI_ICON_SIZE)
     else
         call WUI_PlaceNativeButton(WUI_Command[WUI_CommandSlot(slot)], -0.20, -0.20, WUI_ICON_SIZE)
+    endif
+    // Hidden/shown (pause, swap) buttons leave the cooldown sprite at its old
+    // engine anchor for a few seconds; re-pin it with the button.
+    call WUI_PinCommandCooldown(WUI_CommandSlot(slot))
+    // A paused hero's card is emptied by the engine, which then draws the
+    // sprite at its stock-grid anchor (a blue square beside F). Alpha, not
+    // visibility, so the engine's own cooldown show/hide stays untouched.
+    if WUI_CommandCD[WUI_CommandSlot(slot)] != null then
+        if visible then
+            call BlzFrameSetAlpha(WUI_CommandCD[WUI_CommandSlot(slot)], 255)
+        else
+            call BlzFrameSetAlpha(WUI_CommandCD[WUI_CommandSlot(slot)], 0)
+        endif
+    endif
+endfunction
+
+// Paused hero: the button stays in its own cell under the placeholder icon.
+// Parked off-screen, its cooldown sprite flashed at the stock anchor (G) when
+// the pause ended, until the next 0.25 s refresh moved the button back.
+function WUI_HoldNativeAbilitySlot takes integer slot returns nothing
+    if not WUI_CompactCommands or slot < 0 or slot >= 7 or WUI_NativeSlotState[slot] == 3 then
+        return
+    endif
+    if WUI_NativeSlotState[slot] != 1 then
+        call WUI_PlaceNativeButton(WUI_Command[WUI_CommandSlot(slot)], WUI_AbilityX(slot), WUI_AbilityY(slot), WUI_ICON_SIZE)
+        call WUI_PinCommandCooldown(WUI_CommandSlot(slot))
+    endif
+    set WUI_NativeSlotState[slot] = 3
+    set WUI_NativeSlotAge[slot] = 0
+    if WUI_CommandCD[WUI_CommandSlot(slot)] != null then
+        call BlzFrameSetAlpha(WUI_CommandCD[WUI_CommandSlot(slot)], 0)
     endif
 endfunction
 
@@ -3984,22 +4157,22 @@ endfunction
 // Soft divider-line frame around any owner (buttons, top actions panel).
 function WUI_MinimalEdge takes framehandle control returns nothing
     local framehandle piece
-    set piece = WUI_Piece("WOSMinimalTop", control, "UI\\WOS\\divider-h.tga")
+    set piece = WUI_Piece("WOSMinimalTop", control, "UI\\WOS\\divider-h.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_LEFT, control, FRAMEPOINT_TOPLEFT, 0.00, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_RIGHT, control, FRAMEPOINT_TOPRIGHT, 0.00, 0.00)
     call BlzFrameSetSize(piece, 0.00, 0.003)
     call BlzFrameSetAlpha(piece, 170)
-    set piece = WUI_Piece("WOSMinimalBottom", control, "UI\\WOS\\divider-h.tga")
+    set piece = WUI_Piece("WOSMinimalBottom", control, "UI\\WOS\\divider-h.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_LEFT, control, FRAMEPOINT_BOTTOMLEFT, 0.00, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_RIGHT, control, FRAMEPOINT_BOTTOMRIGHT, 0.00, 0.00)
     call BlzFrameSetSize(piece, 0.00, 0.003)
     call BlzFrameSetAlpha(piece, 170)
-    set piece = WUI_Piece("WOSMinimalLeft", control, "UI\\WOS\\divider-v.tga")
+    set piece = WUI_Piece("WOSMinimalLeft", control, "UI\\WOS\\divider-v.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, control, FRAMEPOINT_TOPLEFT, 0.00, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, control, FRAMEPOINT_BOTTOMLEFT, 0.00, 0.00)
     call BlzFrameSetSize(piece, 0.003, 0.00)
     call BlzFrameSetAlpha(piece, 170)
-    set piece = WUI_Piece("WOSMinimalRight", control, "UI\\WOS\\divider-v.tga")
+    set piece = WUI_Piece("WOSMinimalRight", control, "UI\\WOS\\divider-v.blp")
     call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, control, FRAMEPOINT_TOPRIGHT, 0.00, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, control, FRAMEPOINT_BOTTOMRIGHT, 0.00, 0.00)
     call BlzFrameSetSize(piece, 0.003, 0.00)
@@ -4761,7 +4934,7 @@ private function WUI_CreateHotkeyEditor takes nothing returns nothing
         endloop
         set pid = pid + 1
     endloop
-    set WUI_HotkeyToggle = WUI_ToggleButton("WOSHotkeyToggle", WUI_TOGGLE_X, WUI_TOGGLE_HOTKEY_Y, WUI_TOGGLE_SIZE, "UI\\WOS\\glyph-keyboard.tga")
+    set WUI_HotkeyToggle = WUI_ToggleButton("WOSHotkeyToggle", WUI_TOGGLE_X, WUI_TOGGLE_HOTKEY_Y, WUI_TOGGLE_SIZE, "UI\\WOS\\glyph-keyboard.blp")
     call WUI_Tooltip(WUI_HotkeyToggle, "|cffd5b876CHANGE HOTKEYS|r|nClick an ability or item, then press a key.|nEsc cancels, Backspace removes it.|nClick here again to finish.")
     call BlzTriggerRegisterFrameEvent(WUI_SlotClick, WUI_HotkeyToggle, FRAMEEVENT_CONTROL_CLICK)
     set slot = 0
@@ -4778,7 +4951,7 @@ private function WUI_CreateHotkeyEditor takes nothing returns nothing
         set WUI_SlotOverlayEdge[slot] = BlzCreateFrameByType("BACKDROP", "WOSHotkeySlotEdge", WUI_SlotOverlay[slot], "", slot)
         call BlzFrameSetPoint(WUI_SlotOverlayEdge[slot], FRAMEPOINT_TOPLEFT, WUI_SlotOverlay[slot], FRAMEPOINT_TOPLEFT, -0.0025, 0.0025)
         call BlzFrameSetPoint(WUI_SlotOverlayEdge[slot], FRAMEPOINT_BOTTOMRIGHT, WUI_SlotOverlay[slot], FRAMEPOINT_BOTTOMRIGHT, 0.0025, -0.0025)
-        call BlzFrameSetTexture(WUI_SlotOverlayEdge[slot], "UI\\WOS\\learn-glow.tga", 0, true)
+        call BlzFrameSetTexture(WUI_SlotOverlayEdge[slot], "UI\\WOS\\learn-glow.blp", 0, true)
         call BlzFrameSetEnable(WUI_SlotOverlayEdge[slot], false)
         call BlzTriggerRegisterFrameEvent(WUI_SlotClick, WUI_SlotOverlay[slot], FRAMEEVENT_CONTROL_CLICK)
         call BlzFrameSetVisible(WUI_SlotOverlay[slot], false)
@@ -4787,7 +4960,7 @@ private function WUI_CreateHotkeyEditor takes nothing returns nothing
         set WUI_SlotBadge[slot] = BlzCreateFrameByType("BACKDROP", "WOSHotkeySlotBadge", WUI_Root, "", slot)
         call BlzFrameSetPoint(WUI_SlotBadge[slot], FRAMEPOINT_CENTER, WUI_SlotOverlay[slot], FRAMEPOINT_TOPRIGHT, -0.0035, -0.0035)
         call BlzFrameSetSize(WUI_SlotBadge[slot], 0.0115, 0.0115)
-        call BlzFrameSetTexture(WUI_SlotBadge[slot], "UI\\WOS\\keycap.tga", 0, true)
+        call BlzFrameSetTexture(WUI_SlotBadge[slot], "UI\\WOS\\keycap.blp", 0, true)
         call BlzFrameSetLevel(WUI_SlotBadge[slot], 46)
         call BlzFrameSetEnable(WUI_SlotBadge[slot], false)
         set WUI_SlotBadgeText[slot] = BlzCreateFrameByType("TEXT", "WOSHotkeySlotBadgeText", WUI_SlotBadge[slot], "", slot)
@@ -4801,7 +4974,7 @@ private function WUI_CreateHotkeyEditor takes nothing returns nothing
     // Hint plate above the ability row while editing.
     set WUI_HotkeyHint = WUI_Panel("WOSHotkeyHint", WUI_Root, 0.330, 0.022)
     call WUI_PlaceShift(WUI_HotkeyHint, 0.511, 0.1095, 0.330, 0.022)
-    call BlzFrameSetTexture(WUI_HotkeyHint, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetTexture(WUI_HotkeyHint, "UI\\WOS\\panel-soft.blp", 0, true)
     call BlzFrameSetEnable(WUI_HotkeyHint, false)
     set part = WUI_GoldFrame("WOSHotkeyHintEdge", WUI_HotkeyHint, 0.0030, 0.0070)
     set part = BlzCreateFrameByType("TEXT", "WOSHotkeyHintText", WUI_HotkeyHint, "", 0)
@@ -4844,10 +5017,10 @@ endfunction
 
 private function WUI_CreatePanelToggles takes nothing returns nothing
     local trigger events = CreateTrigger()
-    set WUI_MinimapToggle = WUI_ToggleButton("WOSHideMinimap", 0.17325, 0.0870, 0.012, "UI\\WOS\\minimap-hide-off.tga")
+    set WUI_MinimapToggle = WUI_ToggleButton("WOSHideMinimap", 0.17325, 0.0870, 0.012, "UI\\WOS\\minimap-hide-off.blp")
     call WUI_PlaceShiftLeft(WUI_MinimapToggle, 0.17325, 0.0870, 0.012, 0.012)
     call WUI_TooltipSized(WUI_MinimapToggle, "|cffd5b876HIDE MINIMAP|r|nHide or show the minimap and its controls.", 0.170, 0.047, 0.007, 0.007, 0.018)
-    set WUI_InfoToggle = WUI_ToggleButton("WOSHideInfoPanel", 0.8290, 0.0055, 0.010, "UI\\WOS\\info-panel-hide-off.tga")
+    set WUI_InfoToggle = WUI_ToggleButton("WOSHideInfoPanel", 0.8290, 0.0055, 0.010, "UI\\WOS\\info-panel-hide-off.blp")
     call WUI_PlaceShift(WUI_InfoToggle, 0.8290, 0.0055, 0.010, 0.010)
     call WUI_TooltipSized(WUI_InfoToggle, "|cffd5b876HIDE INFO PANEL|r|nFold the utility panel. Gold moves to the inventory header. Click again to restore it.", 0.190, 0.070, 0.007, 0.007, 0.090)
     call BlzTriggerRegisterFrameEvent(events, WUI_MinimapToggle, FRAMEEVENT_CONTROL_CLICK)
@@ -4867,7 +5040,7 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
         set WUI_InfoBack = WUI_NativeSurface(9056, 0.7290 + WUI_HudShift, 0.000, WUI_CHASSIS_RIGHT + WUI_HudShift, WUI_CHASSIS_TOP)
         call WUI_RegisterInfoPart(WUI_InfoBack)
         set edge = WUI_NativeSurface(9055, 0.000, 0.000, WUI_MINIMAP_RIGHT, WUI_MINIMAP_TOP)
-        call BlzFrameSetTexture(BlzGetFrameByName("WOSNativeHUDTexture", 9055), "UI\\WOS\\minimap-background-black.tga", 0, true)
+        call BlzFrameSetTexture(BlzGetFrameByName("WOSNativeHUDTexture", 9055), "UI\\WOS\\minimap-background-black.blp", 0, true)
         call BlzFrameSetLevel(edge, 0)
         call WUI_RectShiftLeft(edge, 0.000, 0.000, WUI_MINIMAP_RIGHT, WUI_MINIMAP_TOP)
         call WUI_RegisterMinimapPart(edge)
@@ -4949,7 +5122,7 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
     // stock tooltip still belong to the native button underneath.
     set edge = WUI_Piece("WOSAllyColorFill", panel, WUI_FILL_NORMAL)
     call WUI_Place(edge, WUI_ALLY_COLOR_X, WUI_ALLY_COLOR_Y, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
-    set edge = WUI_Piece("WOSAllyColorGlyph", panel, "UI\\WOS\\glyph-allycolor.tga")
+    set edge = WUI_Piece("WOSAllyColorGlyph", panel, "UI\\WOS\\glyph-allycolor.blp")
     call WUI_Place(edge, WUI_ALLY_COLOR_X, WUI_ALLY_COLOR_Y, WUI_ALLY_COLOR_SIZE - 0.004, WUI_ALLY_COLOR_SIZE - 0.004)
     set WUI_AllyColorGlyph = edge
     set edge = WUI_Passive("WOSAllyColorEdgeOwner", panel)
@@ -4958,7 +5131,7 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
     set edge = WUI_GoldFrame("WOSAllyColorEdge", edge, 0.0026, 0.0050)
     set edge = WUI_Piece("WOSTerrainFill", panel, WUI_FILL_NORMAL)
     call WUI_Place(edge, WUI_ALLY_COLOR_X, 0.0390, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
-    set edge = WUI_Piece("WOSTerrainGlyph", panel, "UI\\WOS\\minimap-terrain.tga")
+    set edge = WUI_Piece("WOSTerrainGlyph", panel, "UI\\WOS\\minimap-terrain.blp")
     call WUI_Place(edge, WUI_ALLY_COLOR_X, 0.0390, WUI_ALLY_COLOR_SIZE - 0.004, WUI_ALLY_COLOR_SIZE - 0.004)
     set edge = WUI_Passive("WOSTerrainEdgeOwner", panel)
     call WUI_Place(edge, WUI_ALLY_COLOR_X, 0.0390, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
@@ -5137,7 +5310,7 @@ private function WUI_CreateControls takes nothing returns nothing
     // Active (open) look: warm gold plate behind the glyph + label.
     set WUI_MenuActive = BlzCreateFrameByType("BACKDROP", "WOSMenuActive", WUI_Menu, "", 0)
     call BlzFrameSetAllPoints(WUI_MenuActive, WUI_Menu)
-    call BlzFrameSetTexture(WUI_MenuActive, "UI\\WOS\\learn-glow.tga", 0, true)
+    call BlzFrameSetTexture(WUI_MenuActive, "UI\\WOS\\learn-glow.blp", 0, true)
     call BlzFrameSetEnable(WUI_MenuActive, false)
     call BlzFrameSetVisible(WUI_MenuActive, false)
     // Checkpoint 22: gold glyph like Stats / Link / Music next to it.
@@ -5145,7 +5318,7 @@ private function WUI_CreateControls takes nothing returns nothing
     set WUI_MenuIcon = back
     call BlzFrameSetPoint(back, FRAMEPOINT_CENTER, WUI_Menu, FRAMEPOINT_CENTER, 0.00, 0.006)
     call BlzFrameSetSize(back, 0.024, 0.024)
-    call BlzFrameSetTexture(back, "UI\\WOS\\glyph-menu.tga", 0, true)
+    call BlzFrameSetTexture(back, "UI\\WOS\\glyph-menu.blp", 0, true)
     call BlzFrameSetEnable(back, false)
     set i = 0
     loop
@@ -5176,7 +5349,7 @@ private function WUI_CreateControls takes nothing returns nothing
     call WUI_PlaceRight(WUI_StatsButton, 0.126, 0.584, 0.020, 0.017)
     set back = BlzCreateFrameByType("BACKDROP", "WOSTopStatsIcon", WUI_StatsButton, "", 0)
     call BlzFrameSetAllPoints(back, WUI_StatsButton)
-    call BlzFrameSetTexture(back, "UI\\WOS\\glyph-stats.tga", 0, true)
+    call BlzFrameSetTexture(back, "UI\\WOS\\glyph-stats.blp", 0, true)
     call BlzFrameSetEnable(back, false)
     // The F2 badge is the rebindable hotkey badge (Scoreboard registers it).
     call WUI_TooltipBelowLeft(WUI_StatsButton, "|cffd5b876STATISTICS|r|nDamage, healing and items of every player.")
@@ -5210,7 +5383,7 @@ private function WUI_CreateControls takes nothing returns nothing
             call WUI_Place(WUI_MenuSkin[i], WUI_ScreenRight() - 0.090, WUI_MenuRowY(i), 0.160, 0.0200)
             call BlzFrameSetLevel(WUI_MenuSkin[i], 8)
             // Each row is a separate bevelled button (8:1 art, no stretching).
-            call BlzFrameSetTexture(BlzGetFrameByName("WOSNativeMenuSkinEdge", 9080 + i), "UI\\WOS\\menu-row.tga", 0, true)
+            call BlzFrameSetTexture(BlzGetFrameByName("WOSNativeMenuSkinEdge", 9080 + i), "UI\\WOS\\menu-row.blp", 0, true)
             set WUI_MenuSkinFill[i] = BlzGetFrameByName("WOSNativeMenuSkinFill", 9080 + i)
             set WUI_MenuSkinText[i] = BlzGetFrameByName("WOSNativeMenuSkinText", 9080 + i)
             set text = WUI_MenuSkinText[i]
@@ -5231,7 +5404,7 @@ private function WUI_CreateControls takes nothing returns nothing
         call BlzFrameSetEnable(WUI_MenuSkinF[i], false)
         set label = BlzCreateFrameByType("BACKDROP", "WOSMenuSkinFrameEdge", WUI_MenuSkinF[i], "", i)
         call BlzFrameSetAllPoints(label, WUI_MenuSkinF[i])
-        call BlzFrameSetTexture(label, "UI\\WOS\\menu-row.tga", 0, true)
+        call BlzFrameSetTexture(label, "UI\\WOS\\menu-row.blp", 0, true)
         call BlzFrameSetEnable(label, false)
         set label = BlzCreateFrameByType("TEXT", "WOSMenuSkinFrameText", WUI_MenuSkinF[i], "", i)
         call BlzFrameSetAllPoints(label, WUI_MenuSkinF[i])
@@ -5473,7 +5646,7 @@ private function WUI_CreateTestHelp takes nothing returns nothing
     call WUI_Place(WUI_TestPanel, WUI_ScreenRight() - 0.100, 0.3245, 0.188, 0.205)
     set back = WUI_Panel("WOSTestHelpBack", WUI_TestPanel, 0.188, 0.205)
     call BlzFrameSetAllPoints(back, WUI_TestPanel)
-    call BlzFrameSetTexture(back, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetTexture(back, "UI\\WOS\\panel-soft.blp", 0, true)
     call BlzFrameSetEnable(back, false)
     // Checkpoint 26b: quiet divider edge like the top actions block.
     call WUI_MinimalEdge(WUI_TestPanel)
@@ -5645,15 +5818,15 @@ private function WUI_InfoShowPage takes nothing returns nothing
     endloop
     if WUI_InfoPage == 0 then
         call BlzFrameSetText(WUI_InfoTitle, WUI_GOLD + "ELEMENTS|r")
-        call WUI_InfoRow(0, WUI_InfoSourceIcon(-101), "Fire  |cff7caefa[MAGIC]|r", "40 magic damage per second for 5 s.")
-        call WUI_InfoRow(1, WUI_InfoSourceIcon(-102), "Water  |cff7caefa[MAGIC]|r", "100 magic damage on hit and 10% slow for 5 s.")
-        call WUI_InfoRow(2, WUI_InfoSourceIcon(-103), "Lightning", "no damage: after 5 s a 0.6 s stun and 120 mana burned.")
-        call WUI_InfoRow(3, "UI\\WOS\\toolbar-chat.tga", "Debuff refresh", "Items: one refresh per debuff. Abilities and Fire: unlimited.")
+        call WUI_InfoRow(0, WUI_InfoSourceIcon(-101), "Fire  |cff7caefa[MAGIC]|r", I2S(R2I(ErzaFire_DamageBase)) + " magic damage per second for " + R2SW(ErzaFire_Duration, 0, 0) + " s.")
+        call WUI_InfoRow(1, WUI_InfoSourceIcon(-102), "Water  |cff7caefa[MAGIC]|r", I2S(R2I(ErzaWater_DamageBase)) + " magic damage on hit, " + I2S(ErzaWater_Slow1) + "% slow for 2 s; lasts " + R2SW(ErzaWater_Duration, 0, 0) + " s.")
+        call WUI_InfoRow(2, WUI_InfoSourceIcon(-103), "Lightning", "no damage: after 4 s a " + R2SW(ErzaLightning_Stun, 0, 1) + " s stun and " + I2S(R2I(ErzaLightning_ManaBurnBase)) + " mana burned.")
+        call WUI_InfoRow(3, "UI\\WOS\\toolbar-chat.blp", "Debuff refresh", "Items: one refresh per debuff. Abilities and Fire: unlimited.")
     elseif WUI_InfoPage == 1 then
         call BlzFrameSetText(WUI_InfoTitle, WUI_GOLD + "ELEMENT COMBOS|r")
-        call WUI_InfoRow(0, WUI_InfoSourceIcon(-104), "Vape (Water + Fire)  |cff7caefa[MAGIC]|r", "1.5 x main stat magic damage, +" + R2SW(ErzaWape_IncreaseDmg, 0, 0) + "% physical damage taken for 8 s.")
-        call WUI_InfoRow(1, WUI_InfoSourceIcon(-105), "Overload (Lightning + Fire)  |cff7caefa[MAGIC]|r", "1.5 x main stat magic damage, 1.25 s stun (2.5 s lockout).")
-        call WUI_InfoRow(2, WUI_InfoSourceIcon(-106), "Electrized (Lightning + Water)  |cff7caefa[MAGIC]|r", "10% slow, 0.3 x main stat magic damage per second for 5 s.")
+        call WUI_InfoRow(0, WUI_InfoSourceIcon(-104), "Vape (Water + Fire)  |cff7caefa[MAGIC]|r", R2SW(ErzaWape_Damage, 0, 1) + " x main stat magic damage, +" + R2SW(ErzaWape_IncreaseDmg, 0, 0) + "% physical damage taken for 4 s.")
+        call WUI_InfoRow(1, WUI_InfoSourceIcon(-105), "Overload (Lightning + Fire)  |cff7caefa[MAGIC]|r", R2SW(ErzaOverload_Damage, 0, 1) + " x main stat magic damage, " + R2SW(ErzaOverload_Stun, 0, 1) + " s stun (4 s lockout).")
+        call WUI_InfoRow(2, WUI_InfoSourceIcon(-106), "Electrized (Lightning + Water)  |cff7caefa[MAGIC]|r", R2SW(ErzaElectrized_Damage, 0, 1) + " x main stat magic damage per second for " + R2SW(ErzaElectrized_Duration, 0, 0) + " s (Erza W also slows).")
         call WUI_InfoRow(3, "ReplaceableTextures\\CommandButtons\\BTNElem_Fire.blp", "Item effects", "Debuffs/poison cannot chain items. Exceptions: Quincy bonus and Core Drill stacks; Koko Lightning triggers Tachikaze. No self-procs.")
     elseif WUI_InfoPage == 2 then
         call BlzFrameSetText(WUI_InfoTitle, WUI_GOLD + "DESTRUCTIBLE DECOR|r")
@@ -5666,7 +5839,7 @@ private function WUI_InfoShowPage takes nothing returns nothing
         call WUI_InfoRow(0, WUI_InfoSourceIcon(-12), "Train  |cffd58cff[PURE]|r", I2S(TRAIN_PUSH_BASE_DAMAGE) + " base pure push damage; +" + I2S(TRAIN_DAMAGE_PER_ROUND) + " each next round. Every 60s; 30s during round end." + WUI_InfoCurrentDamage(TRAIN_PUSH_BASE_DAMAGE, TRAIN_DAMAGE_PER_ROUND))
         call WUI_InfoRow(1, WUI_InfoSourceIcon(-12), "Train wreck  |cffd58cff[PURE]|r", I2S(TRAIN_EXPLOSION_BASE_DAMAGE) + " base pure explosion damage in 650 range; +" + I2S(TRAIN_DAMAGE_PER_ROUND) + " each next round." + WUI_InfoCurrentDamage(TRAIN_EXPLOSION_BASE_DAMAGE, TRAIN_DAMAGE_PER_ROUND))
         call WUI_InfoRow(2, WUI_InfoSourceIcon(-14), "Time limit  |cffd58cff[PURE]|r", "Outside the circle: 1% target max HP per second; +0.5% each second, up to 15%.")
-        call WUI_InfoRow(3, "UI\\WOS\\vote-ff.tga", "-ff  |cffd5b876SURRENDER|r", "Type -ff in chat: YES to your team's surrender vote, or start one (same as the white flag).")
+        call WUI_InfoRow(3, "UI\\WOS\\vote-ff.blp", "-ff  |cffd5b876SURRENDER|r", "Type -ff in chat: YES to your team's surrender vote, or start one (same as the white flag).")
     endif
     call BlzFrameSetText(WUI_InfoPageLabel, WUI_GOLD + I2S(WUI_InfoPage + 1) + " / " + I2S(WUI_INFO_PAGES) + "|r")
 endfunction
@@ -5803,7 +5976,7 @@ private function WUI_CreateGameInfo takes nothing returns nothing
     call BlzFrameSetLevel(WUI_InfoPanel, 20)
     set part = BlzCreateFrameByType("BACKDROP", "WOSGameInfoBack", WUI_InfoPanel, "", 0)
     call BlzFrameSetAllPoints(part, WUI_InfoPanel)
-    call BlzFrameSetTexture(part, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetTexture(part, "UI\\WOS\\panel-soft.blp", 0, true)
     call BlzFrameSetEnable(part, false)
     call WUI_MinimalEdge(WUI_InfoPanel)
     set WUI_InfoTitle = BlzCreateFrameByType("TEXT", "WOSGameInfoTitle", WUI_InfoPanel, "", 0)
@@ -5953,17 +6126,17 @@ endfunction
 
 private function WUI_CreateGhostControls takes nothing returns nothing
     local framehandle part
-    set WUI_Ghost[0] = WUI_GhostIcon("WOSGhostLink", "UI\\WOS\\wos-app-link.tga", WUI_TopActionX(3), 0.584, 0.022)
-    set WUI_Ghost[1] = WUI_GhostIcon("WOSGhostMusic", "UI\\WOS\\glyph-music.tga", WUI_TopActionX(4), 0.584, 0.022)
+    set WUI_Ghost[0] = WUI_GhostIcon("WOSGhostLink", "UI\\WOS\\wos-app-link.blp", WUI_TopActionX(3), 0.584, 0.022)
+    set WUI_Ghost[1] = WUI_GhostIcon("WOSGhostMusic", "UI\\WOS\\glyph-music.blp", WUI_TopActionX(4), 0.584, 0.022)
     set WUI_Ghost[2] = BlzCreateFrameByType("BACKDROP", "WOSGhostDiscord", WUI_InfoOwner, "", 0)
     call WUI_PlaceToolbar(WUI_Ghost[2], 1, 0)
-    call BlzFrameSetTexture(WUI_Ghost[2], "UI\\WOS\\toolbar-community.tga", 0, true)
+    call BlzFrameSetTexture(WUI_Ghost[2], "UI\\WOS\\toolbar-community.blp", 0, true)
     call BlzFrameSetEnable(WUI_Ghost[2], false)
     // Inherit panel preferences without re-showing an already released ghost.
     call BlzFrameSetParent(WUI_Ghost[2], WUI_InfoOwner)
     set part = BlzCreateFrameByType("BACKDROP", "WOSGhostDiscordIcon", WUI_Ghost[2], "", 0)
     call BlzFrameSetAllPoints(part, WUI_Ghost[2])
-    call BlzFrameSetTexture(part, "UI\\WOS\\discord.tga", 0, true)
+    call BlzFrameSetTexture(part, "UI\\WOS\\discord.blp", 0, true)
     call BlzFrameSetEnable(part, false)
     set WUI_Ghost[3] = WUI_GhostText("WOSGhostHideUI", "Hide UI", WUI_TOP_ROW_X2)
     set part = null
@@ -5990,11 +6163,11 @@ private function WUI_WatchAllyColor takes nothing returns nothing
     endif
     set WUI_AllyColorState = state
     if state == 1 then
-        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor-1.tga", 0, true)
+        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor-1.blp", 0, true)
     elseif state == 2 then
-        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor-2.tga", 0, true)
+        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor-2.blp", 0, true)
     else
-        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor.tga", 0, true)
+        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor.blp", 0, true)
     endif
 endfunction
 
@@ -6167,9 +6340,6 @@ function WUI_EnterExclusiveWindow takes integer kind, player viewer returns noth
                 call BlzFrameSetVisible(WUI_WindowPart[1], false)
             endif
             if hadStats then
-                if WUI_WindowPart[3] != null then
-                    call BlzFrameSetVisible(WUI_WindowPart[3], WOS_STATS_OldHeroStatsVisible[pid] and pid < 10)
-                endif
                 if pid < 10 and FRAME_Swap[pid] != null and FRAME_Repick[pid] != null then
                     call WUI_Place(FRAME_Swap[pid], WOS_SWAP_X, WOS_SWAP_Y, 0.026, 0.026)
                     call WUI_Place(FRAME_Repick[pid], WOS_REPICK_X, WOS_SWAP_Y, 0.026, 0.026)

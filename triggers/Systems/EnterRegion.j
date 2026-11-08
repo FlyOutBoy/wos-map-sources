@@ -153,9 +153,44 @@ endfunction
 
 globals
     integer HeroUnstuckCastKey = StringHash("spell p")
+    constant integer BASE_PHASE_ABILITY = 'Aeth' // Ghost (Visible), no cast/order/invisibility
+    integer BasePhaseOwnedKey = StringHash("Base phase owned")
+    group ArenaWalkScan = null
     item HeroUnstuckProbe = null
     timer HeroUnstuckTimer = CreateTimer()
 endglobals
+
+// Shared eligibility: actual selectable combat units, never locust dummies/buildings.
+function ArenaWalkEligible takes unit u returns boolean
+    return u != null and GetUnitTypeId(u) != 0 and GetWidgetLife(u) > 0.405 and not IsUnitHidden(u) and BlzIsUnitSelectable(u) and GetUnitAbilityLevel(u,'Aloc') == 0 and not IsUnitType(u,UNIT_TYPE_STRUCTURE) and not IsUnitType(u,UNIT_TYPE_FLYING) and CheckCoordsInRect(gg_rct_Arena,GetUnitX(u),GetUnitY(u))
+endfunction
+
+function BasePhaseEligible takes unit u returns boolean
+    return u != null and GetUnitTypeId(u) != 0 and GetWidgetLife(u) > 0.405 and not IsUnitHidden(u) and BlzIsUnitSelectable(u) and GetUnitAbilityLevel(u,'Aloc') == 0 and not IsUnitType(u,UNIT_TYPE_STRUCTURE) and not IsUnitType(u,UNIT_TYPE_FLYING) and CheckCoordsInRect(gg_rct_Base,GetUnitX(u),GetUnitY(u))
+endfunction
+
+function BasePhaseApply takes unit u returns nothing
+    if BasePhaseEligible(u) and GetUnitAbilityLevel(u,BASE_PHASE_ABILITY) == 0 then
+        if UnitAddAbility(u,BASE_PHASE_ABILITY) then
+            call UnitMakeAbilityPermanent(u,true,BASE_PHASE_ABILITY)
+            call SaveBoolean(hs,GetHandleId(u),BasePhaseOwnedKey,true)
+        endif
+    endif
+endfunction
+
+function BasePhaseEnter takes nothing returns nothing
+    call BasePhaseApply(GetTriggerUnit())
+endfunction
+
+function BasePhaseLeave takes nothing returns nothing
+    local unit u = GetTriggerUnit()
+    // Clear copied Aeth too: clones can inherit it without our ownership marker.
+    if GetUnitAbilityLevel(u,BASE_PHASE_ABILITY) > 0 then
+        call UnitRemoveAbility(u,BASE_PHASE_ABILITY)
+    endif
+    call RemoveSavedBoolean(hs,GetHandleId(u),BasePhaseOwnedKey)
+    set u = null
+endfunction
 
 function HeroUnstuck_Point takes real x, real y returns boolean
     local boolean valid
@@ -181,7 +216,7 @@ function HeroUnstuck_Unit takes unit u returns nothing
     local real nx
     local real ny
     local integer ray
-    if u == null or GetUnitTypeId(u) == 0 or GetWidgetLife(u) <= 0.405 or IsUnitHidden(u) or IsUnitPaused(u) or IsUnitType(u,UNIT_TYPE_FLYING) or GetUnitFlyHeight(u) > 50.0 or LoadInteger(hs,GetHandleId(u),HeroUnstuckCastKey) > 0 then
+    if not ArenaWalkEligible(u) or IsUnitPaused(u) or IsUnitType(u,UNIT_TYPE_FLYING) or GetUnitFlyHeight(u) > 50.0 or LoadInteger(hs,GetHandleId(u),HeroUnstuckCastKey) > 0 then
         return
     endif
     set x = GetUnitX(u)
@@ -210,20 +245,29 @@ function HeroUnstuck_Unit takes unit u returns nothing
 endfunction
 
 function HeroUnstuck_Tick takes nothing returns nothing
-    local integer i = 0
+    local unit u
+    // Reuse one group/clock: base phasing first, arena-only unstuck second.
+    call GroupEnumUnitsInRect(ArenaWalkScan,gg_rct_Base,null)
     loop
-        exitwhen i >= 10
-        call HeroUnstuck_Unit(Hero[i])
-        set i = i+1
+        set u = FirstOfGroup(ArenaWalkScan)
+        exitwhen u == null
+        call GroupRemoveUnit(ArenaWalkScan,u)
+        call BasePhaseApply(u)
     endloop
-    if TestMode then
-        if TestUnit != null and TestUnit != Hero[TestUnitPlayerId] then
-            call HeroUnstuck_Unit(TestUnit)
+    call GroupEnumUnitsInRect(ArenaWalkScan,gg_rct_Arena,null)
+    loop
+        set u = FirstOfGroup(ArenaWalkScan)
+        exitwhen u == null
+        call GroupRemoveUnit(ArenaWalkScan,u)
+        if ArenaWalkEligible(u) then
+            if GetUnitAbilityLevel(u,BASE_PHASE_ABILITY) > 0 then
+                call UnitRemoveAbility(u,BASE_PHASE_ABILITY)
+                call RemoveSavedBoolean(hs,GetHandleId(u),BasePhaseOwnedKey)
+            endif
+            call HeroUnstuck_Unit(u)
         endif
-        if TestAllyUnit != null and TestAllyUnit != Hero[TestAllyUnitPlayerId] then
-            call HeroUnstuck_Unit(TestAllyUnit)
-        endif
-    endif
+    endloop
+    set u = null
 endfunction
 
 //===========================================================================
@@ -233,6 +277,16 @@ local trigger ar1 = CreateTrigger(  )
 local trigger ar2 = CreateTrigger(  )
 local trigger ar3 = CreateTrigger(  )
 local trigger ar4 = CreateTrigger(  )
+local trigger phaseEnter = CreateTrigger()
+local trigger phaseLeave = CreateTrigger()
+local trigger phaseArena = CreateTrigger()
+set ArenaWalkScan = CreateGroup()
+call TriggerRegisterEnterRectSimple(phaseEnter,gg_rct_Base)
+call TriggerAddAction(phaseEnter,function BasePhaseEnter)
+call TriggerRegisterLeaveRectSimple(phaseLeave,gg_rct_Base)
+call TriggerAddAction(phaseLeave,function BasePhaseLeave)
+call TriggerRegisterEnterRectSimple(phaseArena,gg_rct_Arena)
+call TriggerAddAction(phaseArena,function BasePhaseLeave)
 set HeroUnstuckProbe = CreateItem('wolg',GetRectCenterX(gg_rct_Caster),GetRectCenterY(gg_rct_Caster))
 call SetItemVisible(HeroUnstuckProbe,false)
 call SetItemInvulnerable(HeroUnstuckProbe,true)
@@ -261,4 +315,7 @@ call TriggerRegisterEnterRectSimple( t1, gg_rct_Go2 )
     call TriggerAddCondition( gg_trg_EnterRegion, Condition( function Trig_EnterRegion_Conditions ) )
     call TriggerAddAction( gg_trg_EnterRegion, function Trig_EnterRegion_Actions )
 set t1 = null
+set phaseEnter = null
+set phaseLeave = null
+set phaseArena = null
 endfunction

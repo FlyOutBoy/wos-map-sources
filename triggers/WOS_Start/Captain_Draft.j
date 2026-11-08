@@ -659,21 +659,21 @@ function CaptainDraft_UpdateControls takes nothing returns nothing
     call BlzFrameSetEnable(FRAME_ICON_Pick[2], false)
     call BlzFrameSetEnable(FRAME_ICON_Pick[3], false)
     call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
-    call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-off.tga", 0, true)
-    call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
+    call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-off.blp", 0, true)
+    call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.blp", 0, true)
     call BlzFrameSetVisible(FRAME_Pick[2], CaptainDraftStage == 2)
     call BlzFrameSetVisible(FRAME_Pick[3], false)
     call BlzFrameSetVisible(FRAME_Pick[4], CaptainDraftStage == 1)
 
     if activePid >= 0 and GetLocalPlayer() == Player(activePid) then
         if CaptainDraftStage == 1 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban.blp", 0, true)
             call BlzFrameSetEnable(FRAME_Pick[4], true)
             call BlzFrameSetEnable(FRAME_ICON_Pick[4], true)
         else
             call BlzFrameSetEnable(FRAME_Pick[2], true)
             call BlzFrameSetEnable(FRAME_ICON_Pick[2], true)
-            call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm.blp", 0, true)
         endif
     endif
 
@@ -780,7 +780,7 @@ function CaptainDraft_CreateUI takes nothing returns nothing
     // Log plate (same look as the timer plate), above the franchise logos.
     set CaptainDraftLogPlate = BlzCreateFrameByType("BACKDROP", "CaptainDraftLogPlate", FRAME_MAIN, "", 0)
     call WUI_Place(CaptainDraftLogPlate, 0.180, 0.5245, 0.150, 0.022)
-    call BlzFrameSetTexture(CaptainDraftLogPlate, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetTexture(CaptainDraftLogPlate, "UI\\WOS\\panel-soft.blp", 0, true)
     call BlzFrameSetEnable(CaptainDraftLogPlate, false)
     call BlzFrameSetLevel(CaptainDraftLogPlate, 6)
     set tooltip = WUI_GoldFrame("CaptainDraftLogEdge", CaptainDraftLogPlate, 0.0030, 0.0070)

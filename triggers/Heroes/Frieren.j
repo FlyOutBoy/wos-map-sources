@@ -48,6 +48,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real FrierenW2_Range = 1800.00
         real FrierenW2_Speed = 850.00
         integer FrierenW2_MaxHits = 5
+        real FrierenW2_GrowTime = 0.5 // the orb forms first, no damage until it is grown
+        real FrierenW2_HitWindow = 0.62 // was 0.5: one hit per target per window
         private hashtable FrierenW2_Hits = InitHashtable()
         real FrierenW_DamageIntBase = 1 // base number x Str damage for 1 level
         real FrierenW_DamageIntStep = 1 // additional number x Str damage for each next level
@@ -106,6 +108,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         integer FrierenG_BuffID3 = 'B02X'
         integer FrierenG_SpellID = 'A0GJ'
         real FrierenG_Duration = 2.5 // duration of raienryuu mode
+        real FrierenG_ShieldDuration = 2.0 // barrier buff A0GJ levels 1-3 (object data), tooltip only
         real FrierenG_DamageAoe = 450
 //---------------F ability-----------------------------------------------------
         integer FrierenF_ID = 'A0GW'
@@ -1155,8 +1158,10 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                     set r3 = I2R(R2I((r3 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r4 = I2R(R2I((r4 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r5 = I2R(R2I((r5 + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    set r6 = RoundReal(r6 + 0.03, 3)
-                    set rr1 = RMinBJ(1.0, r / 0.75)
+                    if r > FrierenW2_GrowTime then
+                        set r6 = RoundReal(r6 + 0.03, 3)
+                    endif
+                    set rr1 = RMinBJ(1.0, r / FrierenW2_GrowTime)
                     set aoe = FrierenW2_DamageAoe * sizeMultiplier * (0.35 + 0.65 * rr1)
                     call BlzSetSpecialEffectScale(e, (0.01 + 2.44 * rr1) * orbVisualMultiplier)
                     call BlzSetSpecialEffectPosition(e, x, y, 265)
@@ -1202,11 +1207,11 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                    //call EffectSpawn2("war3mapimported\\wos_Naruto_Effect_DaiTu_ShenWei.mdl", x, y, GetRandomReal(0, 359), 0.65, 3, 275,0.5)
                    // call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_BY_Wood_Effect_Void_KaKaXi_ShenWei_FangChu.mdl", x, y, GetRandomReal(0, 359), 0.65, 2.75, 275, 255, 255, 255, 255))
                     endif
-                    if r6 >= 0.5 then
+                    if r6 + 0.001 >= FrierenW2_HitWindow then
                         set r6 = 0
                         call GroupClear(g2)
                     endif
-                    if r5 >= 0.1 then
+                    if r5 >= 0.1 and r + 0.001 >= FrierenW2_GrowTime then
                         set r5 = 0.00
                         call DecorRemove(c, x, y, aoe, 50)
                         call GroupClear(g)

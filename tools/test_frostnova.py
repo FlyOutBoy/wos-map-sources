@@ -169,6 +169,7 @@ class FrostnovaTests(unittest.TestCase):
         vm.run('Frostnova_Register',(self.c,))
         self.e_duration=vm.g['FrostnovaE_Duration']
         self.e_finish_ticks=math.ceil((self.e_duration+vm.g['FrostnovaE_Preparation'])/.03)
+        self.e_prep_ticks=math.ceil(round(vm.g['FrostnovaE_Preparation']/.03,6))
 
     def timer_start(self,t,period,repeating,callback):
         t.remaining=period;t.callback=callback;t.running=True
@@ -417,7 +418,7 @@ class FrostnovaTests(unittest.TestCase):
     def test_frost_burst_survives_creation_frame(self):
         self.vm.run('FrostnovaE_Start', (self.c,))
         field = self.state(key=2)
-        self.ticks(25)
+        self.ticks(self.e_prep_ticks)
         effect = field.burst
         self.assertEqual(self.vm.g['FrostnovaE_BurstDuration'], field.burstTime)
         self.assertIn(id(effect), self.vm.effects)
@@ -521,7 +522,7 @@ class FrostnovaTests(unittest.TestCase):
     def test_tw_releases_only_invulnerability_it_added(self):
         self.vm.run('FrostnovaT_Start',(self.c,))
         self.vm.run('FrostnovaW_Start',(self.c,1200,0))
-        self.assertIn('Avul',self.c.abilities)
+        self.assertNotIn('Avul',self.c.abilities)  # 2026-11-04: TW is no longer invulnerable
         self.ticks(20)
         self.assertNotIn('Avul',self.c.abilities)
         self.vm.add_ability(self.c,'Avul')
@@ -545,7 +546,7 @@ class FrostnovaTests(unittest.TestCase):
 
     def test_e_separate_buffs_refresh_inside_then_expire_after_exit(self):
         target=self.enemy(300)
-        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(26)
+        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(self.e_prep_ticks+1)
         resist=self.vm.g['FrostnovaE_ResistBuffID'];cut=self.vm.g['FrostnovaE_HealCutBuffID']
         self.assertIn(resist,self.c.abilities)
         self.assertIn(cut,target.abilities)
@@ -562,7 +563,7 @@ class FrostnovaTests(unittest.TestCase):
 
     def test_te_attached_aura_damages_near_moving_caster_and_cleans(self):
         self.vm.run('FrostnovaT_Start',(self.c,))
-        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(26)
+        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(self.e_prep_ticks+1)
         field=self.state(key=2);aura=field.aura
         self.assertIn(id(aura),self.vm.effects)
         self.assertEqual('war3mapImported\\wos_Frostnova_TE_Aura.mdx',aura.model)
@@ -571,12 +572,12 @@ class FrostnovaTests(unittest.TestCase):
         self.c.x=2000
         target=self.enemy(2000+self.vm.g['FrostnovaTE_Aoe']-10)
         outside=self.enemy(2000+self.vm.g['FrostnovaTE_Aoe']+10)
-        self.ticks(self.e_finish_ticks-25)
+        self.ticks(self.e_finish_ticks-self.e_prep_ticks)
         self.assertEqual(int(self.e_duration),len([d for d in self.vm.damage if d[1] is target and d[2]==50 and d[3]==self.vm.g['FrostnovaE_ID']]))
         self.assertFalse(any(d[1] is outside for d in self.vm.damage))
         self.assertEqual(0,self.state(key=2))
         self.assertNotIn(id(aura),self.vm.effects)
-        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(26)
+        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(self.e_prep_ticks+1)
         field=self.state(key=2);aura=field.aura
         self.c.life=0;self.ticks(1)
         self.assertIsNone(field.aura)
@@ -586,7 +587,7 @@ class FrostnovaTests(unittest.TestCase):
 
     def test_e_has_one_burst_ring_and_preserves_saved_field_art(self):
         self.enemy(100)
-        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(25)
+        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(self.e_prep_ticks)
         field=self.state(key=2);art=field.art;ground=field.art2
         self.assertEqual(self.vm.g['FrostnovaE_ModelScale'],art.scale)
         spikes=lambda:[e for e in self.vm.effect_history if 'wos_Frostnova_a (81)' in e.model]
@@ -595,7 +596,7 @@ class FrostnovaTests(unittest.TestCase):
         self.assertIs(art,field.art)
         self.assertIn(id(art),self.vm.effects)
         self.assertIn(id(ground),self.vm.effects)
-        self.ticks(self.e_finish_ticks-51)
+        self.ticks(self.e_finish_ticks-self.e_prep_ticks-26)
         self.assertEqual(8,len(spikes()))
         self.assertEqual(int(self.e_duration)+1,len(self.vm.damage))
         self.assertEqual(0,self.state(key=2))
@@ -640,7 +641,7 @@ class FrostnovaTests(unittest.TestCase):
 
     def test_e_damage_is_applied_on_the_same_tick_as_initial_push(self):
         target=self.enemy(200)
-        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(24)
+        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(self.e_prep_ticks-1)
         self.assertEqual([],self.vm.damage);self.assertEqual([],self.vm.pulls)
         self.ticks(1)
         self.assertEqual([target],[d[1] for d in self.vm.damage])
@@ -1022,7 +1023,7 @@ class FrostnovaTests(unittest.TestCase):
         for rank in range(1,6):
             self.c.abilities[vm.g['FrostnovaE_ID']]['level']=rank
             start=len(vm.damage);before=len(self.decor)
-            vm.run('FrostnovaE_Start',(self.c,));self.ticks(25)
+            vm.run('FrostnovaE_Start',(self.c,));self.ticks(self.e_prep_ticks)
             self.assertEqual((rank+1)*100,vm.damage[start][2])
             self.assertEqual(before+1,len(self.decor))
             self.assertEqual((vm.g['FrostnovaE_Aoe'],50.),self.decor[-1][-2:])
@@ -1043,13 +1044,13 @@ class FrostnovaTests(unittest.TestCase):
 
     def test_te_placeholder_attaches_refreshes_and_cleans_with_aura(self):
         self.vm.run('FrostnovaT_Start',(self.c,))
-        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(25)
+        self.vm.run('FrostnovaE_Start',(self.c,));self.ticks(self.e_prep_ticks)
         field=self.state(key=2);area=field.area
         self.assertEqual(self.vm.g['FrostnovaTE_AreaModel'],area.model)
         self.assertIn(id(area),self.vm.effects)
         self.vm.run('FrostnovaE_Start',(self.c,))
         self.assertNotIn(id(area),self.vm.effects)
-        self.ticks(25);area=field.area
+        self.ticks(self.e_prep_ticks);area=field.area
         self.c.life=0;self.ticks(1)
         self.assertIsNone(field.area);self.assertNotIn(id(area),self.vm.effects)
 
@@ -1065,7 +1066,7 @@ class FrostnovaTests(unittest.TestCase):
         vm.g['BlzSetSpecialEffectScale']=scale_world
         vm.run('FrostnovaT_Start',(self.c,))
         for _ in range(4):
-            vm.run('FrostnovaE_Start',(self.c,));self.ticks(25)
+            vm.run('FrostnovaE_Start',(self.c,));self.ticks(self.e_prep_ticks)
             field=self.state(key=2);area=field.area
             self.assertEqual('stand',area.animation)
             self.assertIsNone(area.scale)
@@ -1305,7 +1306,7 @@ class FrostnovaTests(unittest.TestCase):
     def test_e_preparation_then_saved_duration_and_r_formation(self):
         self.enemy(100)
         self.vm.run('FrostnovaE_Start',(self.c,))
-        self.ticks(24)
+        self.ticks(self.e_prep_ticks-1)
         self.assertTrue(self.c.paused)
         self.assertEqual([],self.vm.damage)
         self.assertIsNone(self.state(key=2).art)
@@ -1313,7 +1314,7 @@ class FrostnovaTests(unittest.TestCase):
         self.assertFalse(self.c.paused)
         self.assertEqual(['E','E2','E3','E4'],self.sounds)
         self.assertEqual(self.e_duration,self.state(key=2).remaining)
-        self.ticks(self.e_finish_ticks-25)
+        self.ticks(self.e_finish_ticks-self.e_prep_ticks)
         self.assertEqual(int(self.e_duration)+1,len(self.vm.damage))
         self.assertEqual(0,self.state(key=2))
         self.sounds.clear();self.vm.damage.clear()

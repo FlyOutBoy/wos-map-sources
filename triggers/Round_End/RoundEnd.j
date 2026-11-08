@@ -9,7 +9,9 @@ library RoundSpells uses GearSystems, EnvironmentRoundRules, optional DamageStat
         local real before = GetWidgetLife(target)
         call SetHpCurrent(target,-damage)
         static if LIBRARY_DamageStats then
-            call DamageStatsRecordDirect(source,target,sourceId,RMaxBJ(0.0,before-GetWidgetLife(target)))
+            static if DAMAGE_STATS_ENABLED then
+                call DamageStatsRecordDirect(source,target,sourceId,RMaxBJ(0.0,before-GetWidgetLife(target)))
+            endif
         endif
     endfunction
 

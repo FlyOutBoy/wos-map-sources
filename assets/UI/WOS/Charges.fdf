@@ -6,7 +6,7 @@ Frame "SIMPLEFRAME" "TasAbilityChargeBox" {
             Anchor BOTTOMRIGHT, 0.001,-0.001,
             Width 0.012,
             Height 0.012,
-            File "UI\WOS\button.tga",
+            File "UI\WOS\button.blp",
             AlphaMode "BLEND",
         }
         String "TasAbilityChargeBoxText" {

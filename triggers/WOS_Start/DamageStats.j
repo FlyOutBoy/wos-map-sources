@@ -2,18 +2,18 @@
 library DamageStats initializer DS_Init requires WOSUI, GearSystems, heroicon
 globals
     // MAIN SWITCH: false = damage stats window and per-hit recording are off in every mode
-    // except Test (turned on by WOS_SelectMode when Test mode is picked). Mechanics are unaffected.
-    constant boolean DAMAGE_STATS_ENABLED = true
-    // Runtime state used by every recording/UI path (the constant only seeds it).
+    // including TestMode. true restores the whole feature after rebuilding the map.
+    constant boolean DAMAGE_STATS_ENABLED = false
+    // Runtime recording state; it cannot override the master switch.
     boolean DamageStatsActive = DAMAGE_STATS_ENABLED
     // Pages 0..3 dealt, 4..7 taken: Round / Game (F3/F4 counter) / real game totals (hidden) / Previous.
     // Set by DmgSys right before DamageStatsRecordHitFrom: 1 magical, 2 physical/attack, 0 unknown.
     integer DamageStatsHitKind = 0
-    private hashtable DS_Data = InitHashtable()
+    private hashtable DS_Data = null
     // Shared numeric identities: Taken keeps (source, owner, unit type) distinct.
-    private hashtable DS_Origins = InitHashtable()
-    private hashtable DS_Actors = InitHashtable()
-    private hashtable DS_TakenKeys = InitHashtable()
+    private hashtable DS_Origins = null
+    private hashtable DS_Actors = null
+    private hashtable DS_TakenKeys = null
     private integer DS_ActorCount = 0
     private integer DS_OriginCount = 0
     private integer array DS_Count
@@ -43,7 +43,7 @@ globals
     // Per bucket physical / magical share (bar colour in expanded views).
     private real array DS_Phys
     // Last known damage kind per source id (1 magical, 2 physical) for number colours.
-    private hashtable DS_SourceKind = InitHashtable()
+    private hashtable DS_SourceKind = null
     private real array DS_Mag
     private string array DS_RowFillTex
     private framehandle array DS_GameTip
@@ -58,7 +58,7 @@ globals
     private real DS_SmallHeight = -1.0
     private real DS_LargeHeight = -1.0
     private trigger DS_KeyTrigger
-    private timer DS_PollTimer = CreateTimer()
+    private timer DS_PollTimer = null
     private integer DS_Direction = 0
     private integer DS_TabPage = -1
     private integer DS_TabDirection = -1
@@ -91,9 +91,9 @@ globals
     private integer array DS_Order
     private integer array DS_SourceOrder
     private integer array DS_Recent
-    private hashtable DS_Keys = InitHashtable()
+    private hashtable DS_Keys = null
     private trigger DS_ClickTrigger
-    private timer DS_Timer = CreateTimer()
+    private timer DS_Timer = null
     private integer DS_BuildRow = 0
     private integer DS_Page = 0
     private integer DS_Selected = -1
@@ -115,17 +115,18 @@ globals
     // Existing .50 clock: ten ticks between damage-only redraws. UI actions force refresh.
     private integer DS_DamageTicks = 0
     // Hit buffer: a hit adds to one pending sum per player and direction (pb 0..9 dealt,
-    // 10..19 taken). Every 5 s (synced DS_Tick) the sums fold into Round/Game/Session.
+    // 10..19 taken). Bounded .50 s slices fold sums into Round/Game/Session.
     private constant integer DS_PEND_CAP = 400
-    private hashtable DS_Pend = InitHashtable()
+    private hashtable DS_Pend = null
     private integer array DS_PendSrc
     private integer array DS_PendCount
     private real array DS_PendTotal
     private real array DS_PendMag
     private real array DS_PendPhys
-    private integer array DS_PendList
     private integer DS_PendDirty = 0
-    private integer DS_FlushTicks = 10
+    private integer DS_PendCursor = 0
+    private integer array DS_PendHead
+    private constant integer DS_FOLD_BUDGET = 16
     // Sort keys copied out of the hashtable once per sort.
     private real array DS_SortValue
     // Last frame text colour per source cell (kind+1, 0 = never set).
@@ -254,48 +255,65 @@ private function DS_FoldTotals takes integer bucket, integer pb returns nothing
     set DS_Phys[bucket] = DS_Phys[bucket]+DS_PendPhys[pb]
 endfunction
 
-// Synced: folds every pending sum into its Round / Game / Session buckets.
-// Called by DS_Tick every 5 s and before any bucket is cleared, copied or rolled over.
-function DamageStatsFlush takes nothing returns nothing
-    local integer n = 0
-    local integer pb
-    local integer bucket
-    local integer i
+// Drain at most limit distinct sources from one FIFO bucket. Hits can safely
+// arrive between slices: consumed keys are removed before they can be queued again.
+private function DS_DrainBucket takes integer pb, integer limit returns integer
+    local integer bucket = pb
+    local integer used = 0
     local integer sourceId
     local real amount
-    if DS_PendDirty == 0 then
-        return
+    if DS_PendCount[pb] == 0 then
+        return 0
     endif
+    if pb >= 10 then
+        set bucket = pb+30
+    endif
+    call DS_FoldTotals(bucket,pb)
+    call DS_FoldTotals(bucket+10,pb)
+    call DS_FoldTotals(bucket+20,pb)
+    set DS_PendTotal[pb] = 0.0
+    set DS_PendMag[pb] = 0.0
+    set DS_PendPhys[pb] = 0.0
     loop
-        exitwhen n >= DS_PendDirty
-        set pb = DS_PendList[n]
-        set bucket = pb
-        if pb >= 10 then
-            set bucket = pb+30
-        endif
-        set i = 0
-        loop
-            exitwhen i >= DS_PendCount[pb]
-            set sourceId = DS_PendSrc[pb*DS_PEND_CAP+i]
-            set amount = LoadReal(DS_Pend,pb,sourceId)
-            set DS_Sequence = DS_Sequence+1
-            call DS_FoldSource(bucket,sourceId,amount)
-            call DS_FoldSource(bucket+10,sourceId,amount)
-            call DS_FoldSource(bucket+20,sourceId,amount)
-            set i = i+1
-        endloop
-        call DS_FoldTotals(bucket,pb)
-        call DS_FoldTotals(bucket+10,pb)
-        call DS_FoldTotals(bucket+20,pb)
-        call FlushChildHashtable(DS_Pend,pb)
-        set DS_PendCount[pb] = 0
-        set DS_PendTotal[pb] = 0.0
-        set DS_PendMag[pb] = 0.0
-        set DS_PendPhys[pb] = 0.0
-        set n = n+1
+        exitwhen used >= limit or DS_PendCount[pb] == 0
+        set sourceId = DS_PendSrc[pb*DS_PEND_CAP+DS_PendHead[pb]]
+        set amount = LoadReal(DS_Pend,pb,sourceId)
+        call RemoveSavedReal(DS_Pend,pb,sourceId)
+        set DS_PendHead[pb] = ModuloInteger(DS_PendHead[pb]+1,DS_PEND_CAP)
+        set DS_PendCount[pb] = DS_PendCount[pb]-1
+        set DS_Sequence = DS_Sequence+1
+        call DS_FoldSource(bucket,sourceId,amount)
+        call DS_FoldSource(bucket+10,sourceId,amount)
+        call DS_FoldSource(bucket+20,sourceId,amount)
+        set used = used+1
     endloop
-    set DS_PendDirty = 0
+    if DS_PendCount[pb] == 0 then
+        set DS_PendDirty = DS_PendDirty-1
+    endif
     set DS_Version = DS_Version+1
+    return used
+endfunction
+
+// Normal .50 s tick: bounded work, rotating across all players/directions.
+private function DS_DrainSlice takes nothing returns nothing
+    local integer scanned = 0
+    local integer remaining = DS_FOLD_BUDGET
+    loop
+        exitwhen remaining <= 0 or scanned >= 20 or DS_PendDirty == 0
+        set remaining = remaining-DS_DrainBucket(DS_PendCursor,remaining)
+        set DS_PendCursor = ModuloInteger(DS_PendCursor+1,20)
+        set scanned = scanned+1
+    endloop
+endfunction
+
+// Exact boundary snapshots only: F3/F4 and round rollover must include every hit.
+function DamageStatsFlush takes nothing returns nothing
+    local integer pb = 0
+    loop
+        exitwhen pb >= 20 or DS_PendDirty == 0
+        call DS_DrainBucket(pb,DS_PEND_CAP)
+        set pb = pb+1
+    endloop
 endfunction
 
 // Per hit: one read and one write of the pending sum; no strings, frames or handles.
@@ -303,13 +321,13 @@ private function DS_Pending takes integer pb, integer sourceId, real amount retu
     local real old = LoadReal(DS_Pend,pb,sourceId)
     if old <= 0.0 then
         if DS_PendCount[pb] >= DS_PEND_CAP then
-            call DamageStatsFlush()
+            // Overflow frees one FIFO entry, never flushes every player.
+            call DS_DrainBucket(pb,1)
         endif
         if DS_PendCount[pb] == 0 then
-            set DS_PendList[DS_PendDirty] = pb
             set DS_PendDirty = DS_PendDirty+1
         endif
-        set DS_PendSrc[pb*DS_PEND_CAP+DS_PendCount[pb]] = sourceId
+        set DS_PendSrc[pb*DS_PEND_CAP+ModuloInteger(DS_PendHead[pb]+DS_PendCount[pb],DS_PEND_CAP)] = sourceId
         set DS_PendCount[pb] = DS_PendCount[pb]+1
         set old = 0.0
     endif
@@ -327,7 +345,7 @@ endfunction
 
 // Shared damage path: numeric values only, no strings, frames or per-hit handles.
 function DamageStatsRecord takes integer pid, integer sourceId, real amount returns nothing
-    if not DamageStatsActive or pid < 0 or pid >= 10 or amount <= 0.0 then
+    if not DAMAGE_STATS_ENABLED or not DamageStatsActive or pid < 0 or pid >= 10 or amount <= 0.0 then
         return
     endif
     if sourceId == 0 then
@@ -338,7 +356,7 @@ endfunction
 
 // Incoming damage has independent buckets; neutral attackers can still hurt a player.
 function DamageStatsRecordTaken takes integer pid, integer sourceId, real amount returns nothing
-    if not DamageStatsActive or pid < 0 or pid >= 10 or amount <= 0.0 then
+    if not DAMAGE_STATS_ENABLED or not DamageStatsActive or pid < 0 or pid >= 10 or amount <= 0.0 then
         return
     endif
     if sourceId == 0 then
@@ -354,7 +372,7 @@ function DamageStatsRecordHitFrom takes unit source, integer attacker, integer v
     local real tracked = I2R(R2I(amount))
     local real bonus = tracked*RMaxBJ(0.0,RMinBJ(1.0,quincyShare))
     local real base = tracked-bonus
-    if not DamageStatsActive or tracked <= 0.0 then
+    if not DAMAGE_STATS_ENABLED or not DamageStatsActive or tracked <= 0.0 then
         return
     endif
     if sourceId == 0 then
@@ -385,7 +403,7 @@ endfunction
 // Direct HP hazards bypass EVENT_PLAYER_UNIT_DAMAGED. Observe the actual HP loss.
 function DamageStatsRecordDirect takes unit source, unit target, integer sourceId, real amount returns nothing
     local integer owner = 24
-    if not DamageStatsActive or amount <= 0.0 or not IsUnitType(target,UNIT_TYPE_HERO) or IsUnitIllusion(target) then
+    if not DAMAGE_STATS_ENABLED or not DamageStatsActive or amount <= 0.0 or not IsUnitType(target,UNIT_TYPE_HERO) or IsUnitIllusion(target) then
         return
     endif
     if source != null then
@@ -424,7 +442,7 @@ endfunction
 // is the player's counter. Clear empties it; Load restores the real game totals
 // that are always recorded in the hidden page 2. Round and Previous are untouched.
 function DamageStatsClear takes integer pid returns nothing
-    if DamageStatsActive and pid >= 0 and pid < 10 then
+    if DAMAGE_STATS_ENABLED and DamageStatsActive and pid >= 0 and pid < 10 then
         call DamageStatsFlush()
         call DamageStatsClearBucket(10+pid)
         call DamageStatsClearBucket(50+pid)
@@ -438,7 +456,7 @@ function DamageStatsClear takes integer pid returns nothing
 endfunction
 
 function DamageStatsLoad takes integer pid returns nothing
-    if DamageStatsActive and pid >= 0 and pid < 10 then
+    if DAMAGE_STATS_ENABLED and DamageStatsActive and pid >= 0 and pid < 10 then
         call DamageStatsFlush()
         call DamageStatsCopyBucket(20+pid,10+pid)
         call DamageStatsCopyBucket(60+pid,50+pid)
@@ -453,7 +471,7 @@ endfunction
 
 function DamageStatsNextRound takes nothing returns nothing
     local integer pid = 0
-    if not DamageStatsActive then
+    if not DAMAGE_STATS_ENABLED or not DamageStatsActive then
         return
     endif
     call DamageStatsFlush()
@@ -867,7 +885,7 @@ private function DS_BuildIconCatalogue takes nothing returns nothing
     // DS_ABILITY_ICONS_END
     loop
         exitwhen pid >= 10
-        set DS_PlayerTexture[pid] = "UI\\WOS\\damage-fill-"+I2S(pid)+".tga"
+        set DS_PlayerTexture[pid] = "UI\\WOS\\damage-fill-"+I2S(pid)+".blp"
         set pid = pid+1
     endloop
 endfunction
@@ -918,7 +936,7 @@ private function DS_SourceIcon takes integer sourceId returns string
         if unitId != 0 then
             return BlzGetAbilityIcon(unitId)
         endif
-        return "UI\\WOS\\icon-attack.tga"
+        return "UI\\WOS\\icon-attack.blp"
     elseif base <= -1000000 then
         return BlzGetAbilityIcon(-base)
     endif
@@ -926,7 +944,7 @@ private function DS_SourceIcon takes integer sourceId returns string
     if icon != "" then
         return icon
     elseif base < 0 then
-        return "UI\\WOS\\icon-attack.tga"
+        return "UI\\WOS\\icon-attack.blp"
     endif
     set sourceId = base
     if HaveSavedString(DS_Keys,sourceId,2) then
@@ -1019,6 +1037,9 @@ private function DS_SourceIcon takes integer sourceId returns string
     endif
     if sourceId == 'I03X' then
         return "ReplaceableTextures\\CommandButtons\\BTNItem_SwordLostvayne.blp"
+    endif
+    if sourceId == 'I075' then // Dark Repulser
+        return "ReplaceableTextures\\CommandButtons\\BTNItem_DarkRepulser.blp"
     endif
     if sourceId == 'I03Y' then
         return "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp"
@@ -1521,20 +1542,20 @@ private function DS_RenderView takes integer view, integer count returns nothing
             set texture = DS_PlayerTexture[pid]
             if cells and not detail then
                 if DS_Mag[bucket] > DS_Phys[bucket] then
-                    set texture = "UI\\WOS\\damage-fill-1.tga" // blue: magical
+                    set texture = "UI\\WOS\\damage-fill-1.blp" // blue: magical
                 elseif DS_Phys[bucket] > 0.0 then
-                    set texture = "UI\\WOS\\damage-fill-0.tga" // red: physical
+                    set texture = "UI\\WOS\\damage-fill-0.blp" // red: physical
                 endif
             endif
             if detail and row == 0 then
                 // Summary bar: red physical part over a blue (magical) back.
-                set texture = "UI\\WOS\\damage-fill-0.tga"
-                set label = "UI\\WOS\\damage-fill-1.tga"
+                set texture = "UI\\WOS\\damage-fill-0.blp"
+                set label = "UI\\WOS\\damage-fill-1.blp"
                 if DS_Mag[bucket]+DS_Phys[bucket] <= 0.0 then
-                    set label = "UI\\WOS\\bar-back.tga"
+                    set label = "UI\\WOS\\bar-back.blp"
                 endif
             else
-                set label = "UI\\WOS\\bar-back.tga"
+                set label = "UI\\WOS\\bar-back.blp"
             endif
             if DS_RowBackTex[r] != label then
                 call BlzFrameSetTexture(DS_BarBack[r],label,0,true)
@@ -1554,12 +1575,12 @@ private function DS_RenderView takes integer view, integer count returns nothing
                 call WUI_SetValue(DS_Fill[r],DS_Phys[bucket]/RMaxBJ(0.0001,amount)*100.0)
                 call WUI_SetText(DS_Value[r],"|cffffdc85"+DS_AmountLabel(DS_Total[bucket])+"|r")
                 call WUI_SetText(DS_SubLabel[r],"|cffff6b6bPhysical "+R2SW(DS_Phys[bucket]/RMaxBJ(0.0001,amount)*100.0,1,1)+"%|r  |  |cff6bb0ffMagical "+R2SW(DS_Mag[bucket]/RMaxBJ(0.0001,amount)*100.0,1,1)+"%|r")
-                set texture = "UI\\WOS\\slot-empty.tga"
+                set texture = "UI\\WOS\\slot-empty.blp"
                 if Hero[pid] != null then
                     set texture = BlzGetAbilityIcon(GetUnitTypeId(Hero[pid]))
                 endif
                 if texture == null or texture == "" then
-                    set texture = "UI\\WOS\\slot-empty.tga"
+                    set texture = "UI\\WOS\\slot-empty.blp"
                 endif
                 if DS_RowPortrait[r] != texture then
                     call BlzFrameSetTexture(DS_Portrait[r],texture,0,false)
@@ -1589,12 +1610,12 @@ private function DS_RenderView takes integer view, integer count returns nothing
                 call WUI_SetValue(DS_Fill[r],DS_Total[bucket]/maximum*100.0)
                 call WUI_SetText(DS_Value[r],"|cffffdc85"+DS_AmountLabel(DS_Total[bucket])+"|r")
                 if cells then
-                    set texture = "UI\\WOS\\slot-empty.tga"
+                    set texture = "UI\\WOS\\slot-empty.blp"
                     if Hero[pid] != null then
                         set texture = BlzGetAbilityIcon(GetUnitTypeId(Hero[pid]))
                     endif
                     if texture == null or texture == "" then
-                        set texture = "UI\\WOS\\slot-empty.tga"
+                        set texture = "UI\\WOS\\slot-empty.blp"
                     endif
                     if DS_RowPortrait[r] != texture then
                         call BlzFrameSetTexture(DS_Portrait[r],texture,0,false)
@@ -1723,11 +1744,7 @@ private function DS_Tick takes nothing returns nothing
         return
     endif
     // Synced part: every client folds the hit buffer at the same tick, before any local check.
-    set DS_FlushTicks = DS_FlushTicks - 1
-    if DS_FlushTicks <= 0 then
-        set DS_FlushTicks = 10
-        call DamageStatsFlush()
-    endif
+    call DS_DrainSlice()
     set DS_DamageTicks = IMaxBJ(0, DS_DamageTicks - 1)
     call DS_LayoutViewport()
     set small = WUI_TopShown() and BlzFrameIsVisible(DS_Small)
@@ -2082,15 +2099,15 @@ private function DS_CreateRow takes integer r returns nothing
     endif
     call SaveInteger(DS_Keys,GetHandleId(DS_Row[r]),0,20+r)
     call BlzTriggerRegisterFrameEvent(DS_ClickTrigger,DS_Row[r],FRAMEEVENT_CONTROL_CLICK)
-    call DS_Edge(DS_Row[r],"UI\\WOS\\damage-row-edge.tga")
+    call DS_Edge(DS_Row[r],"UI\\WOS\\damage-row-edge.blp")
     set DS_RowPid[r] = -1
     set DS_BarBack[r] = BlzCreateFrameByType("BACKDROP","DamageStatsBarBack",DS_Row[r],"",r)
     call BlzFrameSetPoint(DS_BarBack[r],FRAMEPOINT_TOPLEFT,DS_Row[r],FRAMEPOINT_TOPLEFT,bx,0.000)
     call BlzFrameSetSize(DS_BarBack[r],bw,barHeight)
-    call BlzFrameSetTexture(DS_BarBack[r],"UI\\WOS\\bar-back.tga",0,true)
+    call BlzFrameSetTexture(DS_BarBack[r],"UI\\WOS\\bar-back.blp",0,true)
     call BlzFrameSetEnable(DS_BarBack[r],false)
     call BlzFrameSetLevel(DS_BarBack[r],1)
-    set DS_Fill[r] = WUI_CreateFill("DamageStatsBarFill",DS_Row[r],bw,barHeight,100.0,"UI\\WOS\\damage-fill-0.tga")
+    set DS_Fill[r] = WUI_CreateFill("DamageStatsBarFill",DS_Row[r],bw,barHeight,100.0,"UI\\WOS\\damage-fill-0.blp")
     call BlzFrameSetPoint(DS_Fill[r],FRAMEPOINT_TOPLEFT,DS_BarBack[r],FRAMEPOINT_TOPLEFT,0.000,0.000)
     call BlzFrameSetLevel(DS_Fill[r],2)
     call WUI_SetValue(DS_Fill[r],0.00)
@@ -2098,7 +2115,7 @@ private function DS_CreateRow takes integer r returns nothing
     call BlzFrameSetSize(DS_Portrait[r],portrait,portrait)
     call BlzFrameSetPoint(DS_Portrait[r],FRAMEPOINT_TOPLEFT,DS_Row[r],FRAMEPOINT_TOPLEFT,portraitX,0.000)
     call BlzFrameSetEnable(DS_Portrait[r],false)
-    call DS_Edge(DS_Portrait[r],"UI\\WOS\\damage-icon-edge.tga")
+    call DS_Edge(DS_Portrait[r],"UI\\WOS\\damage-icon-edge.blp")
     set DS_Label[r] = DS_Text(DS_Row[r],0.000,0.000,nameWidth,barHeight,font)
     call BlzFrameClearAllPoints(DS_Label[r])
     call BlzFrameSetPoint(DS_Label[r],FRAMEPOINT_LEFT,DS_BarBack[r],FRAMEPOINT_LEFT,0.003,0.000)
@@ -2114,7 +2131,7 @@ private function DS_CreateRow takes integer r returns nothing
     set DS_SourceRowArt[r] = BlzCreateFrameByType("BACKDROP","DamageStatsSourceRowArt",DS_SourceRowIcon[r],"",r)
     call BlzFrameSetAllPoints(DS_SourceRowArt[r],DS_SourceRowIcon[r])
     call BlzFrameSetEnable(DS_SourceRowArt[r],false)
-    call DS_Edge(DS_SourceRowIcon[r],"UI\\WOS\\damage-icon-edge.tga")
+    call DS_Edge(DS_SourceRowIcon[r],"UI\\WOS\\damage-icon-edge.blp")
     set DS_RowSensor[r] = DS_CreateSensor(DS_SourceRowIcon[r])
     call BlzFrameSetVisible(DS_SourceRowIcon[r],false)
     loop
@@ -2129,7 +2146,7 @@ private function DS_CreateRow takes integer r returns nothing
         call BlzFrameSetTextAlignment(DS_Number[slot],TEXT_JUSTIFY_MIDDLE,TEXT_JUSTIFY_CENTER)
         call BlzFrameSetLevel(DS_Number[slot],10)
         call BlzFrameSetEnable(DS_Number[slot],false)
-        call DS_Edge(DS_Icon[slot],"UI\\WOS\\damage-icon-edge.tga")
+        call DS_Edge(DS_Icon[slot],"UI\\WOS\\damage-icon-edge.blp")
         // No frame mouse events here: hover is read from the engine tooltip flag.
         set DS_Sensor[slot] = DS_CreateSensor(DS_Icon[slot])
         if view == 0 then
@@ -2170,7 +2187,7 @@ private function DS_Build takes nothing returns nothing
     local integer mode
     local real width
     local real x
-    if not DamageStatsActive then
+    if not DAMAGE_STATS_ENABLED or not DamageStatsActive then
         set root = null
         return
     endif
@@ -2182,7 +2199,7 @@ private function DS_Build takes nothing returns nothing
     set DS_Small = BlzCreateFrameByType("FRAME","DamageStatsCompact",WUI_GetTopActionOwner(),"",0)
     call BlzFrameSetSize(DS_Small,0.190,0.103)
     call DS_Background(DS_Small)
-    call DS_Edge(DS_Small,"UI\\WOS\\damage-window-edge.tga")
+    call DS_Edge(DS_Small,"UI\\WOS\\damage-window-edge.blp")
     call BlzFrameSetVisible(DS_Small,false)
     call WUI_RegisterWindowPart(13,DS_Small)
     set DS_Toggle = DS_Button(WUI_GetTopActionOwner(),"DAMAGE STATS  +/-",0.000,0.000,0.190,0.016,15)
@@ -2200,7 +2217,7 @@ private function DS_Build takes nothing returns nothing
     call BlzFrameSetSize(DS_Large,0.360,0.120)
     call BlzFrameSetAbsPoint(DS_Large,FRAMEPOINT_TOP,0.400,0.550)
     call DS_Background(DS_Large)
-    call DS_Edge(DS_Large,"UI\\WOS\\damage-window-edge.tga")
+    call DS_Edge(DS_Large,"UI\\WOS\\damage-window-edge.blp")
     call BlzFrameSetLevel(DS_Large,65)
     call WUI_RegisterModal(DS_Large)
     call WUI_RegisterWindowPart(12,DS_Large)
@@ -2280,15 +2297,28 @@ private function DS_Build takes nothing returns nothing
 endfunction
 
 private function DS_Init takes nothing returns nothing
-    if DamageStatsActive then
+    // Master build switch: no handles or startup callbacks when disabled.
+    static if DAMAGE_STATS_ENABLED then
+        set DS_Data = InitHashtable()
+        set DS_Origins = InitHashtable()
+        set DS_Actors = InitHashtable()
+        set DS_TakenKeys = InitHashtable()
+        set DS_SourceKind = InitHashtable()
+        set DS_Keys = InitHashtable()
+        set DS_Pend = InitHashtable()
+        set DS_Timer = CreateTimer()
+        set DS_PollTimer = CreateTimer()
         call WUI_OnReady(function DS_Build)
     endif
 endfunction
 
-// Synced (WOS_SelectMode): Test mode keeps stats even when DAMAGE_STATS_ENABLED = false.
+// Master switch applies to TestMode too; restart/rebuild with true to enable.
 // Hero pick: the left column belongs to the pick chat, so the whole window and its
 // toggle stay hidden until every hero is picked; the compact panel state comes back.
 function DamageStatsSetPickHidden takes boolean hidden returns nothing
+    if not DAMAGE_STATS_ENABLED then
+        return
+    endif
     if hidden == DS_PickHidden or DS_Toggle == null then
         set DS_PickHidden = hidden
         return
@@ -2310,7 +2340,7 @@ function DamageStatsSetPickHidden takes boolean hidden returns nothing
 endfunction
 
 function DamageStatsEnableForTest takes nothing returns nothing
-    if DamageStatsActive then
+    if not DAMAGE_STATS_ENABLED or DamageStatsActive then
         return
     endif
     set DamageStatsActive = true

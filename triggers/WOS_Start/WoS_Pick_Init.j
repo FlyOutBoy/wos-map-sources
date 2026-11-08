@@ -369,7 +369,7 @@ library WOSPickBans requires GearSystems, WOSUI
             return
         endif
         set WOS_PickBanPlate = BlzCreateFrameByType("BACKDROP", "WOSPickBanPlate", parent, "", 0)
-        call BlzFrameSetTexture(WOS_PickBanPlate, "UI\\WOS\\panel-soft.tga", 0, true)
+        call BlzFrameSetTexture(WOS_PickBanPlate, "UI\\WOS\\panel-soft.blp", 0, true)
         call BlzFrameSetEnable(WOS_PickBanPlate, false)
         call BlzFrameSetLevel(WOS_PickBanPlate, 2)
         set part = WUI_GoldFrame("WOSPickBanPlateEdge", WOS_PickBanPlate, 0.0030, 0.0070)
@@ -391,7 +391,7 @@ library WOSPickBans requires GearSystems, WOSUI
             set WOS_PickBanSlash[i] = BlzCreateFrameByType("BACKDROP", "WOSPickBanSlash", WOS_PickBanButton[i], "", i)
             call BlzFrameSetPoint(WOS_PickBanSlash[i], FRAMEPOINT_TOPLEFT, WOS_PickBanButton[i], FRAMEPOINT_TOPLEFT, 0.0, 0.0)
             call BlzFrameSetPoint(WOS_PickBanSlash[i], FRAMEPOINT_BOTTOMRIGHT, WOS_PickBanButton[i], FRAMEPOINT_BOTTOMRIGHT, 0.0, 0.0)
-            call BlzFrameSetTexture(WOS_PickBanSlash[i], "UI\\WOS\\ban-cover.tga", 0, true)
+            call BlzFrameSetTexture(WOS_PickBanSlash[i], "UI\\WOS\\ban-cover.blp", 0, true)
             call BlzFrameSetAlpha(WOS_PickBanSlash[i], 255)
             call BlzFrameSetEnable(WOS_PickBanSlash[i], false)
             set WOS_PickBanEdge[i] = WUI_IconFrame(WOS_PickBanButton[i], WUI_ICON_FRAME)
@@ -1006,11 +1006,11 @@ endfunction
 
 function WOS_StatIconPath takes integer primary returns string
     if primary == 1 then
-        return "UI\\WOS\\stat-str.tga"
+        return "UI\\WOS\\stat-str.blp"
     elseif primary == 3 then
-        return "UI\\WOS\\stat-agi.tga"
+        return "UI\\WOS\\stat-agi.blp"
     endif
-    return "UI\\WOS\\stat-int.tga"
+    return "UI\\WOS\\stat-int.blp"
 endfunction
 
 // Stat medallions follow the stat lines; the primary underline is set per pick.
@@ -1115,12 +1115,12 @@ function WOS_PickExtraCreate takes nothing returns nothing
         call BlzFrameSetVisible(WOS_PickCellIcon[i], false)
         set i = i + 1
     endloop
-    call BlzFrameSetTexture(WOS_PickCellIcon[0], "UI\\WOS\\icon-attack.tga", 0, true)
-    call BlzFrameSetTexture(WOS_PickCellIcon[1], "UI\\WOS\\icon-range.tga", 0, true)
-    call BlzFrameSetTexture(WOS_PickCellIcon[2], "UI\\WOS\\icon-phys.tga", 0, true)
-    call BlzFrameSetTexture(WOS_PickCellIcon[3], "UI\\WOS\\icon-magic.tga", 0, true)
-    call BlzFrameSetTexture(WOS_PickCellIcon[4], "UI\\WOS\\icon-movespeed.tga", 0, true)
-    call BlzFrameSetTexture(WOS_PickCellIcon[5], "UI\\WOS\\icon-attackspeed.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[0], "UI\\WOS\\icon-attack.blp", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[1], "UI\\WOS\\icon-range.blp", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[2], "UI\\WOS\\icon-phys.blp", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[3], "UI\\WOS\\icon-magic.blp", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[4], "UI\\WOS\\icon-movespeed.blp", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[5], "UI\\WOS\\icon-attackspeed.blp", 0, true)
     // Hover over the main stat medallion: engine tooltip (no mouse events).
     set WOS_PickMainHit = BlzCreateFrameByType("BUTTON", "WOSPickMainStatHit", FRAME_HeroAttribute, "", 0)
     call WUI_RegisterPassiveFocus(WOS_PickMainHit)
@@ -2047,7 +2047,7 @@ function WOS_DisableBanProposalButton takes player p returns nothing
     if GetLocalPlayer() == p then
         call BlzFrameSetEnable(FRAME_Pick[4], false)
         call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
-        call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.blp", 0, true)
     endif
 endfunction
 
@@ -3454,9 +3454,9 @@ endif
                 call BlzFrameSetText(FRAME_HeroMS, heroMoveSpeedText)
                 call BlzFrameSetText(FRAME_HeroAS, heroAttackSpeedText)
                 if heroIsMelee then
-                    call BlzFrameSetTexture(FRAME_HeroAttackType, "UI\\WOS\\attack-melee.tga", 0, true)
+                    call BlzFrameSetTexture(FRAME_HeroAttackType, "UI\\WOS\\attack-melee.blp", 0, true)
                 else
-                    call BlzFrameSetTexture(FRAME_HeroAttackType, "UI\\WOS\\attack-ranged.tga", 0, true)
+                    call BlzFrameSetTexture(FRAME_HeroAttackType, "UI\\WOS\\attack-ranged.blp", 0, true)
                 endif
                 // Primary attribute: medallion by the name + gold underline on its row.
                 call BlzFrameSetTexture(FRAME_HeroAttribute, WOS_StatIconPath(heroPrimaryAttribute), 0, true)
@@ -3804,7 +3804,7 @@ function WOS_LayoutHeroPick takes nothing returns nothing
         call WUI_Place(WOS_PickStatIcon[i], 0.5135, 0.3155 - I2R(i) * 0.016, 0.0115, 0.0115)
         set WOS_PickPrimaryMark[i] = BlzCreateFrameByType("BACKDROP", "WOSPickPrimaryMark", FRAME_MAIN3, "", i)
         call WUI_Place(WOS_PickPrimaryMark[i], 0.5305, 0.3155 - I2R(i) * 0.016 - 0.0058, 0.024, 0.0056)
-        call BlzFrameSetTexture(WOS_PickPrimaryMark[i], "UI\\WOS\\stat-underline.tga", 0, true)
+        call BlzFrameSetTexture(WOS_PickPrimaryMark[i], "UI\\WOS\\stat-underline.blp", 0, true)
         call BlzFrameSetLevel(WOS_PickStatIcon[i], 6)
         call BlzFrameSetLevel(WOS_PickPrimaryMark[i], 5)
         call BlzFrameSetEnable(WOS_PickStatIcon[i], false)
@@ -3814,9 +3814,9 @@ function WOS_LayoutHeroPick takes nothing returns nothing
         set i = i + 1
     endloop
     set i = 0
-    call BlzFrameSetTexture(WOS_PickStatIcon[0], "UI\\WOS\\stat-str.tga", 0, true)
-    call BlzFrameSetTexture(WOS_PickStatIcon[1], "UI\\WOS\\stat-agi.tga", 0, true)
-    call BlzFrameSetTexture(WOS_PickStatIcon[2], "UI\\WOS\\stat-int.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickStatIcon[0], "UI\\WOS\\stat-str.blp", 0, true)
+    call BlzFrameSetTexture(WOS_PickStatIcon[1], "UI\\WOS\\stat-agi.blp", 0, true)
+    call BlzFrameSetTexture(WOS_PickStatIcon[2], "UI\\WOS\\stat-int.blp", 0, true)
     // Right side: three rows, two values per row
     // (ATK | RANGE, PHYS RES | MAG RES, MS | AS); RANGE/MAG RES in WOS_PickExtraLayout.
     call WOS_PickStatLine(FRAME_HeroAtk, 0.6150, 0.3155, 0.058)
@@ -3834,7 +3834,7 @@ function WOS_LayoutHeroPick takes nothing returns nothing
     set FRAME_PlayerPickDifficultPlate = BlzCreateFrameByType("BACKDROP", "WOSPickDifficultyPlate", FRAME_MAIN3, "", 0)
     set FRAME_PlayerPickAnimePlate = BlzCreateFrameByType("BACKDROP", "WOSPickAnimePlate", FRAME_MAIN3, "", 0)
     call WUI_Place(FRAME_PlayerPickAnimePlate, 0.613, 0.495, 0.112, 0.0165)
-    call BlzFrameSetTexture(FRAME_PlayerPickAnimePlate, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetTexture(FRAME_PlayerPickAnimePlate, "UI\\WOS\\panel-soft.blp", 0, true)
     call BlzFrameSetLevel(FRAME_PlayerPickAnimePlate, 7)
     call BlzFrameSetEnable(FRAME_PlayerPickAnimePlate, false)
     call WUI_GoldFrame("WOSPickAnimeEdge", FRAME_PlayerPickAnimePlate, 0.0030, 0.0060)
@@ -3844,7 +3844,7 @@ function WOS_LayoutHeroPick takes nothing returns nothing
     call BlzFrameSetEnable(FRAME_PlayerPickAnimeText, false)
     call BlzFrameSetLevel(FRAME_PlayerPickAnimeText, 8)
     call WUI_Place(FRAME_PlayerPickDifficultPlate, 0.613, 0.3435, 0.112, 0.0165)
-    call BlzFrameSetTexture(FRAME_PlayerPickDifficultPlate, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetTexture(FRAME_PlayerPickDifficultPlate, "UI\\WOS\\panel-soft.blp", 0, true)
     call BlzFrameSetLevel(FRAME_PlayerPickDifficultPlate, 7)
     call BlzFrameSetEnable(FRAME_PlayerPickDifficultPlate, false)
     set part = WUI_GoldFrame("WOSPickDifficultyEdge", FRAME_PlayerPickDifficultPlate, 0.0030, 0.0060)
@@ -3862,7 +3862,7 @@ function WOS_LayoutHeroPick takes nothing returns nothing
     // Checkpoint 22: the round timer has its own framed plate in the top-left
     // corner, above the franchise logos (it used to float in the title row).
     set WOS_PickTimerPlate = BlzCreateFrameByType("BACKDROP", "WOSPickTimerPlate", FRAME_MAIN, "", 0)
-    call BlzFrameSetTexture(WOS_PickTimerPlate, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickTimerPlate, "UI\\WOS\\panel-soft.blp", 0, true)
     call BlzFrameSetEnable(WOS_PickTimerPlate, false)
     call BlzFrameSetLevel(WOS_PickTimerPlate, 6)
     set part = WUI_GoldFrame("WOSPickTimerEdge", WOS_PickTimerPlate, 0.0030, 0.0070)
@@ -3884,12 +3884,12 @@ function WOS_LayoutHeroPick takes nothing returns nothing
         call WUI_Place(Frame_PageHeroList[i], 0.181, 0.476 - I2R(i) * 0.049, 0.156, 0.039)
         set i = i + 1
     endloop
-    call BlzFrameSetTexture(Frame_PageHeroListImage[0], "UI\\WOS\\pick-logo-gacha.tga", 0, true)
-    call BlzFrameSetTexture(Frame_PageHeroListImage[1], "UI\\WOS\\pick-logo-bleach.tga", 0, true)
-    call BlzFrameSetTexture(Frame_PageHeroListImage[2], "UI\\WOS\\pick-logo-fairytail.tga", 0, true)
-    call BlzFrameSetTexture(Frame_PageHeroListImage[3], "UI\\WOS\\pick-logo-onepiece.tga", 0, true)
-    call BlzFrameSetTexture(Frame_PageHeroListImage[4], "UI\\WOS\\pick-logo-jujutsu.tga", 0, true)
-    call BlzFrameSetTexture(Frame_PageHeroListImage[5], "UI\\WOS\\pick-logo-other.tga", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[0], "UI\\WOS\\pick-logo-gacha.blp", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[1], "UI\\WOS\\pick-logo-bleach.blp", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[2], "UI\\WOS\\pick-logo-fairytail.blp", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[3], "UI\\WOS\\pick-logo-onepiece.blp", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[4], "UI\\WOS\\pick-logo-jujutsu.blp", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[5], "UI\\WOS\\pick-logo-other.blp", 0, true)
     // Checkpoint 24: there is never a second hero page, so the page arrows
     // stay hidden; confirm / random / ban spread over the grid's width.
     call BlzFrameSetVisible(FRAME_Pick[0], false)
@@ -3950,8 +3950,8 @@ function WOS_LayoutHeroPick takes nothing returns nothing
         call BlzFrameSetScale(FRAME_PlayerPickText[i], 0.60)
         // Docked to the left end of the team strip; when unavailable, the
         // heroicon library shows disabled plates in the same spots.
-        call WOS_StylePickIconButton(FRAME_Repick[i], FRAME_RepickHover[i], FRAME_RepickText[i], "UI\\WOS\\glyph-repick.tga", "", WOS_REPICK_X, WOS_SWAP_Y)
-        call WOS_StylePickIconButton(FRAME_Swap[i], FRAME_SwapHover[i], FRAME_SwapText[i], "UI\\WOS\\glyph-swap.tga", "", WOS_SWAP_X, WOS_SWAP_Y)
+        call WOS_StylePickIconButton(FRAME_Repick[i], FRAME_RepickHover[i], FRAME_RepickText[i], "UI\\WOS\\glyph-repick.blp", "", WOS_REPICK_X, WOS_SWAP_Y)
+        call WOS_StylePickIconButton(FRAME_Swap[i], FRAME_SwapHover[i], FRAME_SwapText[i], "UI\\WOS\\glyph-swap.blp", "", WOS_SWAP_X, WOS_SWAP_Y)
         call WUI_TooltipBelow(FRAME_Repick[i], "|cffd5b876REPICK|r|nReturn to the hero selection (costs " + I2S(R2I(AddRandom / 2)) + " gold).")
         call WUI_TooltipBelow(FRAME_Swap[i], "|cffd5b876SWAP|r|nChoose an ally; they accept or decline.")
         set i = i + 1
@@ -4100,15 +4100,15 @@ function WOS_CreatePickCatalogue takes nothing returns nothing
             call BlzFrameSetTexture(FRAME_ICON_Pick[k], "Pick\\PickButton_Page_Right", 0, true)
             call BlzFrameSetSize(FRAME_Pick[k], 0.037, 0.037)
         elseif k == 2 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-confirm-wide-off.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-confirm-wide-off.blp", 0, true)
         elseif k == 3 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-random-wide-off.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-random-wide-off.blp", 0, true)
             // Keep Random attached to the pick panel itself. This avoids the
             // accumulated TOPLEFT offset moving it on 16:10 resolutions.
             call BlzFrameClearAllPoints(FRAME_Pick[k])
             call BlzFrameSetPoint(FRAME_Pick[k], FRAMEPOINT_BOTTOM, FRAME_MAIN2, FRAMEPOINT_BOTTOM, 0.05, 0.0225)
         elseif k == 4 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-ban.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-ban.blp", 0, true)
             call BlzFrameSetSize(FRAME_Pick[k], 0.05, 0.05)
         endif
         // disable ALL pick buttons initially, enable after pre-pick
@@ -4735,7 +4735,7 @@ function EndBanPhase takes nothing returns nothing
         set i = i + 1
     endloop
     call RefreshAllPlayersHeroPage()
-    call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
+    call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.blp", 0, true)
     call BlzFrameSetEnable(FRAME_Pick[4], false)
     call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
 endfunction
@@ -4933,6 +4933,9 @@ globals
     boolean PickChat_On = false
     // Local presentation: the viewer folded the panel (header stays).
     boolean PickChat_Collapsed = false
+    // Final statistics screen: the chat column widens up to the squeezed board.
+    boolean PickChat_Final = false
+    framehandle PickChat_Notes = null
 endglobals
 
 // Points / visibility of frames that exist on every client; safe in a local block.
@@ -4940,6 +4943,10 @@ endglobals
 function PickChat_Apply takes nothing returns nothing
     local real left = 0.802 - WUI_ScreenRight()
     local real right = RMaxBJ(left + 0.120, 0.086)
+    if PickChat_Final then
+        // Left edge of the expanded board (shifted left, x1.15 scale) is ~.107.
+        set right = RMaxBJ(left + 0.120, 0.100)
+    endif
     if PickChat_Chat == null then
         return
     endif
@@ -4956,6 +4963,15 @@ function PickChat_Apply takes nothing returns nothing
         call BlzFrameSetAbsPoint(PickChat_Chat, FRAMEPOINT_TOPLEFT, left + 0.008, 0.516)
         call BlzFrameSetAbsPoint(PickChat_Chat, FRAMEPOINT_BOTTOMRIGHT, right - 0.006, 0.158)
         call BlzFrameSetVisible(PickChat_Chat, not PickChat_Collapsed)
+        if PickChat_Final and PickChat_Notes != null then
+            // System notices (surrender vote...) share the column, below the chat.
+            call BlzFrameClearAllPoints(PickChat_Notes)
+            call BlzFrameSetAbsPoint(PickChat_Notes, FRAMEPOINT_TOPLEFT, left + 0.008, 0.250)
+            call BlzFrameSetAbsPoint(PickChat_Notes, FRAMEPOINT_BOTTOMRIGHT, right - 0.006, 0.158)
+            call BlzFrameClearAllPoints(PickChat_Chat)
+            call BlzFrameSetAbsPoint(PickChat_Chat, FRAMEPOINT_TOPLEFT, left + 0.008, 0.516)
+            call BlzFrameSetAbsPoint(PickChat_Chat, FRAMEPOINT_BOTTOMRIGHT, right - 0.006, 0.258)
+        endif
         if PickChat_Collapsed then
             call WUI_SetButtonText(PickChat_Header, "CHAT  +")
         else
@@ -4966,7 +4982,7 @@ function PickChat_Apply takes nothing returns nothing
         call BlzFrameSetVisible(PickChat_Panel, false)
         // Usual chat place: flush with the left screen edge, above the lower HUD.
         call BlzFrameSetAbsPoint(PickChat_Chat, FRAMEPOINT_BOTTOMLEFT, left + 0.004, WUI_CHASSIS_TOP + 0.090)
-        call BlzFrameSetAbsPoint(PickChat_Chat, FRAMEPOINT_TOPRIGHT, left + 0.414, WUI_CHASSIS_TOP + 0.330)
+        call BlzFrameSetAbsPoint(PickChat_Chat, FRAMEPOINT_TOPRIGHT, left + 0.620, WUI_CHASSIS_TOP + 0.330)
         call BlzFrameSetVisible(PickChat_Chat, true)
     endif
 endfunction
@@ -5003,7 +5019,9 @@ function PickChat_Sync takes boolean active returns nothing
         return
     endif
     static if LIBRARY_DamageStats then
-        call DamageStatsSetPickHidden(active)
+        static if DAMAGE_STATS_ENABLED then
+            call DamageStatsSetPickHidden(active)
+        endif
     endif
     if PickChat_Chat == null then
         if not active or WUI_GetRoot() == null then
@@ -5013,6 +5031,18 @@ function PickChat_Sync takes boolean active returns nothing
     endif
     set PickChat_On = active
     call PickChat_Apply()
+endfunction
+
+// Called right after WOS_STATS_ShowFinal on every client: fills the freed left side.
+function PickChat_FinalShow takes nothing returns nothing
+    set PickChat_Final = true
+    set PickChat_Notes = BlzGetOriginFrame(ORIGIN_FRAME_UNIT_MSG, 0)
+    set PickChat_Collapsed = false
+    if PickChat_On then
+        call PickChat_Apply()
+    else
+        call PickChat_Sync(true)
+    endif
 endfunction
 
 // Test summons/shared-control allies never keep a round alive after all human heroes die.
@@ -5069,7 +5099,8 @@ function PrepareStart takes nothing returns nothing
         // The zero-delay repick tick reuses this timer; resume its normal cadence.
         call TimerStart(IntroStart1, 1.0, true, function PrepareStart)
     endif
-    call PickChat_Sync(RandomAllPlayers == 0)
+    // The final screen keeps its chat; this 1 s tick used to switch it off again.
+    call PickChat_Sync(RandomAllPlayers == 0 or PickChat_Final)
     // The Dota-style captain draft is a self-contained pre-game state machine.
     // Tick it once per second and do not let the legacy picker consume the
     // same timer while the draft is active.
@@ -5112,11 +5143,11 @@ if PickPhaseActive == false then
             loop
                 exitwhen i == 10
                 if GetLocalPlayer() == Player(i) then
-                    call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random-wide.tga", 0, true)
+                    call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random-wide.blp", 0, true)
                     call BlzFrameSetEnable(FRAME_Pick[3], true)
                   
                     if (FramePlayerFirstName[i] == "ThunderGear" or FramePlayerFirstName[i] == "soldiersPL") and (PlayerFrameCurrent_ID[i] == Frostnova_ID) then
-                        call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-wide.tga", 0, true)
+                        call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-wide.blp", 0, true)
                         call BlzFrameSetEnable(FRAME_Pick[2], true)
                     endif
                 endif
@@ -5133,7 +5164,7 @@ if PickPhaseActive == false then
                 if GetLocalPlayer() == Player(i) then
                     call BlzFrameSetEnable(FRAME_Pick[4], false)
                     call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)                    
-                call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.blp", 0, true)
                 endif
                 set i = i + 1
             endloop
@@ -5147,9 +5178,9 @@ if PickPhaseActive == false then
             exitwhen i == 10
             if GetLocalPlayer() == Player(i) then
                 call BlzFrameSetEnable(FRAME_Pick[2], true)
-                call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-wide.tga", 0, true)
-                call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random-wide.tga", 0, true)
-                call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-wide.blp", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random-wide.blp", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.blp", 0, true)
                 call BlzFrameSetEnable(FRAME_Pick[3], true)
             endif
             if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
@@ -5549,13 +5580,16 @@ endloop
                     endloop
                     call WUI_LockHeroLayer()
                     call WOS_STATS_ShowFinal()
+                    call PickChat_FinalShow()
                     // Один последовательный таймер: сначала полностью закрывает
                     // личный сейв, на следующем тике отдельно пишет бот-файл.
                     call SaveSystem_ScheduleDeferredWrites()
                 endif
                 call DecorRestore()
                 static if LIBRARY_DamageStats then
-                    call DamageStatsNextRound()
+                    static if DAMAGE_STATS_ENABLED then
+                        call DamageStatsNextRound()
+                    endif
                 endif
                 set CurrentRound = CurrentRound + 1
                 static if LIBRARY_ItemsSpells then

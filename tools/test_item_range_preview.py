@@ -49,7 +49,7 @@ class Rules(unittest.TestCase):
     def test_blink_passive_ranges_and_real_native_casts(self):
         for iid, expected in [('I00E', 750), ('I00O', 900), ('I02G', 850), ('I02H', 1000), ('I02P', 650)]:
             self.assertEqual(expected, self.radius(iid))
-        self.assertEqual(1600, self.radius('I01N'))
+        self.assertEqual(1350, self.radius('I01N'))
         self.assertEqual(1180, self.radius('I01N', {'cast': 1180, 'area': 0}))
 
     def test_passive_cd_carriers_stats_and_self_buffs_never_get_fake_circles(self):
@@ -62,7 +62,7 @@ class Rules(unittest.TestCase):
         abilities = json.loads((ROOT / 'object-data/abilities.json').read_text(encoding='utf-8-sig'))
         audit = json.loads((ROOT / 'assets/AbilityRange/item-rules.json').read_text(encoding='utf-8'))
         self.assertEqual(set(items), {r['item'] for r in audit})
-        self.assertEqual(197, len(audit))
+        self.assertEqual(198, len(audit))
         for row in audit:
             ids = items[row['item']].get('abilities', '').split(',')
             self.assertEqual([a['id'] for a in row['abilities']], [a for a in ids if a])

@@ -1178,7 +1178,7 @@ library ErzaRSpells uses GearSystems
                             call SetUnitAnimation(td, "death")
                             call StunUnit(c,td,Erza4T_Stun)
                             call StopSpellUnit(c)
-                            call NextSound("war3mapimported\\HeroErza4_TT", 0.35)
+                            call NextSound("war3mapimported\\Hero_Erza4_TT", 0.35)
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)4.mdl", x, y, a * bj_RADTODEG, 2, 1.5 , 55))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_LXY_ZK_BM_Mine blasting.mdl", x, y, a * bj_RADTODEG, 1.5, 2 , 1))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Flamestrike Dark Blood II.mdl", x, y, a * bj_RADTODEG, 3, 3.5 , 1))

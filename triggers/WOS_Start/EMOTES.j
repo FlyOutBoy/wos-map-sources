@@ -620,7 +620,7 @@ private function CreatePanel takes nothing returns nothing
     call WUI_RegisterRangeCover(EmojiPanel)
     call BlzFrameSetSize(EmojiPanel, EMOJI_WHEEL_SIZE, EMOJI_WHEEL_SIZE)
     call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_CENTER, EMOJI_PANEL_CENTER_X, EMOJI_PANEL_CENTER_Y)
-    call BlzFrameSetTexture(EmojiPanel, "UI\\WOS\\wheel-ring.tga", 0, true)
+    call BlzFrameSetTexture(EmojiPanel, "UI\\WOS\\wheel-ring.blp", 0, true)
     call BlzFrameSetLevel(EmojiPanel, 1)
     call BlzFrameSetEnable(EmojiPanel, false)
 
@@ -634,7 +634,7 @@ private function CreatePanel takes nothing returns nothing
 
     set EmojiCloseIcon = BlzCreateFrameByType("BACKDROP", "WosEmojiCloseIcon", EmojiCloseButton, "", 0)
     call BlzFrameSetAllPoints(EmojiCloseIcon, EmojiCloseButton)
-    call BlzFrameSetTexture(EmojiCloseIcon, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetTexture(EmojiCloseIcon, "UI\\WOS\\glyph-close.blp", 0, true)
     call BlzFrameSetEnable(EmojiCloseIcon, false)
 
     // Local status line inside the header: green when ready, countdown otherwise.
@@ -674,7 +674,7 @@ private function CreatePanel takes nothing returns nothing
 
     // Hover ring + page arrows (bottom of the wheel), created once.
     set EmojiHoverGlow = BlzCreateFrameByType("BACKDROP", "WosEmojiHoverGlow", WUI_GetRoot(), "", 0)
-    call BlzFrameSetTexture(EmojiHoverGlow, "UI\\WOS\\learn-glow.tga", 0, true)
+    call BlzFrameSetTexture(EmojiHoverGlow, "UI\\WOS\\learn-glow.blp", 0, true)
     call BlzFrameSetLevel(EmojiHoverGlow, 4)
     call BlzFrameSetEnable(EmojiHoverGlow, false)
     set EmojiPrev = WUI_TextButton("WosEmojiPrev", WUI_GetRoot(), "<", 0.016, 0.016)

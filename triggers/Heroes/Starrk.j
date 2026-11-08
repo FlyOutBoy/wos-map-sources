@@ -92,6 +92,11 @@ library StarrkSpells uses GearSystems
         integer Starrk_Pas4ID = 'A0BU'
         integer Starrk_Pas5ID = 'A0BV'
         integer Starrk_Pas6ID = 'A0BW'
+        integer Starrk_Pas7ID = 'A163'
+        // Max HP/MP restored per stack proc (%), by G tier (Lv 12/25/35).
+        real StarkG_Restore12 = 1.00
+        real StarkG_Restore25 = 1.20
+        real StarkG_Restore35 = 1.40
 //---------------Q ability-----------------------------------------------------
         integer StarrkQ_ID = 'A0BH'
         real StarrkQ_CastTime = 0.72
@@ -2526,6 +2531,7 @@ endloop
                         set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas4ID))
                         set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas5ID))
                         set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas6ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas7ID))
                         call WUI_HeroProgress(u, StarrkG_ID, "Agility: " + stacks + " stacks", remaining, StarkG_TimeStatAdd, true)
                     endif
                 endif
@@ -2566,7 +2572,7 @@ endloop
         local real x = GetUnitX(c)
         local real y = GetUnitY(c)
         local real aoe = 0
-        local real scale = 0.85
+        local real scale = StarkG_Restore12
         local integer lvl = GetHeroLevel(c)
         local real hp = GetUnitState(c, UNIT_STATE_MAX_LIFE) * 0.01
         local real mp = GetUnitState(c, UNIT_STATE_MAX_MANA) * 0.01
@@ -2575,10 +2581,10 @@ endloop
         if lvl >= 12 then
             if lvl >= 35 then
                 set aoe = StarkG_Aoe35
-                set scale = 1.25
+                set scale = StarkG_Restore35
             elseif lvl >= 25 then
                 set aoe = StarkG_Aoe25
-                set scale = 1.05
+                set scale = StarkG_Restore25
             else
                 set aoe = StarkG_Aoe12
             endif
@@ -2603,7 +2609,7 @@ endloop
                     call UnitAddAbility(c, Starrk_Pas2ID)
                     call GearWatchAbilityTime(c, Starrk_Pas2ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas2ID, 1)
-                elseif GetUnitAbilityLevel(c, Starrk_Pas3ID) == 0 and lvl >= 25 then
+                elseif GetUnitAbilityLevel(c, Starrk_Pas3ID) == 0 then
                     call UnitAddAbility(c, Starrk_Pas3ID)
                     call GearWatchAbilityTime(c, Starrk_Pas3ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas3ID, 1)
@@ -2611,7 +2617,7 @@ endloop
                     call UnitAddAbility(c, Starrk_Pas4ID)
                     call GearWatchAbilityTime(c, Starrk_Pas4ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas4ID, 1)
-                elseif GetUnitAbilityLevel(c, Starrk_Pas5ID) == 0 and lvl >= 35 then
+                elseif GetUnitAbilityLevel(c, Starrk_Pas5ID) == 0 and lvl >= 25 then
                     call UnitAddAbility(c, Starrk_Pas5ID)
                     call GearWatchAbilityTime(c, Starrk_Pas5ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas5ID, 1)
@@ -2619,6 +2625,10 @@ endloop
                     call UnitAddAbility(c, Starrk_Pas6ID)
                     call GearWatchAbilityTime(c, Starrk_Pas6ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas6ID, 1)
+                elseif GetUnitAbilityLevel(c, Starrk_Pas7ID) == 0 and lvl >= 35 then
+                    call UnitAddAbility(c, Starrk_Pas7ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas7ID)
+                    call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas7ID, 1)
                 endif
                 call Starrk_StackMeter.track(c)
                 call SetHpCurrent2Quiet(c, c, hp*scale)

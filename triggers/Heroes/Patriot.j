@@ -2016,6 +2016,11 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_wfile00009065.mdl", x, y, a * bj_RADTODEG, 0.5, 1.1, 1.0, 255, 255, 255, 255))
     endfunction
 
+    // Revive stance (Perseverance) is running.
+    function Patriot_InRevive takes unit c returns boolean
+        return LoadInteger(hs, GetHandleId(c), SH_PATRIOT_EE) == 1
+    endfunction
+
     function PatriotEE_Start takes unit c, unit td returns nothing
         call PatriotSpells_E.PatriotE_Start(c, td)
     endfunction

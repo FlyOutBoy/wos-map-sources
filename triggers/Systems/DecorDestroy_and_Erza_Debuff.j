@@ -41,6 +41,9 @@ library AAADest uses GearSystems, EnvironmentRoundRules
         integer ErzaWater_Slow5 = 40 // percantage 30 = 30% slow
         real ErzaWater_DamageBase = 75// static damage each sec
         real ErzaFire_DamageBase = 30 // static damage each sec
+        real ErzaFire_Duration = 4.0 // sec; Zanka no Tachi adds ZankaNoTachi_Extend
+        real ErzaWater_Duration = 5.0 // sec; A03T level 2 (also set on the dummy before each cast)
+        real ErzaElectrized_Duration = 5.0 // sec; A03T level 6 (also set on the dummy before each cast)
         real ErzaWape_Damage = 1 // x mainstat damage each one time
         real ErzaOverload_Damage = 1 // x mainstat damage each one time
         real ErzaElectrized_Damage = 0.3 // x mainstat damage each sec for buff duration time
@@ -86,6 +89,14 @@ library AAADest uses GearSystems, EnvironmentRoundRules
         if DummyPlayer4[i] == null or GetWidgetLife(DummyPlayer4[i]) < 1 then
             set DummyPlayer4[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer4[i], 'A03U')
+        endif
+        // Frozen Heart aura: weaker slow (rounded to the nearest 10% rank), same duration.
+        if GetUnitAbilityLevel(u, FrozenHeart_Buff_ID) > 0 then
+            set lvl = lvl - FrozenHeart_SlowResist
+            if lvl < 5 then
+                return
+            endif
+            set lvl = lvl + 5
         endif
         set lvl = R2I(lvl / 10)
         if lvl < 1 then
@@ -295,7 +306,7 @@ library AAADest uses GearSystems, EnvironmentRoundRules
             call BlzFrameSetSize(frame2_pas1[k2], 0.160, 0.030)
             // Checkpoint 27: every piece hangs from the panel (the dock moves it).
             set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSOriginBack", frame2_pas1[k2], "", 0)
-            call BlzFrameSetTexture(frame2_pas2[k2], "UI\\WOS\\bar-back.tga", 0, true)
+            call BlzFrameSetTexture(frame2_pas2[k2], "UI\\WOS\\bar-back.blp", 0, true)
             call BlzFrameSetPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.000, -0.0045)
             call BlzFrameSetSize(frame2_pas2[k2], 0.096, 0.009)
             call BlzFrameSetEnable(frame2_pas2[k2], false)
@@ -700,7 +711,7 @@ local integer damageSource = DamageSourceBase(GearDamageNextSource)
 local boolean fromItem = (damageSource >= 'I000' and damageSource <= 'Izzz') or ItemProcDamageDepth > 0
 local unit d = DummyPlayer2[i]
 local integer skip = 0
-local real fireDur = 4.0
+local real fireDur = ErzaFire_Duration
 set GearDamageNextSource = 0
 if level == 9 then
     set damageSource = 'I00W'
@@ -849,13 +860,13 @@ if IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), SH_NA
         endif
         // Zanka no Tachi: Fire always burns 7 sec; the first one already deals 70 per sec.
         if level == 1 and skip == 0 and GetUnitAbilityLevel(u, ErzaFire_ID) == 0 and HasCachedItem(c, ZankaNoTachi_ID) > 0 then
-            set fireDur = 4.0 + ZankaNoTachi_Extend
+            set fireDur = ErzaFire_Duration + ZankaNoTachi_Extend
         endif
         // Zanka no Tachi: Fire on a burning enemy strengthens the burn.
         if level == 1 and skip == 0 and GetUnitAbilityLevel(u, ErzaFire_ID) > 0 and HasCachedItem(c, ZankaNoTachi_ID) > 0 then
             call ErzaDebuffs.FireStack(u, ZankaNoTachi_Stack)
             // ...the burn restarts at its full 7 sec (it never adds up).
-            set fireDur = 4.0 + ZankaNoTachi_Extend
+            set fireDur = ErzaFire_Duration + ZankaNoTachi_Extend
             // one burn per target: no extra effect per re-application
         endif
         // Attribution belongs to the resolved reaction, including Water + Raiden E.
@@ -892,6 +903,14 @@ if IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), SH_NA
                 call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_HERO, 0, fireDur)
                 call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_NORMAL, 0, fireDur)
                 call SaveReal(hs, GetHandleId(u), SH_FIRE_END, TimerGetElapsed(HealRegenClock) + fireDur)
+            endif
+            // Water / Electrized durations come from code, not only from the object.
+            if level == 2 then
+                call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_HERO, 1, ErzaWater_Duration)
+                call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_NORMAL, 1, ErzaWater_Duration)
+            elseif level == 6 then
+                call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_HERO, 5, ErzaElectrized_Duration)
+                call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_NORMAL, 5, ErzaElectrized_Duration)
             endif
             if level == 2 or level == 6 then
                 call SaveInteger(hs, GetHandleId(u), SH_WATER_PENDING, 1)

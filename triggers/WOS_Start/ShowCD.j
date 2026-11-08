@@ -120,6 +120,11 @@ globals
     private integer array AHUI_PartState
     private integer array AHUI_IconAlphaSet
     private integer array AHUI_FillAlphaSet
+    // Ally row: blue "not enough mana" tint (0 unknown, 1 off, 2 on) and its slow recheck counter.
+    private integer array AHUI_ManaTintSet
+    private integer array AHUI_ManaTicks
+    // abilityId -> hero level of its techtree requirement dummy (areq h00T/h029/h002/h00C/h011).
+    private hashtable AHUI_ReqLevel = InitHashtable()
 
     private framehandle array AHUI_Origin
     private framehandle array AHUI_Root
@@ -132,7 +137,7 @@ globals
     private framehandle array AHUI_ChargeText
     private framehandle array AHUI_KeyText
     private framehandle array AHUI_KeyBox
-    private constant string AHUI_KEY_BOX_TEXTURE = "UI\\WOS\\panel.tga"
+    private constant string AHUI_KEY_BOX_TEXTURE = "UI\\WOS\\panel.blp"
 
     private framehandle array AHUI_TooltipRoot
     private framehandle array AHUI_TooltipBackdrop
@@ -232,6 +237,100 @@ private function AHUI_RequirementLocked takes unit hero, integer abilityId retur
         return LoadReal(hs, GetHandleId(hero), SH_TAKESHI_DMG) < TakeshiG_TakenDamageToEnter
     endif
     return false
+endfunction
+
+// Techtree requirement (areq) is a LvlUpCheck dummy created for the owner at that level.
+private function AHUI_LevelReqLocked takes unit hero, integer abilityId returns boolean
+    local integer req = LoadInteger(AHUI_ReqLevel, abilityId, 0)
+    local integer pid
+    if req == 0 or hero == null then
+        return false
+    endif
+    set pid = GetPlayerId(GetOwningPlayer(hero))
+    if req == 6 then
+        return lvl_6[pid] == null
+    elseif req == 10 then
+        return lvl_10[pid] == null
+    elseif req == 12 then
+        return lvl_12[pid] == null
+    elseif req == 25 then
+        return lvl_25[pid] == null
+    elseif req == 35 then
+        return lvl_35[pid] == null
+    endif
+    return false
+endfunction
+
+private function AHUI_InitReqLevels takes nothing returns nothing
+    call SaveInteger(AHUI_ReqLevel, 'A01U', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A027', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A031', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A034', 0, 6)
+    call SaveInteger(AHUI_ReqLevel, 'A035', 0, 10)
+    call SaveInteger(AHUI_ReqLevel, 'A036', 0, 25)
+    call SaveInteger(AHUI_ReqLevel, 'A039', 0, 6)
+    call SaveInteger(AHUI_ReqLevel, 'A03A', 0, 10)
+    call SaveInteger(AHUI_ReqLevel, 'A03B', 0, 25)
+    call SaveInteger(AHUI_ReqLevel, 'A03E', 0, 6)
+    call SaveInteger(AHUI_ReqLevel, 'A03F', 0, 10)
+    call SaveInteger(AHUI_ReqLevel, 'A03G', 0, 25)
+    call SaveInteger(AHUI_ReqLevel, 'A03K', 0, 10)
+    call SaveInteger(AHUI_ReqLevel, 'A03L', 0, 25)
+    call SaveInteger(AHUI_ReqLevel, 'A04D', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A04E', 0, 25)
+    call SaveInteger(AHUI_ReqLevel, 'A04I', 0, 10)
+    call SaveInteger(AHUI_ReqLevel, 'A055', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A05V', 0, 35)
+    call SaveInteger(AHUI_ReqLevel, 'A065', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A06D', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A07C', 0, 6)
+    call SaveInteger(AHUI_ReqLevel, 'A08A', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A08B', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A08H', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A08R', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A09A', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A09J', 0, 6)
+    call SaveInteger(AHUI_ReqLevel, 'A0A7', 0, 25)
+    call SaveInteger(AHUI_ReqLevel, 'A0AS', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0BK', 0, 10)
+    call SaveInteger(AHUI_ReqLevel, 'A0BO', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0C9', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0CM', 0, 25)
+    call SaveInteger(AHUI_ReqLevel, 'A0CO', 0, 35)
+    call SaveInteger(AHUI_ReqLevel, 'A0DA', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0DQ', 0, 6)
+    call SaveInteger(AHUI_ReqLevel, 'A0DR', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0EE', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0EM', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0EZ', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0FU', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0FV', 0, 25)
+    call SaveInteger(AHUI_ReqLevel, 'A0GU', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0GV', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0GW', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0H6', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0H8', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A0HO', 0, 12)
+    call SaveInteger(AHUI_ReqLevel, 'A11B', 0, 12)
+endfunction
+
+private function AHUI_SetManaTint takes integer index, boolean on returns nothing
+    local integer state = 1
+    if on then
+        set state = 2
+    endif
+    if AHUI_ManaTintSet[index] != state then
+        set AHUI_ManaTintSet[index] = state
+        if on then
+            call BlzFrameSetVertexColor(AHUI_Icon[index], BlzConvertColor(255, 80, 100, 255))
+        else
+            call BlzFrameSetVertexColor(AHUI_Icon[index], BlzConvertColor(255, 255, 255, 255))
+        endif
+        // Vertex color carries alpha too: re-apply the cached icon alpha.
+        if AHUI_IconAlphaSet[index] > 0 then
+            call BlzFrameSetAlpha(AHUI_Icon[index], AHUI_IconAlphaSet[index] - 1)
+        endif
+    endif
 endfunction
 
 private function AHUI_IsVisibleSlotCandidate takes unit whichHero, player owner, integer abilityId returns boolean
@@ -1523,11 +1622,11 @@ private function AHUI_RefreshLearning takes integer pid returns nothing
             set index = slot * AHUI_MAX_PIPS + k
             if k < maximum then
                 if k < level then
-                    set texture = "UI\\WOS\\pip-full.tga"
+                    set texture = "UI\\WOS\\pip-full.blp"
                 elseif k == level and learnable then
-                    set texture = "UI\\WOS\\pip-ready.tga"
+                    set texture = "UI\\WOS\\pip-ready.blp"
                 else
-                    set texture = "UI\\WOS\\pip-empty.tga"
+                    set texture = "UI\\WOS\\pip-empty.blp"
                 endif
                 if AHUI_PipTexture[index] != texture then
                     if AHUI_PipTexture[index] == null then
@@ -1776,7 +1875,12 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
             return
         endif
         call WUI_SetSlotCustomShown(slot, abilityId != 0 and level > 0)
-        call WUI_ShowNativeAbilitySlot(slot, false)
+        if abilityId != 0 and level > 0 and IsUnitPaused(AHUI_SelectedHero[pid]) and (slot < AHUI_SLOT_F or (BlzGetAbilityPosX(abilityId) == AHUI_GetSlotX(slot) and BlzGetAbilityPosY(abilityId) == AHUI_GetSlotY(slot))) and not IsUnitType(AHUI_SelectedHero[pid], UNIT_TYPE_DEAD) and not WUI_NativeCommandsHidden() and not WUI_IsHotkeyEditing() and WUI_SlotKeyLabel(pid, slot) == "" and not silenced then
+            // Only the pause hides it: keep the stock button in its cell.
+            call WUI_HoldNativeAbilitySlot(slot)
+        else
+            call WUI_ShowNativeAbilitySlot(slot, false)
+        endif
     endif
 
     if abilityId == 0 then
@@ -1784,7 +1888,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
         // clears the slot and sets the texture.
         if AHUI_RenderedAbility[index] != -1 or not AHUI_SlotVisible[index] then
             call AHUI_HideSlot(pid, slot)
-            call BlzFrameSetTexture(AHUI_Icon[index], "UI\\WOS\\disabled.tga", 0, true)
+            call BlzFrameSetTexture(AHUI_Icon[index], "UI\\WOS\\disabled.blp", 0, true)
             set AHUI_RenderedAbility[index] = -1
         endif
         call AHUI_SetIconAlpha(index, 255)
@@ -1799,7 +1903,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     endif
 
     set level = GetUnitAbilityLevel(AHUI_SelectedHero[pid], abilityId)
-    if level > 0 and (AHUI_PassiveLocked(AHUI_SelectedHero[pid], slot, abilityId) or AHUI_RequirementLocked(AHUI_SelectedHero[pid], abilityId)) then
+    if level > 0 and (AHUI_PassiveLocked(AHUI_SelectedHero[pid], slot, abilityId) or AHUI_RequirementLocked(AHUI_SelectedHero[pid], abilityId) or AHUI_LevelReqLocked(AHUI_SelectedHero[pid], abilityId)) then
         set level = 0
     endif
     // A learned skill the owner cannot use right now (SetPlayerAbilityAvailable false /
@@ -1815,6 +1919,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
         set AHUI_RenderedIconPath[index] = iconPath
         set AHUI_CooldownPeak[index] = 0.00
         set AHUI_LastRemaining[index] = 0.00
+        set AHUI_ManaTicks[index] = 0
         call BlzFrameSetTexture(AHUI_Icon[index], iconPath, 0, true)
         call BlzFrameSetTexture(AHUI_CooldownFill[index], ConvertBTNtoDISBTN(iconPath), 0, true)
     endif
@@ -1839,6 +1944,16 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
 
     // Неизученная или сейчас отсутствующая способность остаётся видимой как
     // DISBTN, но без выдуманного таймера.
+    // Not enough mana right now: blue tint like the stock card. Rechecked every 4th refresh.
+    if level <= 0 or not AHUI_CanReadCooldown(AHUI_SelectedHero[pid], pid) then
+        call AHUI_SetManaTint(index, false)
+    elseif AHUI_ManaTicks[index] <= 0 then
+        set AHUI_ManaTicks[index] = 4
+        call AHUI_SetManaTint(index, GetUnitState(AHUI_SelectedHero[pid], UNIT_STATE_MANA) < BlzGetUnitAbilityManaCost(AHUI_SelectedHero[pid], abilityId, level - 1))
+    else
+        set AHUI_ManaTicks[index] = AHUI_ManaTicks[index] - 1
+    endif
+
     if level <= 0 then
         set AHUI_CooldownPeak[index] = 0.00
         set AHUI_LastRemaining[index] = 0.00
@@ -2096,7 +2211,8 @@ private function AHUI_IsEligibleHero takes unit whichHero, integer viewerId retu
     if whichHero == null or viewerId < 0 or viewerId >= bj_MAX_PLAYER_SLOTS or GetUnitTypeId(whichHero) == 0 then
         return false
     endif
-    if not IsUnitType(whichHero, UNIT_TYPE_HERO) or IsUnitIllusion(whichHero) then
+    // Illusions share hero descriptions; excluding them reveals their identity.
+    if not IsUnitType(whichHero, UNIT_TYPE_HERO) then
         return false
     endif
 
@@ -2191,9 +2307,17 @@ globals
     private boolean array AHUI_PingInputInside
     // Synced Left Shift state: cooldown chat pings need Shift + RMB.
     private boolean array AHUI_ShiftHeld
+    // Ticks (AHUI_UPDATE_PERIOD) since the last Shift key event; a lost key-up
+    // (alt-tab, chat) must not leave Shift "held" forever. Held keys auto-repeat.
+    private integer array AHUI_ShiftAge
+    private constant integer AHUI_SHIFT_MAX_AGE = 24
     private trigger AHUI_ShiftTrigger = null
     private boolean array AHUI_QBIntentHeld
 endglobals
+
+private function AHUI_ShiftFresh takes integer pid returns boolean
+    return AHUI_ShiftHeld[pid] and AHUI_ShiftAge[pid] < AHUI_SHIFT_MAX_AGE
+endfunction
 
 // Shift + RMB on a Quick Buy preview (empty inventory cell): allies learn its final item
 // (synced "F" with the locally shown step; validated by QB_OnSync).
@@ -2212,7 +2336,7 @@ private function AHUI_PollQuickBuyIntent takes integer pid, real x, real y retur
         set AHUI_QBIntentHeld[pid] = false
         return
     endif
-    if AHUI_QBIntentHeld[pid] or not AHUI_ShiftHeld[pid] or QB_Hero[pid] == 0 or QB_Preview[hit] == null or not BlzFrameIsVisible(QB_Preview[hit]) then
+    if AHUI_QBIntentHeld[pid] or not AHUI_ShiftFresh(pid) or QB_Hero[pid] == 0 or QB_Preview[hit] == null or not BlzFrameIsVisible(QB_Preview[hit]) then
         return
     endif
     set AHUI_QBIntentHeld[pid] = true
@@ -2235,7 +2359,7 @@ private function AHUI_PollCooldownMouse takes integer pid, real x, real y return
         set AHUI_PingRmbHeld[pid] = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT)
         return
     endif
-    if BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT) and AHUI_ShiftHeld[pid] then
+    if BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT) and AHUI_ShiftFresh(pid) then
         call AHUI_RequestCooldownPing(pid, x, y)
     else
         call AHUI_ReleaseCooldownPing(pid)
@@ -2479,6 +2603,9 @@ private function AHUI_Periodic takes nothing returns nothing
         call AR_Render(pid)
     endif
 
+    if pid < 10 and AHUI_ShiftAge[pid] < AHUI_SHIFT_MAX_AGE then
+        set AHUI_ShiftAge[pid] = AHUI_ShiftAge[pid] + 1
+    endif
     set AHUI_TipClock = AHUI_TipClock + 1
     if AHUI_TipClock >= 100 then
         set AHUI_TipClock = 0
@@ -2621,7 +2748,7 @@ private function AHUI_CreateSlotFrames takes nothing returns nothing
             // Paused: two thin chains crossing the icon (like the ban cross).
             set AHUI_PausedText[index] = BlzCreateFrameByType("BACKDROP", "AHUIPausedChains", AHUI_Root[index], "", index)
             call BlzFrameSetAllPoints(AHUI_PausedText[index], AHUI_Root[index])
-            call BlzFrameSetTexture(AHUI_PausedText[index], "UI\\WOS\\skill-chains.tga", 0, true)
+            call BlzFrameSetTexture(AHUI_PausedText[index], "UI\\WOS\\skill-chains.blp", 0, true)
             call BlzFrameSetLevel(AHUI_PausedText[index], 112)
             call BlzFrameSetEnable(AHUI_PausedText[index], false)
             call BlzFrameSetVisible(AHUI_PausedText[index], false)
@@ -2758,7 +2885,7 @@ private function AHUI_CreateLearnFrames takes nothing returns nothing
             set index = slot * AHUI_MAX_PIPS + k
             set AHUI_Pip[index] = BlzCreateFrameByType("BACKDROP", "AHUIPip", root, "", index)
             call WUI_Place(AHUI_Pip[index], WUI_AbilityX(slot), WUI_PIP_Y, AHUI_PIP_SIZE, AHUI_PIP_SIZE)
-            call BlzFrameSetTexture(AHUI_Pip[index], "UI\\WOS\\pip-empty.tga", 0, true)
+            call BlzFrameSetTexture(AHUI_Pip[index], "UI\\WOS\\pip-empty.blp", 0, true)
             call BlzFrameSetLevel(AHUI_Pip[index], 125)
             call BlzFrameSetEnable(AHUI_Pip[index], false)
             call BlzFrameSetVisible(AHUI_Pip[index], false)
@@ -2780,7 +2907,7 @@ private function AHUI_CreateLearnFrames takes nothing returns nothing
         call BlzFrameSetLevel(AHUI_LearnButton[slot], 120)
         set AHUI_LearnGlow[slot] = BlzCreateFrameByType("BACKDROP", "AHUILearnGlow", AHUI_LearnButton[slot], "", slot)
         call BlzFrameSetAllPoints(AHUI_LearnGlow[slot], AHUI_LearnButton[slot])
-        call BlzFrameSetTexture(AHUI_LearnGlow[slot], "UI\\WOS\\learn-glow.tga", 0, true)
+        call BlzFrameSetTexture(AHUI_LearnGlow[slot], "UI\\WOS\\learn-glow.blp", 0, true)
         call BlzFrameSetEnable(AHUI_LearnGlow[slot], false)
         call BlzFrameSetVisible(AHUI_LearnGlow[slot], false)
         call BlzTriggerRegisterFrameEvent(AHUI_LearnTrigger, AHUI_LearnButton[slot], FRAMEEVENT_CONTROL_CLICK)
@@ -2809,12 +2936,14 @@ private function AHUI_CreateLearnFrames takes nothing returns nothing
 endfunction
 
 private function AHUI_OnShiftKey takes nothing returns nothing
-    set AHUI_ShiftHeld[GetPlayerId(GetTriggerPlayer())] = BlzGetTriggerPlayerIsKeyDown()
+    local integer pid = GetPlayerId(GetTriggerPlayer())
+    set AHUI_ShiftHeld[pid] = BlzGetTriggerPlayerIsKeyDown()
+    set AHUI_ShiftAge[pid] = 0
 endfunction
 
 // Synced Shift state (shop: Shift + RMB on a Quick Buy slot shows its final recipe).
 function AHUI_IsShiftHeld takes integer pid returns boolean
-    return pid >= 0 and pid < 10 and AHUI_ShiftHeld[pid]
+    return pid >= 0 and pid < 10 and AHUI_ShiftFresh(pid)
 endfunction
 
 // F1 while the own hero is dead: a corpse cannot be selected, so the panel shows
@@ -2899,6 +3028,7 @@ private function AHUI_StartUI takes nothing returns nothing
 endfunction
 
 private function InitAllyHeroAbilityUI takes nothing returns nothing
+    call AHUI_InitReqLevels()
     call WUI_OnReady(function AHUI_StartUI)
 endfunction
 

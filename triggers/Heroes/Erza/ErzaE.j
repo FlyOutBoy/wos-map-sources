@@ -768,7 +768,7 @@ library ErzaESpells uses GearSystems, ErzaTSpells
                         if r >= Erza3T_CastTime then
                             call StopSpellUnit2(c)
                             set check = 1
-                            call MakeSound("war3mapimported\\HeroStarrk_Q3")
+                            call MakeSound("war3mapimported\\Hero_Starrk_Q3")
                             call DestroyEffect(e)
                             call DestroyEffect(e2)
                             call MakeSound("war3mapImported\\Hero_Erza3_T2")

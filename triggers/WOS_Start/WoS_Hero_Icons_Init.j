@@ -3,7 +3,6 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         // Hashed once at map load (was StringHash(...) on every call).
         private integer SH_CD_S = StringHash("cd s")
         private integer SH_CHAT_CD = StringHash("chat cd")
-        private integer SH_STATS_LEFT = StringHash("stats left")
     endglobals
     globals
         integer firsttimecleardummy = 0
@@ -12,8 +11,6 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         trigger FrameLeaveHeroMain
         trigger FrameLinkMain
         trigger FrameLinkMain2
-        trigger FrameAltHeroMainOn
-        trigger FrameAltHeroMainOff
         trigger FrameBoxCheck
         trigger FrameSliderCheck
         framehandle FRAME_StatusHeroMain
@@ -61,23 +58,6 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         framehandle FRAME_TEST4
         framehandle FRAME_TEST5
         framehandle FRAME_TEST6
-        framehandle FRAME_StatsMain
-        framehandle FRAME_StatsBack
-        framehandle FRAME_Stats0
-        framehandle FRAME_Stats1
-        framehandle FRAME_Stats2
-        framehandle FRAME_Stats3
-        framehandle FRAME_Stats4
-        framehandle FRAME_Stats5
-        framehandle FRAME_Stats6
-        framehandle FRAME_Stats7
-        framehandle FRAME_Stats8
-        framehandle FRAME_Stats9
-        framehandle FRAME_Stats10
-        framehandle FRAME_Stats11
-        framehandle FRAME_Stats12
-        framehandle FRAME_StatsCheckbox
-        framehandle FRAME_StatsCheckboxString
         framehandle FRAME_StatusHeroMain3
         framehandle FRAME_StatusHeroMain4
         framehandle array FRAME_StatusHero
@@ -95,12 +75,6 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         boolean array FRAME_StatusHeroStringPlayerShowBoolean
         framehandle array FRAME_StatusHeroStringPlayerName
         framehandle array FRAME_StatusHeroStringPlayerKill
-        framehandle array FRAME_StatusHeroStringPlayerDeath
-        framehandle array FRAME_StatusHeroStringPlayerHeal
-        framehandle array FRAME_StatusHeroStringPlayerDamagePhys
-        framehandle array FRAME_StatusHeroStringPlayerDamageMag
-        framehandle array FRAME_StatusHeroStringPlayerDamageTakenPhys
-        framehandle array FRAME_StatusHeroStringPlayerDamageTakenMag
         framehandle FRAME_StatusHeroStringPlayerTakenDamageMag
         framehandle FRAME_StatusHeroStringPlayerTakenDamagePhys
         framehandle FRAME_RoundCount
@@ -258,7 +232,7 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         if StatusLeaveCover[i] == null and FRAME_StatusHeroBack[i] != null then
             set StatusLeaveCover[i] = BlzCreateFrameByType("BACKDROP", "WOSStatusLeaveCover", FRAME_StatusHeroBack[i], "", i)
             call BlzFrameSetAllPoints(StatusLeaveCover[i], FRAME_StatusHeroBack[i])
-            call BlzFrameSetTexture(StatusLeaveCover[i], "UI\\WOS\\ban-cover.tga", 0, true)
+            call BlzFrameSetTexture(StatusLeaveCover[i], "UI\\WOS\\ban-cover.blp", 0, true)
             call BlzFrameSetEnable(StatusLeaveCover[i], false)
             call BlzFrameSetVisible(StatusLeaveCover[i], false)
         endif
@@ -418,7 +392,7 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         integer array WOS_SwapOfferFrom
         // Community (Discord) toolbar icon. To use Discord's official logo,
         // import it (e.g. UI\WOS\discord.tga) and point this path at it.
-        constant string WOS_COMMUNITY_ICON = "UI\\WOS\\discord.tga"
+        constant string WOS_COMMUNITY_ICON = "UI\\WOS\\discord.blp"
         // TestMode only: false = old instant "replace hero", true = real flow.
         boolean array WOS_SwapTestReal
         trigger WOS_SwapUIClick = null
@@ -579,7 +553,7 @@ local integer countB = 0
     local integer slot = 0
     if Round1Started == 0 then 
     if Hero[pid2] == null then
-        call DisplayTimedTextToPlayer(p, 0, 0, 5, "|cffFFCC00This player have not picked hero!|r")
+        call DisplayTimedTextToPlayer(p, 0, 0, 5, "|cffFFCC00This player has not picked a hero yet!|r")
         return
     endif
     if SwapRequests[pid2] == pid then
@@ -830,7 +804,7 @@ endfunction
         call BlzFrameSetLevel(plate, 40)
         set part = BlzCreateFrameByType("BACKDROP", name + "Fill", plate, "", 0)
         call BlzFrameSetAllPoints(part, plate)
-        call BlzFrameSetTexture(part, "UI\\WOS\\fill-disabled.tga", 0, true)
+        call BlzFrameSetTexture(part, "UI\\WOS\\fill-disabled.blp", 0, true)
         call BlzFrameSetEnable(part, false)
         set part = BlzCreateFrameByType("BACKDROP", name + "Glyph", plate, "", 0)
         call BlzFrameSetPoint(part, FRAMEPOINT_TOPLEFT, plate, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
@@ -857,7 +831,7 @@ endfunction
         endloop
         // Request menu: opens right under the SWAP button.
         set WOS_SwapMenu = BlzCreateFrameByType("BACKDROP", "WOSSwapMenu", root, "", 0)
-        call BlzFrameSetTexture(WOS_SwapMenu, "UI\\WOS\\panel-soft.tga", 0, true)
+        call BlzFrameSetTexture(WOS_SwapMenu, "UI\\WOS\\panel-soft.blp", 0, true)
         call BlzFrameClearAllPoints(WOS_SwapMenu)
         call BlzFrameSetAbsPoint(WOS_SwapMenu, FRAMEPOINT_TOPLEFT, WOS_REPICK_X - 0.012, WOS_SWAP_Y - 0.016)
         call BlzFrameSetSize(WOS_SwapMenu, 0.150, 0.059)
@@ -875,7 +849,7 @@ endfunction
         call BlzFrameSetSize(WOS_SwapMenuClose, 0.013, 0.013)
         set part = BlzCreateFrameByType("BACKDROP", "WOSSwapMenuCloseGlyph", WOS_SwapMenuClose, "", 0)
         call BlzFrameSetAllPoints(part, WOS_SwapMenuClose)
-        call BlzFrameSetTexture(part, "UI\\WOS\\glyph-close.tga", 0, true)
+        call BlzFrameSetTexture(part, "UI\\WOS\\glyph-close.blp", 0, true)
         call BlzFrameSetEnable(part, false)
         call BlzTriggerRegisterFrameEvent(WOS_SwapUIClick, WOS_SwapMenuClose, FRAMEEVENT_CONTROL_CLICK)
         set WOS_SwapMenuEmpty = BlzCreateFrameByType("TEXT", "WOSSwapMenuEmpty", WOS_SwapMenu, "", 0)
@@ -908,18 +882,18 @@ endfunction
         // Offer popup for the requested player, under the team strip.
         set WOS_SwapOffer = BlzCreateFrameByType("BACKDROP", "WOSSwapOffer", root, "", 0)
         call WUI_Place(WOS_SwapOffer, 0.400, 0.470, 0.236, 0.090)
-        call BlzFrameSetTexture(WOS_SwapOffer, "UI\\WOS\\panel-soft.tga", 0, true)
+        call BlzFrameSetTexture(WOS_SwapOffer, "UI\\WOS\\panel-soft.blp", 0, true)
         call BlzFrameSetLevel(WOS_SwapOffer, 80)
         set WOS_SwapOfferGlow = BlzCreateFrameByType("BACKDROP", "WOSSwapOfferGlow", WOS_SwapOffer, "", 0)
         call BlzFrameSetPoint(WOS_SwapOfferGlow, FRAMEPOINT_CENTER, WOS_SwapOffer, FRAMEPOINT_CENTER, 0.000, 0.000)
         call BlzFrameSetSize(WOS_SwapOfferGlow, 0.250, 0.104)
-        call BlzFrameSetTexture(WOS_SwapOfferGlow, "UI\\WOS\\glow-gold.tga", 0, true)
+        call BlzFrameSetTexture(WOS_SwapOfferGlow, "UI\\WOS\\glow-gold.blp", 0, true)
         call BlzFrameSetEnable(WOS_SwapOfferGlow, false)
         set part = WUI_OrnateBorder("WOSSwapOfferMetal", WOS_SwapOffer, 0.016)
         set WOS_SwapOfferShine = BlzCreateFrameByType("BACKDROP", "WOSSwapOfferShine", WOS_SwapOffer, "", 0)
         call BlzFrameSetSize(WOS_SwapOfferShine, 0.040, 0.010)
         call BlzFrameSetPoint(WOS_SwapOfferShine, FRAMEPOINT_CENTER, WOS_SwapOffer, FRAMEPOINT_TOP, 0.000, 0.000)
-        call BlzFrameSetTexture(WOS_SwapOfferShine, "UI\\WOS\\shine.tga", 0, true)
+        call BlzFrameSetTexture(WOS_SwapOfferShine, "UI\\WOS\\shine.blp", 0, true)
         call BlzFrameSetEnable(WOS_SwapOfferShine, false)
         set WOS_SwapOfferText = BlzCreateFrameByType("TEXT", "WOSSwapOfferText", WOS_SwapOffer, "", 0)
         call BlzFrameSetPoint(WOS_SwapOfferText, FRAMEPOINT_TOP, WOS_SwapOffer, FRAMEPOINT_TOP, 0.000, -0.009)
@@ -934,7 +908,7 @@ endfunction
         set part = BlzCreateFrameByType("BACKDROP", "WOSSwapOfferArrow", WOS_SwapOffer, "", 0)
         call BlzFrameSetPoint(part, FRAMEPOINT_CENTER, WOS_SwapOffer, FRAMEPOINT_CENTER, 0.000, -0.004)
         call BlzFrameSetSize(part, 0.020, 0.020)
-        call BlzFrameSetTexture(part, "UI\\WOS\\glyph-swap.tga", 0, true)
+        call BlzFrameSetTexture(part, "UI\\WOS\\glyph-swap.blp", 0, true)
         call BlzFrameSetEnable(part, false)
         set WOS_SwapOfferTheirs = BlzCreateFrameByType("BACKDROP", "WOSSwapOfferTheirs", WOS_SwapOffer, "", 0)
         call BlzFrameSetPoint(WOS_SwapOfferTheirs, FRAMEPOINT_CENTER, WOS_SwapOffer, FRAMEPOINT_CENTER, 0.030, -0.004)
@@ -951,8 +925,8 @@ endfunction
         call BlzTriggerRegisterFrameEvent(WOS_SwapUIClick, WOS_SwapDecline, FRAMEEVENT_CONTROL_CLICK)
         call BlzFrameSetVisible(WOS_SwapOffer, false)
         // Disabled plates shown in place of SWAP / REPICK when they are off.
-        set WOS_SwapGhost = WOS_SwapGhostPlate("WOSSwapGhost", "UI\\WOS\\glyph-swap-off.tga", WOS_SWAP_X)
-        set WOS_RepickGhost = WOS_SwapGhostPlate("WOSRepickGhost", "UI\\WOS\\glyph-repick-off.tga", WOS_REPICK_X)
+        set WOS_SwapGhost = WOS_SwapGhostPlate("WOSSwapGhost", "UI\\WOS\\glyph-swap-off.blp", WOS_SWAP_X)
+        set WOS_RepickGhost = WOS_SwapGhostPlate("WOSRepickGhost", "UI\\WOS\\glyph-repick-off.blp", WOS_REPICK_X)
         call WUI_TooltipBelow(WOS_SwapGhost, "|cff9aa0a8SWAP|r|nAvailable before the first round with an ally who has a hero.")
         call WUI_TooltipBelow(WOS_RepickGhost, "|cff9aa0a8REPICK|r|nAvailable before the first round.")
         // TestMode switch next to SWAP: instant replace (old) or the real flow.
@@ -1111,7 +1085,6 @@ endfunction
         local integer i = 0
         local real takenMag
         local real takenPhys
-        local unit d
 
         if pid < 0 or pid >= 10 or Hero[pid] == null then
             return
@@ -1125,69 +1098,12 @@ endfunction
             else
                 call BlzFrameSetText(FRAME_StatusHeroStringPlayerTakenDamageMag, "|c00FFFF00Dmg taken:|r |c004675FF" + FormatK(R2I(PlayerDamageTakenMag[pid])) + " Mag|r/|cffff0000" + FormatK(R2I(PlayerDamageTakenPhys[pid])) + " Phys|r")
             endif
-            loop
-                exitwhen i == 10
-                if Hero[i] != null then
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[i], "|c00FFFF00Kills: |r" + I2S(PlayerKill[i]))
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerDeath[i], "|c00A74FFFDeaths: |r" + I2S(PlayerDeath[i]))
-                    if i == pid then
-                        if TestMode then
-                            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "|cffff0000Phys: |r" + I2S(PlayerDamagePhys[i]))
-                            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "|c004675FFMag: |r" + I2S(PlayerDamageMag[i]))
-                        else
-                            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "|cffff0000Phys: |r" + FormatK(PlayerDamagePhys[i]))
-                            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "|c004675FFMag: |r" + FormatK(PlayerDamageMag[i]))
-                        endif
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], "|cffff0000T P:|r" + FormatK(R2I(PlayerDamageTakenPhys[i])))
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenMag[i], "|c004675FFT M:|r" + FormatK(R2I(PlayerDamageTakenMag[i])))
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerHeal[i], "|c0013F807Heal: |r" + FormatK(PlayerHeal[i]))
-                    else
-                        if TestMode then
-                            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "|cffff0000Phys: |r" + I2S(PlayerDamagePhysAll[i]))
-                            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "|c004675FFMag: |r" + I2S(PlayerDamageMagAll[i]))
-                        else
-                            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "|cffff0000Phys: |r" + FormatK(PlayerDamagePhysAll[i]))
-                            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "|c004675FFMag: |r" + FormatK(PlayerDamageMagAll[i]))
-                        endif
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], "|cffff0000T P:|r" + FormatK(R2I(PlayerDamageTakenPhysAll[i])))
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenMag[i], "|c004675FFT M:|r" + FormatK(R2I(PlayerDamageTakenMagAll[i])))
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerHeal[i], "|c0013F807Heal: |r" + FormatK(PlayerHealAll[i]))
-                    endif
-                endif
-                set i = i + 1
-            endloop
 
-            if HeroChosen[pid] == null then
-                set d = Hero[pid]
-            else
-                set d = HeroChosen[pid]
-            endif
-            if d != null then
-                call BlzFrameSetText(FRAME_Stats0, "[|c00FFFC01" + SplitName2(GetUnitName(d)) + "|r]")
-                call BlzFrameSetText(FRAME_Stats2, "|c0000FD00Hp regen: " + R2SW(GetHpRegen(d), 0, 2) + "|r")
-                call BlzFrameSetText(FRAME_Stats3, "|c004675FFMp regen: " + R2SW(GetMpRegen(d), 0, 2) + "|r")
-                call BlzFrameSetText(FRAME_Stats4, "|cffff0000Phys res: " + R2SW(GetPhysRes(d), 0, 2) + "%|r")
-                call BlzFrameSetText(FRAME_Stats5, "|c005959FFMag res: " + R2SW(GetMagRes(d), 0, 2) + "%|r")
-                call BlzFrameSetText(FRAME_Stats6, "|c00FFFF00Movespeed: " + I2S(R2I(GetUnitMoveSpeed(d))) + "|r")
-                call BlzFrameSetText(FRAME_Stats7, "|c00E2E2E2Atk cd: " + R2SW(GetAS(d), 0, 2) + "|r")
-                call BlzFrameSetText(FRAME_Stats8, "|c002DFF00Atk range: " + R2SW(BlzGetUnitWeaponRealField(d, UNIT_WEAPON_RF_ATTACK_RANGE, 0), 0, 2) + "|r")
-                if IsUnitType(d, UNIT_TYPE_HERO) then
-                    call BlzFrameSetText(FRAME_Stats9, "|cffff0000Str: " + I2S(BlzGetUnitIntegerField(d, UNIT_IF_STRENGTH)) + "+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_STRENGTH_PER_LEVEL), 0, 2) + "|r")
-                    call BlzFrameSetText(FRAME_Stats10, "|cff289b1eAgi: " + I2S(BlzGetUnitIntegerField(d, UNIT_IF_AGILITY)) + "+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_AGILITY_PER_LEVEL), 0, 2) + "|r")
-                    call BlzFrameSetText(FRAME_Stats11, "|cff3737ffInt: " + I2S(BlzGetUnitIntegerField(d, UNIT_IF_INTELLIGENCE)) + "+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_INTELLIGENCE_PER_LEVEL), 0, 2) + "|r")
-                else
-                    call BlzFrameSetText(FRAME_Stats9, "|cffff0000Str: 0|r")
-                    call BlzFrameSetText(FRAME_Stats10, "|cff289b1eAgi: 0|r")
-                    call BlzFrameSetText(FRAME_Stats11, "|cff3737ffInt: 0|r")
-                endif
-                call BlzFrameSetText(FRAME_Stats12, "Camera range: " + I2S(R2I(CameraSetup[pid])) + "|r")
-            endif
         else
             set takenMag = GetPlayerTakenMag(Player(pid))
             set takenPhys = GetPlayerTakenPhys(Player(pid))
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerTakenDamageMag, "|c00FFFF00Dmg taken:|r |c004675FF" + R2SW(takenMag, 0, 1) + "%Mag|r/|cffff0000" + R2SW(takenPhys, 0, 1) + "%Phys|r")
         endif
-        set d = null
     endfunction
 
     function PlayerStatusHeroPeriodic takes nothing returns nothing
@@ -1215,11 +1131,7 @@ endfunction
 
         // Общие фреймы деталей нельзя обновлять по очереди для всех pid:
         // последний открывший панель игрок перезаписывал личный полученный урон.
-        if IsObserverSlot(viewerPid) then
-            if FRAME_StatsMain != null then
-                call BlzFrameSetVisible(FRAME_StatsMain, false)
-            endif
-        else
+        if not IsObserverSlot(viewerPid) then
             call UpdateLocalStatusDetails(viewerPid)
         endif
 
@@ -1331,115 +1243,6 @@ endfunction
         call BlzFrameSetText(FRAME_GameTimer, GetCompactGameTimerText())
     endfunction
 
-    function FrameAlt_Show_True takes nothing returns nothing
-        local integer i = 0
-        local player p = GetTriggerPlayer()
-        local integer id = GetPlayerId(p)
-        if IsObserverSlot(id) then
-            if GetLocalPlayer() == p then
-                call BlzFrameSetVisible(FRAME_StatsMain, false)
-            endif
-            set p = null
-            return
-        endif
-        if END1 != 0 then
-    set p = null
-    return
-endif
-        if FRAME_StatusHeroStringPlayerShowBoolean[id] == false then
-            set FRAME_StatusHeroStringPlayerShowBoolean[id] = true
-            if GetLocalPlayer() == p then
-                call BlzFrameSetVisible(FRAME_StatsMain , true)
-                call BlzFrameSetText(FRAME_StatusHeroStringPlayerTakenDamageMag, "|c00FFFF00Dmg taken:|r |c004675FF" + FormatK(R2I(PlayerDamageTakenMag[id])) + " Mag|r/|cffff0000" + FormatK(R2I(PlayerDamageTakenPhys[id])) + " Phys|r")
-            endif
-            loop
-                exitwhen i == 10
-                if Hero[i] != null then
-                    if GetLocalPlayer() == p then
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[i], "|c00FFFF00Kills: |r" + I2S(PlayerKill[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDeath[i], "|c00A74FFFDeaths: |r" + I2S(PlayerDeath[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "|cffff0000Phys: |r" + FormatK(PlayerDamagePhys[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "|c004675FFMag: |r" + FormatK(PlayerDamageMag[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerHeal[i], "|c0013F807Heal: |r" + FormatK(PlayerHeal[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], "|cffff0000T P:|r" + FormatK(R2I(PlayerDamageTakenPhys[i])) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenMag[i], "|c004675FFT M:|r" + FormatK(R2I(PlayerDamageTakenMag[i])) + "") 
-                    endif
-                endif
-                set i = i + 1
-            endloop
-        endif
-        set i = 0
-        set p = null
-    endfunction
-    function FrameAlt_Show_False takes nothing returns nothing
-        local integer i = 0
-        local player p = GetTriggerPlayer()
-        local integer id = GetPlayerId(p)
-        local real rr1
-        local real rr2
-        local integer check = LoadInteger(hs, GetHandleId(Player(id)), SH_STATS_LEFT)
-        if IsObserverSlot(id) then
-            if GetLocalPlayer() == p then
-                call BlzFrameSetVisible(FRAME_StatsMain, false)
-            endif
-            set p = null
-            return
-        endif
-        //call HeroTooltip(p)
-        if END1 != 0 then
-    set p = null
-    return
-endif
-        if FRAME_StatusHeroStringPlayerShowBoolean[id] == false then
-            set FRAME_StatusHeroStringPlayerShowBoolean[id] = true
-            if GetLocalPlayer() == p then
-                call BlzFrameSetVisible(FRAME_StatsMain , true)
-                call BlzFrameSetText(FRAME_StatusHeroStringPlayerTakenDamageMag, "|c00FFFF00Dmg taken:|r |c004675FF" + FormatK(R2I(PlayerDamageTakenMag[id])) + " Mag|r/|cffff0000" + FormatK(R2I(PlayerDamageTakenPhys[id])) + " Phys|r")
-            endif
-            loop
-                exitwhen i == 10
-                if Hero[i] != null then
-                    if GetLocalPlayer() == p then
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[i], "|c00FFFF00Kills: |r" + I2S(PlayerKill[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDeath[i], "|c00A74FFFDeaths: |r" + I2S(PlayerDeath[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "|cffff0000Phys: |r" + FormatK(PlayerDamagePhys[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "|c004675FFMag: |r" + FormatK(PlayerDamageMag[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerHeal[i], "|c0013F807Heal: |r" + FormatK(PlayerHeal[i]) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], "|cffff0000T P:|r" + FormatK(R2I(PlayerDamageTakenPhys[i])) + "")
-                        call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenMag[i], "|c004675FFT M:|r" + FormatK(R2I(PlayerDamageTakenMag[i])) + "") 
-                    endif
-                endif
-                set i = i + 1
-            endloop
-            else
-            set FRAME_StatusHeroStringPlayerShowBoolean[id] = false
-        if GetLocalPlayer() == p then
-            if check == 0 then
-                call BlzFrameSetVisible(FRAME_StatsMain , false)
-            endif
-            set rr1 = GetPlayerTakenMag(p)
-            set rr2 = GetPlayerTakenPhys(p)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerTakenDamageMag, "|c00FFFF00Dmg taken:|r |c004675FF" + R2SW(rr1,0,1) + "%Mag|r/|cffff0000" + R2SW(rr2,0,1) + "%Phys|r")
-        endif
-        loop
-            exitwhen i == 10
-            if Hero[i] != null then
-                if GetLocalPlayer() == p then
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[i], "")
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerDeath[i], "")
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "")
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "")
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerHeal[i], "")
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenPhys[i],  "")
-                    call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenMag[i],  "") 
-                endif
-            endif
-            set i = i + 1
-        endloop
-        endif       
-        set i = 0
-        set p = null
-    endfunction
     // Labels use zero offsets against their OWN boxes. Font scale never changes
     // the position of a score or timer, unlike scaled offsets from the team root.
     private function WOS_CreateRoundCounters takes nothing returns nothing
@@ -1525,7 +1328,6 @@ endif
         if hidden then
             call WUI_CollapseAllPanels()
             call WUI_PlaceRight(FRAME_TopCheckbox, 0.034, 0.586, 0.056, 0.015)
-            call BlzFrameSetVisible(FRAME_StatsMain, false)
         else
             call WUI_PlaceRight(FRAME_TopCheckbox, WUI_TOP_ROW_X2, 0.5495, WUI_TOP_ROW_W, 0.015)
         endif
@@ -1536,35 +1338,10 @@ endif
     function CheckBoxCheck takes nothing returns nothing
         local framehandle clicked = BlzGetTriggerFrame()
         local integer i = GetPlayerId(GetTriggerPlayer())
-        if IsObserverSlot(i) and clicked == FRAME_StatsCheckbox then
-            if GetLocalPlayer() == GetTriggerPlayer() then
-                call BlzFrameSetVisible(FRAME_StatsMain, false)
-            endif
-            set clicked = null
-            call WUI_ResetClickedButtonFocus()
-            return
-        endif
         if clicked == FRAME_ShopButtonCheck then
             if BlzGetTriggerFrameEvent() == FRAMEEVENT_CONTROL_CLICK then
                 set PlayerShopButton[i] = null
                 call DisplayTextToPlayer(Player(i), 0, 0, "Press |c00FFFC01'Tab'|r or |c00FFFC01'I'|r or |c00FFFC01'B'|r to change Shop hotkey")
-            endif
-            if GetLocalPlayer() == GetTriggerPlayer() then
-                call SaveInteger(hs, GetHandleId(Player(i)), SH_STATS_LEFT, 0)
-            endif
-        endif
-        if clicked == FRAME_StatsCheckbox then
-            if BlzGetTriggerFrameEvent() == FRAMEEVENT_CHECKBOX_CHECKED then
-                call SaveInteger(hs, GetHandleId(Player(i)), SH_STATS_LEFT, 1)
-            else
-                if FRAME_StatusHeroStringPlayerShowBoolean[i] == false then
-                    if GetLocalPlayer() == GetTriggerPlayer() then
-                        call BlzFrameSetVisible(FRAME_StatsMain , false)
-                    endif
-                endif
-                if GetLocalPlayer() == GetTriggerPlayer() then
-                    call SaveInteger(hs, GetHandleId(Player(i)), SH_STATS_LEFT, 0)
-                endif
             endif
         endif
         if clicked == FRAME_TopCheckbox then
@@ -1692,8 +1469,6 @@ endfunction
         set FrameClickHeroMain = CreateTrigger()
         set FrameEnterHeroMain = CreateTrigger()
         set FrameLeaveHeroMain = CreateTrigger()
-        set FrameAltHeroMainOn = CreateTrigger()
-        set FrameAltHeroMainOff = CreateTrigger()
         set FrameBoxCheck = CreateTrigger()
         set FrameSliderCheck = CreateTrigger()
         loop
@@ -1701,12 +1476,8 @@ endfunction
             // -1 гарантирует первое срабатывание для любой иконки, включая игрока 0.
             set StatusHeroHovered[i] = -1
             set StatusHeroPendingReset[i] = -1
-           // call BlzTriggerRegisterPlayerKeyEvent( FrameAltHeroMainOn, Player(i), OSKEY_F2 , 0, true)
-           // call BlzTriggerRegisterPlayerKeyEvent( FrameAltHeroMainOff, Player(i), OSKEY_F2 , 0, false)
             set i = i + 1
         endloop
-       // call TriggerAddAction( FrameAltHeroMainOn, function FrameAlt_Show_True )
-       // call TriggerAddAction( FrameAltHeroMainOff, function FrameAlt_Show_False )
     // === Р вЂњР В»Р В°Р Р†Р Р…РЎвЂ№Р в„– Р С”Р С•Р Р…РЎвЂљР ВµР в„–Р Р…Р ВµРЎР‚ ===
         // Прозрачный контейнер: внешняя стандартная рамка больше не рисуется.
         set FRAME_StatusHeroMain = WUI_Passive("StatusHeroMain", WUI_GetRoot())
@@ -1718,7 +1489,7 @@ endfunction
         // rectangle; the flush rails sit exactly on its edge.
         set border = BlzCreateFrameByType("BACKDROP", "WOSTeamFill", FRAME_StatusHeroMain, "", 0)
         call BlzFrameSetAllPoints(border, FRAME_StatusHeroMain)
-        call BlzFrameSetTexture(border, "UI\\WOS\\panel-soft.tga", 0, true)
+        call BlzFrameSetTexture(border, "UI\\WOS\\panel-soft.blp", 0, true)
         call BlzFrameSetEnable(border, false)
         call WUI_RegisterTopControl(border)
         set StatusTeamChrome = WUI_OrnateBorder("WOSTeamMetal", FRAME_StatusHeroMain, 0.016)
@@ -1742,7 +1513,9 @@ endfunction
         call TriggerAddAction(FrameBoxCheck, function CheckBoxCheck)
         set FRAME_StatusHeroMain4 = BlzCreateFrameByType("FRAME", "WOSCameraControls", WUI_GetMinimapRoot(), "", 0)
         call BlzFrameSetPoint(FRAME_StatusHeroMain4, FRAMEPOINT_CENTER, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_CENTER, -0.30, -0.2225)//0.39 - 0, 215
-        call BlzFrameSetSize(FRAME_StatusHeroMain4, 0.29, 0.0225 )
+        // Pure owner: children are placed absolutely. A 0.29 x 0.0225 box here
+        // was a click-eating strip across the middle of the minimap.
+        call BlzFrameSetSize(FRAME_StatusHeroMain4, 0.0001, 0.0001)
         // Gold/graphite vertical slider (WOSControls.fdf); stock scrollbar only
         // if the bundled definition could not be loaded.
         set FRAME_CamSlider = null
@@ -1763,10 +1536,9 @@ endfunction
         call BlzTriggerRegisterFrameEvent(FrameSliderCheck, FRAME_CamSlider, FRAMEEVENT_SLIDER_VALUE_CHANGED)
         call TriggerAddAction(FrameSliderCheck, function SliderCheck)
         set FRAME_CamSliderStringBack = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHeroMain4, "", 0)
-        call BlzFrameSetPoint(FRAME_CamSliderStringBack, FRAMEPOINT_CENTER, FRAME_StatusHeroMain4, FRAMEPOINT_CENTER, 0.0675, 0.0325 )// - 0.03 * i)
-        call BlzFrameSetAlpha(FRAME_CamSliderStringBack, 225)
+        call BlzFrameSetPoint(FRAME_CamSliderStringBack, FRAMEPOINT_CENTER, FRAME_StatusHeroMain4, FRAMEPOINT_CENTER, 0.0675, 0.0325 )// - 0.03 * i)        call BlzFrameSetAlpha(FRAME_CamSliderStringBack, 225)
         call BlzFrameSetSize(FRAME_CamSliderStringBack, 0.0165, 0.0165)
-        call BlzFrameSetTexture(FRAME_CamSliderStringBack, "UI\\WOS\\glyph-camera.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_CamSliderStringBack, "UI\\WOS\\glyph-camera.blp", 0, true)
         call BlzFrameSetAlpha(FRAME_CamSliderStringBack, 255)
         call BlzFrameSetEnable(FRAME_CamSliderStringBack, false)
         // Inside the minimap block's right strip (.140-.160).
@@ -1791,9 +1563,9 @@ endfunction
             call BlzFrameSetAlpha(FRAME_StatusHeroBack[i], 255)
             call BlzTriggerRegisterFrameEvent(FrameClickHeroMain, FRAME_StatusHero[i], FRAMEEVENT_CONTROL_CLICK)
             call BlzFrameSetTexture(FRAME_StatusHeroBack[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
-            set StatusHpBar[i] = WUI_CreateFill("WOSHeroHp", FRAME_StatusHero[i], STATUS_HERO_SIZE, 0.002, 100.00, "UI\\WOS\\hp.tga")
+            set StatusHpBar[i] = WUI_CreateFill("WOSHeroHp", FRAME_StatusHero[i], STATUS_HERO_SIZE, 0.002, 100.00, "UI\\WOS\\hp.blp")
             call BlzFrameSetPoint(StatusHpBar[i], FRAMEPOINT_TOPLEFT, FRAME_StatusHero[i], FRAMEPOINT_BOTTOMLEFT, 0.00, -0.001)
-            set StatusMpBar[i] = WUI_CreateFill("WOSHeroMp", FRAME_StatusHero[i], STATUS_HERO_SIZE, 0.002, 100.00, "UI\\WOS\\mp.tga")
+            set StatusMpBar[i] = WUI_CreateFill("WOSHeroMp", FRAME_StatusHero[i], STATUS_HERO_SIZE, 0.002, 100.00, "UI\\WOS\\mp.blp")
             call BlzFrameSetPoint(StatusMpBar[i], FRAMEPOINT_TOPLEFT, FRAME_StatusHero[i], FRAMEPOINT_BOTTOMLEFT, 0.00, -0.004)
             set StatusLastHpPercent[i] = -1.00
             set StatusLastMpPercent[i] = -1.00
@@ -1824,7 +1596,6 @@ endfunction
             // Warcraft сам показывает и скрывает подсказку без ENTER/LEAVE.
             call BlzFrameSetTooltip(FRAME_StatusHero[i], FRAME_StatusHeroTooltip[i])
 
-            set FRAME_StatusHeroStringPlayerKill[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
             if k >= 5 then
             set rkek2 = 0//
             else
@@ -1843,33 +1614,6 @@ endfunction
         call BlzFrameSetModel(FRAME_SwapSprite2[i], "Pick\\selecter6.mdx", 0)
         call BlzFrameSetVisible(FRAME_SwapSprite2[i], false)
             set rkek3 = (1-rkek+1)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerKill[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.045*rkek3 )// - 0.03 * i)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[i], "|c00FFFF00" + "" + "|r")
-            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerKill[i],rkek)
-            set FRAME_StatusHeroStringPlayerDeath[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDeath[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.055*rkek3 )// - 0.03 * i)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDeath[i], "|c00FFFF00" + "" + "|r")
-            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDeath[i],rkek)
-            set FRAME_StatusHeroStringPlayerDamagePhys[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamagePhys[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.065*rkek3 )// - 0.03 * i)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "|c00FFFF00" + "" + "|r")
-            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDamagePhys[i],rkek)
-            set FRAME_StatusHeroStringPlayerDamageMag[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageMag[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.075*rkek3 )// - 0.03 * i)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "|c00FFFF00" + "" + "|r")
-            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDamageMag[i],rkek)
-            set FRAME_StatusHeroStringPlayerHeal[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerHeal[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.085*rkek3 )// - 0.03 * i)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerHeal[i], "|c00FFFF00" + "" + "|r")
-            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerHeal[i],rkek)
-            set FRAME_StatusHeroStringPlayerDamageTakenPhys[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.095*rkek3 )// - 0.03 * i)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], "|c00FFFF00" + "" + "|r")
-            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDamageTakenPhys[i],rkek)
-            set FRAME_StatusHeroStringPlayerDamageTakenMag[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenMag[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.105*rkek3 )// - 0.03 * i)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenMag[i], "|c00FFFF00" + "" + "|r")
-            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDamageTakenMag[i],rkek)
             set k = k + 1
             if k == 5 then
                 set x = x + STATUS_RIGHT_SHIFT
@@ -1919,64 +1663,6 @@ endfunction
         call BlzFrameSetVisible(FRAME_StatusHeroMain4, true)
         
       
-        set y = -0.03
-        set FRAME_StatsMain = WUI_Window("WOSPlayerStats", WUI_GetRoot(), 0, 0)
-        call BlzFrameSetAbsPoint(FRAME_StatsMain, FRAMEPOINT_CENTER, 0.092, 0.309)
-        call BlzFrameSetSize(FRAME_StatsMain, 0.165, 0.232)
-        set FRAME_StatsCheckbox = BlzCreateFrame("QuestCheckBox2", FRAME_StatsMain, 0, 0)
-        call BlzFrameSetSize(FRAME_StatsCheckbox, 0.02, 0.02)
-        call BlzFrameSetAlpha(FRAME_StatsCheckbox, 255)
-        call BlzFrameSetPoint(FRAME_StatsCheckbox, FRAMEPOINT_CENTER, FRAME_StatsMain, FRAMEPOINT_CENTER, 0.05, 0.0375)// - 0.03 * i)
-        call BlzTriggerRegisterFrameEvent(FrameBoxCheck, FRAME_StatsCheckbox, FRAMEEVENT_CHECKBOX_CHECKED)
-        call BlzTriggerRegisterFrameEvent(FrameBoxCheck, FRAME_StatsCheckbox, FRAMEEVENT_CHECKBOX_UNCHECKED)
-        set FRAME_StatsCheckboxString = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetSize(FRAME_StatsCheckboxString, 0.06, 0.005)
-        call BlzFrameSetAlpha(FRAME_StatsCheckboxString, 255)
-        call BlzFrameSetPoint(FRAME_StatsCheckboxString, FRAMEPOINT_CENTER, FRAME_StatsMain, FRAMEPOINT_CENTER, 0.0625, 0.0525)// - 0.03 * i)
-        call BlzFrameSetText(FRAME_StatsCheckboxString, "|c00FFFF00Pin UI|r")
-        set FRAME_Stats1 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats1, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.015, y + 0.1025)
-        call BlzFrameSetText(FRAME_Stats1, "|c00FFFF00" + "Stats:" + "|r")
-        call BlzFrameSetScale(FRAME_Stats1, 1.25)
-        set FRAME_Stats0 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats0, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.05, y + 0.09+0.0075)
-        call BlzFrameSetText(FRAME_Stats0, "|c00FFFF00[" + "Name:" + "]|r")
-        call BlzFrameSetScale(FRAME_Stats0, 1)
-        set FRAME_Stats2 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats2, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + 0.075)
-        call BlzFrameSetText(FRAME_Stats2, "|c0000FD00" + "Hp regen: 1.00" + "|r")
-        set FRAME_Stats3 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats3, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + 0.06)
-        call BlzFrameSetText(FRAME_Stats3, "|c004675FF" + "Mp regen: 1.00" + "|r")
-        set FRAME_Stats4 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats4, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + 0.045)
-        call BlzFrameSetText(FRAME_Stats4, "|cffff0000" + "Phys res: 25.00" + "%|r")
-        set FRAME_Stats5 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats5, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + 0.03)
-        call BlzFrameSetText(FRAME_Stats5, "|c000000B7" + "Mag res: 11.00" + "%|r")
-        set FRAME_Stats6 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats6, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + 0.015)
-        call BlzFrameSetText(FRAME_Stats6, "|c00FFFF00" + "Movespeed: 375.00" + "|r")
-        set FRAME_Stats7 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats7, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + 0)
-        call BlzFrameSetText(FRAME_Stats7, "|c00E2E2E2" + "Atk cd: 1.25" + "|r")
-        set FRAME_Stats8 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats8, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y - 0.015)
-        call BlzFrameSetText(FRAME_Stats8, "|c00E2E2E2" + "Atk rng 125" + "|r")
-        
-        set FRAME_Stats9 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats9, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y - 0.03)
-        call BlzFrameSetText(FRAME_Stats9, "|cffff0000Str: " + I2S(33) + "+" + R2S(3.25) + "|r")
-        set FRAME_Stats10 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats10, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + - 0.045)
-        call BlzFrameSetText(FRAME_Stats10, "|cff289b1eAgi: " + I2S(33) + "+" + R2S(3.25) + "|r")
-        set FRAME_Stats11 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats11, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + - 0.06)
-        call BlzFrameSetText(FRAME_Stats11, "|cff3737ffInt: " + I2S(33) + "+" + R2S(3.25) + "|r")
-        set FRAME_Stats12 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Stats12, FRAMEPOINT_BOTTOMLEFT, FRAME_StatsMain, FRAMEPOINT_CENTER, -0.06, y + - 0.075)
-        call BlzFrameSetText(FRAME_Stats12, "Camera range: 3600" + "|r")
-        call BlzFrameSetVisible(FRAME_StatsMain, false)
         
         set FRAME_ShopButtonCheck = WUI_TextButton("WOSShopHotkey", FRAME_StatusHeroMain3, "Shop Key", 0.056, 0.015)
         // Checkpoint 27: replaced by the rebindable key badge on the shop icon;
@@ -1987,17 +1673,16 @@ endfunction
         call WUI_SetButtonMinimal(FRAME_ShopButtonCheck)
         call WUI_ReleaseGhost(2)
         call BlzTriggerRegisterFrameEvent(FrameBoxCheck, FRAME_ShopButtonCheck, FRAMEEVENT_CONTROL_CLICK)
-        call BlzFrameSetEnable(FRAME_StatsMain,false)
         set x = 0.744
         set y = 0.060
         
         set FrameLinkMain2 = CreateTrigger()
         set FRAME_LINK2 = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetInfoRoot(), "WOSIconButtonTemplate", 0)
-        call BlzFrameSetTexture(FRAME_LINK2, "UI\\WOS\\toolbar-community.tga", 0, false)
+        call BlzFrameSetTexture(FRAME_LINK2, "UI\\WOS\\toolbar-community.blp", 0, false)
         call WUI_PlaceToolbar(FRAME_LINK2, 1, 0)
         call WUI_ReleaseGhost(1)
         set FRAME_LINK4 = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetInfoRoot(), "WOSIconButtonTemplate", 0)
-        call BlzFrameSetTexture(FRAME_LINK4, "UI\\WOS\\toolbar-community.tga", 0, false)
+        call BlzFrameSetTexture(FRAME_LINK4, "UI\\WOS\\toolbar-community.blp", 0, false)
         call WUI_PlaceToolbar(FRAME_LINK4, 1, 0)
         call BlzFrameSetVisible(FRAME_LINK4,false)
         set FRAME_LINK3 = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_LINK2, "", 0)
@@ -2010,7 +1695,7 @@ endfunction
         call BlzFrameSetAllPoints(FRAME_LINK5, FRAME_LINK4)
         call BlzFrameSetSize(FRAME_LINK5, 0.023, 0.023)
         // Open state shows a close X (same logic as the music link button).
-        call BlzFrameSetTexture(FRAME_LINK5, "UI\\WOS\\glyph-close.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_LINK5, "UI\\WOS\\glyph-close.blp", 0, true)
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_LINK2, FRAMEEVENT_CONTROL_CLICK)
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_LINK4, FRAMEEVENT_CONTROL_CLICK)
             call TriggerAddAction(FrameLinkMain2, function OnClickFrameLink)

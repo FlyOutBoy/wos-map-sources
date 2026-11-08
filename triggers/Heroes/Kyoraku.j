@@ -128,8 +128,8 @@ library KyorakuSpells uses GearSystems
         real KyorakuE_DurationBase =1.5
         real KyorakuE_DurationStep = 0 // add time per next level
 //---------------WE ability-----------------------------------------------------
-        real KyorakuE2_DamageAgiBase = 2 // base number x Agi damage for 1 level
-        real KyorakuE2_DamageAgiStep = 1 // additional number x Agi damage for each next level
+        real KyorakuE2_DamageAgiBase = 4.5 // base number x Agi damage for 1 level
+        real KyorakuE2_DamageAgiStep = 0 // additional number x Agi damage for each next level
         real KyorakuE2_Damage2StaticBase = 0 // base static damage for 1 level
         real KyorakuE2_Damage2StaticStep = 0 // additional static damage for each next level
         real KyorakuE2_DamageAoe = 600 // better to make same value to W
@@ -145,7 +145,7 @@ library KyorakuSpells uses GearSystems
         real KyorakuE4_DamageAgi = 2.5 // x Agi per slash
         integer KyorakuE4_Slashes = 2
         real KyorakuE4_MaxRange = 2000 // from the E cage
-        real KyorakuE4_Speed = 2500 // per second
+        real KyorakuE4_Speed = 3125 // per second (x1.25 of 2500)
         real KyorakuE4_SlashScale = 3.2 // x Toji Q1 slash size
         real KyorakuE4_FlyPast = 650 // distance past the cage center
 //---------------.r ability-----------------------------------------------------
@@ -1009,21 +1009,23 @@ endfunction
             loop
                 exitwhen i > MUI_KyorakuE4
                 set this = m_KyorakuE4[i]
-                set done = not SpellBoolCaster(c)
+                set r = r + 0.03
+                // Safety cap: never fly longer than the max range allows.
+                set done = not SpellBoolCaster(c) or r > KyorakuE4_MaxRange / KyorakuE4_Speed + 0.3
                 if not done then
-                    if SR3(c, endX, endY) > move then
-                        call MoveUnit(c, move, a)
+                    // Fly straight to the cage center (aim re-taken each tick), then slash and push past.
+                    set a = GAngle2(c, x, y)
+                    if SR3(c, x, y) > move then
+                        call MoveUnit2(c, move, a)
                     else
-                        call SetUnitX(c, endX)
-                        call SetUnitY(c, endY)
-                        set done = true
-                    endif
-                    // Cross the cage: both hits happen in this tick, before the overshoot.
-                    if slashes == 0 and (x - GetUnitX(c)) * Cos(a) + (y - GetUnitY(c)) * Sin(a) <= 100 then
+                        call SetUnitX(c, x)
+                        call SetUnitY(c, y)
                         loop
                             exitwhen slashes >= KyorakuE4_Slashes
                             call slash()
                         endloop
+                        call MUE(c, KyorakuE4_FlyPast, KyorakuE4_FlyPast / KyorakuE4_Speed, a)
+                        set done = true
                     endif
                 endif
                 if done then
@@ -1471,11 +1473,15 @@ endfunction
         effect e3
         effect e4
         effect e5
+        effect l1
+        effect l2
         real a
         static method Loop_KyorakuT4 takes nothing returns nothing
             local integer this
             local integer i = 0
-            local real step
+            local real lp
+            local real ld
+            local real la
             loop
                 exitwhen i > MUI_KyorakuT2
                 set this = m_KyorakuT2[i]
@@ -1491,11 +1497,48 @@ endfunction
                         set .x = GetUnitX(.td)
                         set .y = GetUnitY(.td)
                         call DebugUnit(.td)
+                        // Threads/white mark stay glued to the target if it moves.
+                        if .e5 != null then
+                            call BlzSetSpecialEffectX(.e5, .x)
+                            call BlzSetSpecialEffectY(.e5, .y)
+                        endif
+                        if .e2 != null then
+                            call BlzSetSpecialEffectX(.e2, .x)
+                            call BlzSetSpecialEffectY(.e2, .y)
+                        endif
+                    endif
+                    // Two lances close in from both sides (across the caster->target line) in 1 s, x5 -> x1.25 scale.
+                    if .l1 != null then
+                        if .tick >= 93 then
+                            call DestroyEffect(.l1)
+                            call DestroyEffect(.l2)
+                            set .l1 = null
+                            set .l2 = null
+                        else
+                            set lp = I2R(.tick - 60) / 33.0
+                            set ld = 600 * (1 - lp)
+                            set la = .a + bj_PI / 2
+                            call BlzSetSpecialEffectX(.l1, .x + ld * Cos(la))
+                            call BlzSetSpecialEffectY(.l1, .y + ld * Sin(la))
+                            call BlzSetSpecialEffectX(.l2, .x - ld * Cos(la))
+                            call BlzSetSpecialEffectY(.l2, .y - ld * Sin(la))
+                            call BlzSetSpecialEffectYaw(.l1, la + bj_PI)
+                            call BlzSetSpecialEffectYaw(.l2, la)
+                            call BlzSetSpecialEffectScale(.l1, 5 - 3.75 * lp)
+                            call BlzSetSpecialEffectScale(.l2, 5 - 3.75 * lp)
+                        endif
                     endif
                     if .tick == 60 then
                         call MakeSound3("war3mapimported\\Hero_Kyoraku_T17")
-                        call EMUE(EffectSpawn2("war3mapImported\\wos_whiteauralance.mdl", .x - 600 * Cos(0 * bj_DEGTORAD), .y - 600 * Sin(0 * bj_DEGTORAD), 0, 1, 2.5, 100, 1.25), 600, 1, 0 * bj_DEGTORAD)
-                        call EMUE(EffectSpawn2("war3mapImported\\wos_whiteauralance.mdl", .x + 600 * Cos(0 * bj_DEGTORAD), .y + 600 * Sin(0 * bj_DEGTORAD), 0, 1, 2.5, 100, 1.25), 600, 1, 180 * bj_DEGTORAD)
+                        set la = .a + bj_PI / 2
+                        set .l1 = AddSpecialEffect("war3mapImported\\wos_whiteauralance.mdl", .x + 600 * Cos(la), .y + 600 * Sin(la))
+                        set .l2 = AddSpecialEffect("war3mapImported\\wos_whiteauralance.mdl", .x - 600 * Cos(la), .y - 600 * Sin(la))
+                        call BlzSetSpecialEffectYaw(.l1, la + bj_PI)
+                        call BlzSetSpecialEffectYaw(.l2, la)
+                        call BlzSetSpecialEffectScale(.l1, 5)
+                        call BlzSetSpecialEffectScale(.l2, 5)
+                        call BlzSetSpecialEffectHeight(.l1, BlzGetLocalSpecialEffectZ(.l1) + 100)
+                        call BlzSetSpecialEffectHeight(.l2, BlzGetLocalSpecialEffectZ(.l2) + 100)
                         set .e5 = EffectSpawn("war3mapimported\\wos_throatsilk.mdx", .x, .y, 1, 0.25, 3, 110)
                     endif
                     if .tick == 90 then
@@ -1503,12 +1546,20 @@ endfunction
                     call MakeSound3("war3mapimported\\Hero_Kyoraku_T16_3")
                     endif
                     if .tick > 90 and .check == 0 then
-                        call MoveUnit(.c, .move, .a)
+                        // Home onto the target every tick so the dash always reaches it.
+                        set .a = GAngle(.c, .td)
+                        call SetUnitFacing(.c, .a * bj_RADTODEG)
+                        if SR2(.c, .td) > .move + 100 then
+                            call MoveUnit2(.c, .move, .a)
+                        else
+                            call SetUnitX(.c, GetUnitX(.td) - 90 * Cos(.a))
+                            call SetUnitY(.c, GetUnitY(.td) - 90 * Sin(.a))
+                        endif
                         if SR2(.c, .td) < 100 then
                             set .check = 1
                     call MakeSound3("war3mapimported\\Hero_Kyoraku_T16_5")
-                            // Own cinematic movement must not become a wall/CC-controlled MUE.
-                            set .dashRemaining = 700
+                            // Pass through the target: old-style push 700 over 1.25 s.
+                            call MUE(.c, 700, 1.25, .a)
                             call DecorRemove(.c, .x, .y, 900, 100)
                     
                             set .e3 = AddSpecialEffectTarget("war3mapImported\\wos_whiteauralance_red.mdl", .c, "hand right")
@@ -1520,14 +1571,6 @@ endfunction
                             set .e4 = EffectSpawnColor("war3mapImported\\wos_LXY_ZK_BM_flash_gai2red.mdl", .x - 00 * Cos(.a + bj_RADTODEG * 90), .y - 00 * Sin(.a + bj_RADTODEG * 90), .a * bj_RADTODEG, 0.5, 3.5, 120, 255, 15, 15, 255)
                             call AnimDummyEff(.e4, 1, 0)
                         endif
-                    elseif .check == 1 and .dashRemaining > 0 then
-                        // Finish the fixed-direction pass-through in 1.25 seconds at most.
-                        set step = RMinBJ(.dashRemaining, 700 * 0.03 / 1.25)
-                        if PathableCheck3(GetUnitX(.c) + step * Cos(.a), GetUnitY(.c) + step * Sin(.a)) then
-                            call SetUnitX(.c, GetUnitX(.c) + step * Cos(.a))
-                            call SetUnitY(.c, GetUnitY(.c) + step * Sin(.a))
-                        endif
-                        set .dashRemaining = .dashRemaining - step
                     endif
                     if .tick == 191 then
                     call MakeSound3("war3mapimported\\Hero_Kyoraku_T16_4")
@@ -1581,6 +1624,10 @@ endfunction
                     call DestroyEffect(.e3)
                     call DestroyEffect(.e5)
                     call DestroyEffect(.e4)
+                    call DestroyEffect(.l1)
+                    call DestroyEffect(.l2)
+                    set .l1 = null
+                    set .l2 = null
                     set .c = null
                     set .td = null
                     set .e = null

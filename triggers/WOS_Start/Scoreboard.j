@@ -15,11 +15,11 @@ globals
     private constant string WOS_STATS_TEX_ROW = "Textures\\white.blp"
     private constant string WOS_STATS_TEX_PANEL_FILL = WUI_PANEL_TEXTURE
     private constant string WOS_STATS_TEX_TOOLTIP = WUI_PANEL_TEXTURE
-    private constant string WOS_STATS_TEX_CLOSE = "UI\\WOS\\glyph-close.tga"
+    private constant string WOS_STATS_TEX_CLOSE = "UI\\WOS\\glyph-close.blp"
     private constant string WOS_STATS_TEX_OPACITY_OFF = "Pick\\wos_transp.blp"
     private constant string WOS_STATS_TEX_OPACITY_ON = "Pick\\wos_transp2.blp"
-    private constant string WOS_STATS_TEX_EXPAND = "UI\\WOS\\glyph-expand.tga"
-    private constant string WOS_STATS_TEX_COLLAPSE = "UI\\WOS\\glyph-collapse.tga"
+    private constant string WOS_STATS_TEX_EXPAND = "UI\\WOS\\glyph-expand.blp"
+    private constant string WOS_STATS_TEX_COLLAPSE = "UI\\WOS\\glyph-collapse.blp"
     private constant string WOS_STATS_TEX_EMPTY = "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder"
 
     //=======================================================================
@@ -51,10 +51,10 @@ globals
     private constant real WOS_STATS_EXPANDED_WIDTH = 0.690
     private constant real WOS_STATS_EXPANDED_CONTENT_WIDTH = 0.678
     private constant real WOS_STATS_EXPANDED_ROW_WIDTH = 0.674
-    private constant real WOS_STATS_EXPANDED_ROW_HEIGHT = 0.019
-    private constant real WOS_STATS_EXPANDED_ROW_STEP = 0.0205
+    private constant real WOS_STATS_EXPANDED_ROW_HEIGHT = 0.0175
+    private constant real WOS_STATS_EXPANDED_ROW_STEP = 0.0188
     // РћС‚РґРµР»СЊРЅС‹Р№ СЃРґРІРёРі С‚РѕР»СЊРєРѕ РґР»СЏ Р±РѕР»СЊС€РѕРіРѕ РѕРєРЅР°; РєРѕРјРїР°РєС‚РЅРѕРµ РѕСЃС‚Р°С‘С‚СЃСЏ РЅР° РјРµСЃС‚Рµ.
-    private constant real WOS_STATS_EXPANDED_Y_OFFSET = 0.020
+    private constant real WOS_STATS_EXPANDED_Y_OFFSET = 0.028
 
     // true  = всегда показывать полную таблицу 5 на 5, включая пустые слоты.
     // false = рисовать только игроков, которые сейчас играют и имеют героя.
@@ -64,6 +64,9 @@ globals
     // Общий масштаб всего интерфейса. 1.12 = увеличение на 12%.
     // Меняются панель, координаты, строки, текст, иконки и подсказки.
     real WOS_STATS_UI_SCALE = 1.15
+    // Local: set by WOS_STATS_Layout for the final screen (frame positions only).
+    boolean WOS_STATS_FinalLayout = false
+    constant real WOS_STATS_EXPANDED_SHIFT = 0.040
 
     //=======================================================================
     // НАСТРОЙКА MVP
@@ -107,6 +110,7 @@ globals
     private trigger WOS_STATS_DataKeys = null
 
     private framehandle array WOS_STATS_TeamTitle
+    private framehandle array WOS_STATS_TeamPlaque
     private framehandle array WOS_STATS_HeaderText
     private framehandle array WOS_STATS_RowBack
     private framehandle array WOS_STATS_RowContent
@@ -483,8 +487,38 @@ private function WOS_STATS_GetUIScale takes nothing returns real
     return WOS_STATS_UI_SCALE
 endfunction
 
+// Expanded board (also the final screen): items keep their place, the name block
+// moves right and the column gaps shrink; everything sits WOS_STATS_EXPANDED_SHIFT
+// further left, clear of the right menu. The freed left side shows the chat (final).
+// Local presentation only.
+private function WOS_STATS_SqueezeX takes real x returns real
+    if x >= 0.621 then
+        return x
+    elseif x < 0.225 then
+        return x + 0.130
+    elseif x < 0.240 then
+        return 0.355 + (x - 0.225) * 0.200
+    elseif x < 0.285 then
+        return 0.358 + (x - 0.240) * 0.778
+    elseif x < 0.365 then
+        return 0.393 + (x - 0.285) * 0.838
+    elseif x < 0.450 then
+        return 0.460 + (x - 0.365) * 0.765
+    elseif x < 0.535 then
+        return 0.525 + (x - 0.450) * 0.624
+    endif
+    return 0.578 + (x - 0.535) * 0.500
+endfunction
+
+private function WOS_STATS_FinalX takes real x returns real
+    if not WOS_STATS_FinalLayout then
+        return x
+    endif
+    return WOS_STATS_SqueezeX(x) - WOS_STATS_EXPANDED_SHIFT
+endfunction
+
 private function WOS_STATS_ScaleX takes real x returns real
-    return WOS_STATS_PANEL_X + (x - WOS_STATS_PANEL_X) * WOS_STATS_GetUIScale()
+    return WOS_STATS_PANEL_X + (WOS_STATS_FinalX(x) - WOS_STATS_PANEL_X) * WOS_STATS_GetUIScale()
 endfunction
 
 private function WOS_STATS_ScaleY takes real y returns real
@@ -1056,6 +1090,15 @@ private function WOS_STATS_MoveFrame takes framehandle whichFrame, real x, real 
     call BlzFrameSetAbsPoint(whichFrame, FRAMEPOINT_CENTER, WOS_STATS_ScaleX(x), WOS_STATS_ScaleY(y))
 endfunction
 
+// A frame centred on the panel: its left edge follows the final squeeze.
+private function WOS_STATS_PlaceSpan takes framehandle whichFrame, real y, real width, real height returns nothing
+    local real left = WOS_STATS_FinalX(WOS_STATS_PANEL_X - width * 0.50)
+    local real right = WOS_STATS_FinalX(WOS_STATS_PANEL_X + width * 0.50)
+    call BlzFrameClearAllPoints(whichFrame)
+    call BlzFrameSetAbsPoint(whichFrame, FRAMEPOINT_CENTER, WOS_STATS_PANEL_X + ((left + right) * 0.50 - WOS_STATS_PANEL_X) * WOS_STATS_GetUIScale(), WOS_STATS_ScaleY(y))
+    call BlzFrameSetSize(whichFrame, WOS_STATS_ScaleSize(right - left), WOS_STATS_ScaleSize(height))
+endfunction
+
 private function WOS_STATS_ResizeText takes framehandle whichFrame, real width, real height, real scale returns nothing
     call BlzFrameSetSize(whichFrame, WOS_STATS_ScaleSize(width), WOS_STATS_ScaleSize(height))
     call BlzFrameSetScale(whichFrame, scale * WOS_STATS_GetUIScale())
@@ -1084,11 +1127,11 @@ private function WOS_STATS_MoveRow takes integer row, real y, boolean expanded r
         set itemX = 0.621
         set itemStep = 0.020
         set itemSize = 0.0175
-        call BlzFrameSetSize(WOS_STATS_RowBack[row], WOS_STATS_ScaleSize(WOS_STATS_EXPANDED_ROW_WIDTH), WOS_STATS_ScaleSize(WOS_STATS_EXPANDED_ROW_HEIGHT))
-        call BlzFrameSetSize(WOS_STATS_RowContent[row], WOS_STATS_ScaleSize(WOS_STATS_EXPANDED_ROW_WIDTH), WOS_STATS_ScaleSize(WOS_STATS_EXPANDED_ROW_HEIGHT))
+        call WOS_STATS_PlaceSpan(WOS_STATS_RowBack[row], y, WOS_STATS_EXPANDED_ROW_WIDTH, WOS_STATS_EXPANDED_ROW_HEIGHT)
+        call WOS_STATS_PlaceSpan(WOS_STATS_RowContent[row], y, WOS_STATS_EXPANDED_ROW_WIDTH, WOS_STATS_EXPANDED_ROW_HEIGHT)
         call BlzFrameSetSize(WOS_STATS_HeroIcon[row], WOS_STATS_ScaleSize(0.021), WOS_STATS_ScaleSize(0.021))
         call WOS_STATS_ResizeText(WOS_STATS_PlayerName[row], 0.096, 0.016, 0.61)
-        call WOS_STATS_ResizeText(WOS_STATS_MvpText[row], 0.030, 0.012, 0.56)
+        call WOS_STATS_ResizeText(WOS_STATS_MvpText[row], 0.057, 0.012, 0.56)
         call BlzFrameSetSize(WOS_STATS_MvpHover[row], WOS_STATS_ScaleSize(0.032), WOS_STATS_ScaleSize(WOS_STATS_EXPANDED_ROW_HEIGHT))
         call WOS_STATS_ResizeText(WOS_STATS_KillText[row], WOS_STATS_ExpandedColumnWidth(0), 0.017, 0.76)
         call WOS_STATS_ResizeText(WOS_STATS_DeathText[row], WOS_STATS_ExpandedColumnWidth(1), 0.017, 0.76)
@@ -1122,7 +1165,7 @@ private function WOS_STATS_MoveRow takes integer row, real y, boolean expanded r
         call BlzFrameSetSize(WOS_STATS_RowContent[row], WOS_STATS_ScaleSize(WOS_STATS_ROW_WIDTH), WOS_STATS_ScaleSize(WOS_STATS_ROW_HEIGHT))
         call BlzFrameSetSize(WOS_STATS_HeroIcon[row], WOS_STATS_ScaleSize(WOS_STATS_HERO_ICON_SIZE), WOS_STATS_ScaleSize(WOS_STATS_HERO_ICON_SIZE))
         call WOS_STATS_ResizeText(WOS_STATS_PlayerName[row], 0.082, 0.012, 0.50)
-        call WOS_STATS_ResizeText(WOS_STATS_MvpText[row], 0.020, 0.0095, 0.46)
+        call WOS_STATS_ResizeText(WOS_STATS_MvpText[row], 0.048, 0.0095, 0.46)
         call BlzFrameSetSize(WOS_STATS_MvpHover[row], WOS_STATS_ScaleSize(0.022), WOS_STATS_ScaleSize(WOS_STATS_ROW_HEIGHT))
         call WOS_STATS_ResizeText(WOS_STATS_KillText[row], WOS_STATS_ColumnWidth(0), 0.012, 0.56)
         call WOS_STATS_ResizeText(WOS_STATS_DeathText[row], WOS_STATS_ColumnWidth(1), 0.012, 0.56)
@@ -1238,15 +1281,19 @@ private function WOS_STATS_LayoutTeam takes integer team, real titleY, boolean e
     local real totalY
 
     if expanded then
-        set headerY = titleY - 0.019
-        set rowY = headerY - 0.0195
+        set headerY = titleY - 0.016
+        set rowY = headerY - 0.0165
         call WOS_STATS_MoveFrame(WOS_STATS_TeamTitle[team], 0.145, titleY)
         call WOS_STATS_ResizeText(WOS_STATS_TeamTitle[team], 0.140, 0.018, 0.84)
+        call WOS_STATS_MoveFrame(WOS_STATS_TeamPlaque[team], 0.112, titleY)
+        call BlzFrameSetSize(WOS_STATS_TeamPlaque[team], WOS_STATS_ScaleSize(0.092), WOS_STATS_ScaleSize(0.019))
     else
         set headerY = titleY - 0.013
         set rowY = headerY - 0.014
         call WOS_STATS_MoveFrame(WOS_STATS_TeamTitle[team], 0.285, titleY)
         call WOS_STATS_ResizeText(WOS_STATS_TeamTitle[team], 0.130, 0.014, 0.72)
+        call WOS_STATS_MoveFrame(WOS_STATS_TeamPlaque[team], 0.252, titleY)
+        call BlzFrameSetSize(WOS_STATS_TeamPlaque[team], WOS_STATS_ScaleSize(0.074), WOS_STATS_ScaleSize(0.015))
     endif
     call WOS_STATS_ConfigureHeaders(team, headerY, expanded)
 
@@ -1285,7 +1332,7 @@ private function WOS_STATS_LayoutTeam takes integer team, real titleY, boolean e
         endloop
         call BlzFrameSetVisible(WOS_STATS_TotalDamageHover[team], false)
         call BlzFrameSetVisible(WOS_STATS_TotalTakenHover[team], false)
-        return totalY - 0.022
+        return totalY - 0.018
     endif
 
     call WOS_STATS_MoveFrame(WOS_STATS_TotalLabel[team], 0.263, totalY)
@@ -1340,10 +1387,11 @@ private function WOS_STATS_Layout takes integer viewerPid returns nothing
     local real panelTop = WOS_STATS_PANEL_TOP
     local real yOffset = 0.0
 
+    set WOS_STATS_FinalLayout = expanded
     if expanded then
         set yOffset = WOS_STATS_EXPANDED_Y_OFFSET
         set panelTop = WOS_STATS_PANEL_TOP + yOffset
-        set nextY = WOS_STATS_LayoutTeam(0, 0.468 + yOffset, true)
+        set nextY = WOS_STATS_LayoutTeam(0, 0.470 + yOffset, true)
         set nextY = WOS_STATS_LayoutTeam(1, nextY, true)
         set width = WOS_STATS_EXPANDED_WIDTH
         set contentWidth = WOS_STATS_EXPANDED_CONTENT_WIDTH
@@ -1356,13 +1404,14 @@ private function WOS_STATS_Layout takes integer viewerPid returns nothing
     // После удаления Hover-надписи возвращаем край сразу после штатного
     // отступа итоговой строки; отдельного резерва под текст больше нет.
     set bottom = nextY
-    if expanded then
+    // Expanded: bottom hugs the last row (no minimap pin, no push-up).
+    if false then
         // .148 is the physical minimap edge; convert through the UI scale.
         set bottom = WOS_STATS_PANEL_TOP - (WOS_STATS_PANEL_TOP - 0.148) / WOS_STATS_GetUIScale()
         if nextY < bottom then
             set yOffset = yOffset + bottom - nextY
             set panelTop = WOS_STATS_PANEL_TOP + yOffset
-            set nextY = WOS_STATS_LayoutTeam(0, 0.468 + yOffset, true)
+            set nextY = WOS_STATS_LayoutTeam(0, 0.470 + yOffset, true)
             set nextY = WOS_STATS_LayoutTeam(1, nextY, true)
         endif
     endif
@@ -1373,16 +1422,15 @@ private function WOS_STATS_Layout takes integer viewerPid returns nothing
     endif
     set centerY = (panelTop + bottom) * 0.50
 
-    call WOS_STATS_MoveFrame(WOS_STATS_Main, WOS_STATS_PANEL_X, centerY)
-    call BlzFrameSetSize(WOS_STATS_Main, WOS_STATS_ScaleSize(width), WOS_STATS_ScaleSize(height))
+    call WOS_STATS_PlaceSpan(WOS_STATS_Main, centerY, width, height)
     // Checkpoint 22: the fill covers the whole window, so it meets the gold
     // rails (their centre lies on the window edge) in both sizes.
-    call WOS_STATS_MoveFrame(WOS_STATS_OpaqueBack, WOS_STATS_PANEL_X, centerY)
-    call BlzFrameSetSize(WOS_STATS_OpaqueBack, WOS_STATS_ScaleSize(width), WOS_STATS_ScaleSize(height))
-    call WOS_STATS_MoveFrame(WOS_STATS_Inner, WOS_STATS_PANEL_X, centerY)
-    call BlzFrameSetSize(WOS_STATS_Inner, WOS_STATS_ScaleSize(contentWidth), WOS_STATS_ScaleSize(height - 0.012))
-    call WOS_STATS_MoveFrame(WOS_STATS_Score, 0.400, 0.491 + yOffset)
+    call WOS_STATS_PlaceSpan(WOS_STATS_OpaqueBack, centerY, width, height)
+    call WOS_STATS_PlaceSpan(WOS_STATS_Inner, centerY, contentWidth, height - 0.012)
+    call WOS_STATS_MoveFrame(WOS_STATS_Score, WOS_STATS_ColumnX(2), 0.491 + yOffset)
     if expanded then
+        // Score stands right above the DAMAGE DEALT column.
+        call WOS_STATS_MoveFrame(WOS_STATS_Score, WOS_STATS_ExpandedColumnX(2), 0.491 + yOffset)
         call WOS_STATS_ResizeText(WOS_STATS_Title, 0.160, 0.020, 0.72)
         call WOS_STATS_ResizeText(WOS_STATS_Score, 0.100, 0.024, 1.35)
         call WOS_STATS_ResizeText(WOS_STATS_MatchInfo, 0.080, 0.020, 1.05)
@@ -1390,13 +1438,14 @@ private function WOS_STATS_Layout takes integer viewerPid returns nothing
         call WOS_STATS_ResizeText(WOS_STATS_GameClock, 0.065, 0.020, 1.14)
         if WOS_STATS_IsFinal[viewerPid] then
             call WOS_STATS_MoveFrame(WOS_STATS_Title, 0.135, 0.492 + yOffset)
+            // Inputs of WOS_STATS_FinalX: screenshot clock lands at ~.540.
             call WOS_STATS_MoveFrame(WOS_STATS_ScreenshotClock, 0.495, 0.492 + yOffset)
-            call WOS_STATS_MoveFrame(WOS_STATS_MatchInfo, 0.585, 0.492 + yOffset)
-            call WOS_STATS_MoveFrame(WOS_STATS_GameClock, 0.680, 0.492 + yOffset)
+            call WOS_STATS_MoveFrame(WOS_STATS_MatchInfo, 0.250, 0.492 + yOffset)
+            call WOS_STATS_MoveFrame(WOS_STATS_GameClock, 0.700, 0.492 + yOffset)
         else
             call WOS_STATS_MoveFrame(WOS_STATS_Title, 0.135, 0.492 + yOffset)
-            call WOS_STATS_MoveFrame(WOS_STATS_MatchInfo, 0.535, 0.492 + yOffset)
-            call WOS_STATS_MoveFrame(WOS_STATS_GameClock, 0.598, 0.492 + yOffset)
+            call WOS_STATS_MoveFrame(WOS_STATS_MatchInfo, 0.250, 0.492 + yOffset)
+            call WOS_STATS_MoveFrame(WOS_STATS_GameClock, 0.585, 0.492 + yOffset)
         endif
         call BlzFrameSetVisible(WOS_STATS_ScreenshotClock, WOS_STATS_IsFinal[viewerPid])
         call WOS_STATS_MoveFrame(WOS_STATS_ClearButton, 0.648, 0.492 + yOffset)
@@ -1409,7 +1458,7 @@ private function WOS_STATS_Layout takes integer viewerPid returns nothing
         call WOS_STATS_ResizeText(WOS_STATS_MatchInfo, 0.074, 0.016, 0.90)
         call WOS_STATS_ResizeText(WOS_STATS_GameClock, 0.058, 0.017, 1.02)
         call WOS_STATS_MoveFrame(WOS_STATS_Title, 0.270, 0.492)
-        call WOS_STATS_MoveFrame(WOS_STATS_MatchInfo, 0.436, 0.492)
+        call WOS_STATS_MoveFrame(WOS_STATS_MatchInfo, 0.335, 0.492)
         call WOS_STATS_MoveFrame(WOS_STATS_GameClock, 0.484, 0.492)
         call BlzFrameSetVisible(WOS_STATS_ScreenshotClock, false)
         call WOS_STATS_MoveFrame(WOS_STATS_ClearButton, 0.519, 0.492)
@@ -1542,22 +1591,6 @@ private function WOS_STATS_UpdateForPlayer takes integer viewerPid returns nothi
     call WOS_STATS_UpdateTeamTotal(viewerPid, 1, WOS_STATS_IsExpanded[viewerPid])
 endfunction
 
-//===========================================================================
-// Совместимость со старым F2-интерфейсом
-//===========================================================================
-private function WOS_STATS_SaveAndHideLegacyUI takes integer pid returns nothing
-    // F2 owns only its obsolete stats window; keep top/options/camera available.
-    if FRAME_StatsMain != null then
-        set WOS_STATS_OldHeroStatsVisible[pid] = BlzFrameIsVisible(FRAME_StatsMain)
-        call BlzFrameSetVisible(FRAME_StatsMain, false)
-    endif
-endfunction
-
-private function WOS_STATS_HideLegacyUI takes nothing returns nothing
-    if FRAME_StatsMain != null then
-        call WOS_STATS_Show(FRAME_StatsMain, false)
-    endif
-endfunction
 
 //===========================================================================
 // Финальный экран матча. Вызывается один раз после установки END1 = 1.
@@ -1586,10 +1619,7 @@ private function WOS_STATS_Periodic takes nothing returns nothing
     // and the final screen countdown keep the 0.5 s step.
     set WOS_STATS_ArenaRefreshTicks = WOS_STATS_ArenaRefreshTicks + 1
     if viewer < WOS_STATS_VIEWER_COUNT and WOS_STATS_IsOpen[viewer] then
-        if WOS_STATS_IsFinal[viewer] then
-            call ClearTextMessages()
-        endif
-        call WOS_STATS_HideLegacyUI()
+        // No ClearTextMessages here: the final screen shows the chat on its left.
         call WOS_STATS_Show(WOS_STATS_Main,true)
         if WOS_STATS_IsFinal[viewer] or (ModuloInteger(WOS_STATS_ArenaRefreshTicks, 10) == 0 and (WOS_STATS_LastDataSig[viewer] != WOS_STATS_DataSignature(viewer) or (CondArena != 0 and WOS_STATS_ArenaRefreshTicks >= 20))) then
             call WOS_STATS_UpdateForPlayer(viewer)
@@ -1630,8 +1660,7 @@ function WOS_STATS_ShowFinal takes nothing returns nothing
         if GetLocalPlayer() == Player(pid) then
             // Удаляет с экрана чат и сообщения DisplayTimedTextToPlayer.
             call ClearTextMessages()
-            call WOS_STATS_HideLegacyUI()
-            call BlzFrameSetVisible(WOS_STATS_Main, true)
+                call BlzFrameSetVisible(WOS_STATS_Main, true)
             call BlzFrameSetVisible(WOS_STATS_Inner, true)
             call WOS_STATS_UpdateForPlayer(pid)
             call WOS_STATS_Alpha(WOS_STATS_OpaqueBack, 255)
@@ -1648,24 +1677,12 @@ function WOS_STATS_ShowFinal takes nothing returns nothing
     endloop
 endfunction
 
-private function WOS_STATS_RestoreLegacyUI takes integer pid returns nothing
-    if FRAME_StatsMain != null then
-        if IsObserverSlot(pid) then
-            call BlzFrameSetVisible(FRAME_StatsMain, false)
-        else
-            call BlzFrameSetVisible(FRAME_StatsMain, WOS_STATS_OldHeroStatsVisible[pid])
-        endif
-    endif
-endfunction
-
 private function WOS_STATS_SetOpen takes player whichPlayer, boolean open returns nothing
     local integer pid = GetPlayerId(whichPlayer)
 
     if pid < 0 or pid >= WOS_STATS_VIEWER_COUNT or not WOS_STATS_Ready then
         return
     endif
-    // The legacy panel can be created after the scoreboard bootstrap.
-    call WUI_RegisterWindowPart(3, FRAME_StatsMain)
     set WOS_STATS_IsOpen[pid] = open
     if open then
         call WOS_STATS_WakeTimer()
@@ -1676,14 +1693,12 @@ private function WOS_STATS_SetOpen takes player whichPlayer, boolean open return
         if open then
             // Checkpoint 25: F2 closes the Menu dropdown.
             call WUI_CloseMenuDrop()
-            call WOS_STATS_SaveAndHideLegacyUI(pid)
             call BlzFrameSetVisible(WOS_STATS_Main, true)
             call BlzFrameSetVisible(WOS_STATS_Inner, true)
             call WOS_STATS_UpdateForPlayer(pid)
         else
             call BlzFrameSetVisible(WOS_STATS_Main, false)
             call WOS_STATS_ParkSwap(pid, false)
-            call WOS_STATS_RestoreLegacyUI(pid)
         endif
     endif
 endfunction
@@ -1771,7 +1786,9 @@ private function WOS_STATS_OnData takes nothing returns nothing
     endif
     if clear then
         static if LIBRARY_DamageStats then
-            call DamageStatsClear(id)
+            static if DAMAGE_STATS_ENABLED then
+                call DamageStatsClear(id)
+            endif
         endif
         set PlayerDamageTakenMag[id] = 0
         set PlayerDamageTakenPhys[id] = 0
@@ -1780,7 +1797,9 @@ private function WOS_STATS_OnData takes nothing returns nothing
         set PlayerHeal[id] = 0
     else
         static if LIBRARY_DamageStats then
-            call DamageStatsLoad(id)
+            static if DAMAGE_STATS_ENABLED then
+                call DamageStatsLoad(id)
+            endif
         endif
         set PlayerDamageTakenMag[id] = PlayerDamageTakenMagAll[id]
         set PlayerDamageTakenPhys[id] = PlayerDamageTakenPhysAll[id]
@@ -1844,12 +1863,18 @@ private function WOS_STATS_CreateHeaders takes nothing returns nothing
             set totalY = 0.326
             set teamColor = "|cffff4040"
             set teamName = "Wos Enjoyers"
+            // Team plaque: dark box with the same gold divider edge as Game Info.
+            set WOS_STATS_TeamPlaque[team] = WOS_STATS_CreateBackdrop(WOS_STATS_Inner, WOS_STATS_TEX_PANEL_FILL, 0.252, 0.474, 0.074, 0.015, 200, 150 + team)
+            call WUI_MinimalEdge(WOS_STATS_TeamPlaque[team])
             set WOS_STATS_TeamTitle[team] = WOS_STATS_CreateText(WOS_STATS_Inner, 0.285, 0.474, 0.130, 0.013, 0.64, TEXT_JUSTIFY_LEFT, teamColor + teamName + "|r", 100 + team)
         else
             set headerY = 0.294
             set totalY = 0.179
             set teamColor = "|cff4080ff"
             set teamName = "Wos Haters"
+            // Team plaque: dark box with the same gold divider edge as Game Info.
+            set WOS_STATS_TeamPlaque[team] = WOS_STATS_CreateBackdrop(WOS_STATS_Inner, WOS_STATS_TEX_PANEL_FILL, 0.252, 0.340, 0.074, 0.015, 200, 150 + team)
+            call WUI_MinimalEdge(WOS_STATS_TeamPlaque[team])
             set WOS_STATS_TeamTitle[team] = WOS_STATS_CreateText(WOS_STATS_Inner, 0.285, 0.340, 0.130, 0.013, 0.64, TEXT_JUSTIFY_LEFT, teamColor + teamName + "|r", 100 + team)
         endif
 
@@ -1906,7 +1931,7 @@ private function WOS_STATS_CreateRow takes integer row returns nothing
         call BlzFrameSetSize(WOS_STATS_HeroIcon[row], WOS_STATS_ScaleSize(WOS_STATS_HERO_ICON_SIZE), WOS_STATS_ScaleSize(WOS_STATS_HERO_ICON_SIZE))
         call WOS_STATS_Tex(WOS_STATS_HeroIcon[row], WOS_STATS_TEX_EMPTY, 0, false)
 
-        set WOS_STATS_MvpText[row] = WOS_STATS_CreateText(WOS_STATS_RowContent[row], 0.211, y, 0.028, 0.0095, 0.46, TEXT_JUSTIFY_CENTER, "", 680 + row)
+        set WOS_STATS_MvpText[row] = WOS_STATS_CreateText(WOS_STATS_RowContent[row], 0.211, y, 0.048, 0.0095, 0.46, TEXT_JUSTIFY_CENTER, "", 680 + row)
         call BlzFrameSetLevel(WOS_STATS_MvpText[row], 30)
         set WOS_STATS_MvpHover[row] = WOS_STATS_CreateHoverArea(WOS_STATS_RowContent[row], 0.211, y, 0.030, WOS_STATS_ROW_HEIGHT, 690 + row)
         call WOS_STATS_CreateSimpleTooltip(WOS_STATS_MvpHover[row], "|cffffd36bMVP|r = highest contribution, |cffc6cbd1SVP|r = best of the other team\nKills + damage + healing + tanking - deaths", 0.185, 0.034, 5400 + row)
@@ -1971,7 +1996,6 @@ private function WOS_STATS_CreateShell takes nothing returns nothing
     call BlzFrameSetVisible(WOS_STATS_Main, false)
     call WUI_RegisterRangeCover(WOS_STATS_Main)
     call WUI_RegisterWindowPart(1, WOS_STATS_Main)
-    call WUI_RegisterWindowPart(3, FRAME_StatsMain)
     // Above the top strip and its repick/swap dock.
     call BlzFrameSetLevel(WOS_STATS_Main, 70)
     call BlzFrameSetAbsPoint(WOS_STATS_Main, FRAMEPOINT_CENTER, WOS_STATS_ScaleX(WOS_STATS_PANEL_X), WOS_STATS_ScaleY(WOS_STATS_PANEL_Y))
@@ -2063,8 +2087,8 @@ private function WOS_STATS_CreateActions takes nothing returns nothing
     call WOS_STATS_CreateCloseTooltip()
     set WOS_STATS_DataTrigger = CreateTrigger()
     call TriggerAddAction(WOS_STATS_DataTrigger, function WOS_STATS_OnData)
-    set WOS_STATS_ClearButton = WOS_STATS_DataButton("UI\\WOS\\glyph-clear.tga", "F3", 4720)
-    set WOS_STATS_LoadButton = WOS_STATS_DataButton("UI\\WOS\\glyph-load.tga", "F4", 4721)
+    set WOS_STATS_ClearButton = WOS_STATS_DataButton("UI\\WOS\\glyph-clear.blp", "F3", 4720)
+    set WOS_STATS_LoadButton = WOS_STATS_DataButton("UI\\WOS\\glyph-load.blp", "F4", 4721)
     call WOS_STATS_CreateSimpleTooltip(WOS_STATS_ClearButton, "|cffffffffClear my numbers|r", 0.080, 0.016, 5493)
     call WOS_STATS_CreateSimpleTooltip(WOS_STATS_LoadButton, "|cffffffffLoad full-game numbers|r", 0.095, 0.016, 5494)
     // Rebindable F3 / F4 (click the badge, press a new key).

@@ -26,6 +26,29 @@ class HeroOrders(unittest.TestCase):
   self.assertNotEqual(a['A08X']['base_id'],a['A093']['base_id'])
   for aid,order in CHANNEL_ORDERS.items():
    for rank in range(1,a[aid].get('levels',1)+1):self.assertEqual(order,a[aid][f'base_order_id level {rank}'],(aid,rank))
+ def test_erza_retained_same_slot_forms_cannot_share_orders(self):
+  a=json.loads((ROOT/'object-data/abilities.json').read_text(encoding='utf-8-sig'))
+  self.assertNotEqual(a['A02W']['base_order_id level 1'],a['A03O']['base_order_id level 1'])
+  a['A03O']['base_order_id level 1']=a['A02W']['base_order_id level 1']
+  self.assertTrue(any(e[0]=='Erza_ID' and 'A03O' in str(e) for e in audit(a)['errors']))
+ def test_erza_audit_covers_every_form_command_in_sources(self):
+  commands={aid for p in (ROOT/'triggers/Heroes/Erza').glob('*.j')
+   for name,aid in re.findall(r"integer\s+(Erza(?:[1-7])?[QWERTFG](?:2)?_ID)\s*=\s*'(.{4})'",p.read_text(encoding='utf-8-sig'))}
+  self.assertEqual(commands,set(inventory()['Erza_ID']))
+ def test_grail_native_speed_and_frostnova_base_speed_match_balance(self):
+  a=json.loads((ROOT/'object-data/abilities.json').read_text(encoding='utf-8-sig'))
+  items=json.loads((ROOT/'object-data/items.json').read_text(encoding='utf-8-sig'))
+  docs,_=ws.prepare_documents(ROOT/'object-data',ROOT/'.object-data-raw')
+  for aid,iid,speed in [('A09X','I021',.10),('A0CY','I02B',.15)]:
+   values=[ws.value_for_user(m) for d in docs if d['kind']=='abilities'
+    for o in d['custom_objects'] if ws.object_id(o)==aid for m in o['modifications']
+    if m['field']['text']=='Uau1' and m['level']==1]
+   self.assertTrue(values);self.assertTrue(all(abs(v-speed)<1e-6 for v in values))
+   self.assertIn(f'{speed*100:g}% movement speed',items[iid]['extended_tooltip'])
+  units=json.loads((ROOT/'object-data/units.json').read_text(encoding='utf-8-sig'))
+  self.assertEqual(290,units['H002']['movement_speed'])
+  from stage_erza_grail_followup import apply
+  apply(docs);first=copy.deepcopy(docs);apply(docs);self.assertEqual(first,docs)
  def test_inori_exception_is_backed_by_removal_before_cancel_is_added(self):
   self.assertEqual({frozenset(('A06U','A06E'))},set(EXCLUSIVE_PAIRS))
   text=read('triggers/Heroes/Inori.j');start=text.index('if r == 1.32 then')

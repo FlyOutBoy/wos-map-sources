@@ -210,7 +210,7 @@ private function UNITSTAT_CreateToolbar takes nothing returns nothing
     call WUI_PlaceToolbar(UNITSTAT_Shop, 0, 0)
     set icon = BlzCreateFrameByType("BACKDROP", "WOSShopToolbarIcon", UNITSTAT_Shop, "", 0)
     call BlzFrameSetAllPoints(icon, UNITSTAT_Shop)
-    call BlzFrameSetTexture(icon, "UI\\WOS\\toolbar-shop.tga", 0, true)
+    call BlzFrameSetTexture(icon, "UI\\WOS\\toolbar-shop.blp", 0, true)
     call BlzFrameSetEnable(icon, false)
     call WUI_Tooltip(UNITSTAT_Shop, "SHOP|nOpen or close your current shop tab.|nClick the key badge to rebind.")
     // Checkpoint 27: rebindable shop key (was the Shop Key button + Tab/I/B).
@@ -221,7 +221,7 @@ private function UNITSTAT_CreateToolbar takes nothing returns nothing
     call WUI_PlaceToolbar(UNITSTAT_Emotes, 2, 0)
     set icon = BlzCreateFrameByType("BACKDROP", "WOSEmotesToolbarIcon", UNITSTAT_Emotes, "", 0)
     call BlzFrameSetAllPoints(icon, UNITSTAT_Emotes)
-    call BlzFrameSetTexture(icon, "UI\\WOS\\toolbar-emotes.tga", 0, true)
+    call BlzFrameSetTexture(icon, "UI\\WOS\\toolbar-emotes.blp", 0, true)
     call BlzFrameSetEnable(icon, false)
     // The key badge (rebindable) is drawn by WOSUI over the corner.
     call Emoji_AttachHotkeyBadge(UNITSTAT_Emotes)
@@ -508,7 +508,7 @@ private function UNITSTAT_ApplyMode takes nothing returns nothing
     endif
     set UNITSTAT_WidgetLeft[7] = 0.7325 + WUI_HudShift
     // One glyph per mode: 1, 2 or 3 stat columns.
-    call WUI_SetToggleGlyph(UNITSTAT_ModeButton, "UI\\WOS\\glyph-cols" + I2S(WUI_HudMode) + ".tga")
+    call WUI_SetToggleGlyph(UNITSTAT_ModeButton, "UI\\WOS\\glyph-cols" + I2S(WUI_HudMode) + ".blp")
 endfunction
 
 private function UNITSTAT_OnModeClick takes nothing returns nothing
@@ -955,10 +955,10 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     // Lock + chains over the portrait while the unit is paused.
     set UNITSTAT_Lock = BlzCreateFrameByType("BACKDROP", "WOSSelectedUnitLock", UNITSTAT_Widget[6], "", 0)
     call BlzFrameSetAllPoints(UNITSTAT_Lock, UNITSTAT_Widget[6])
-    call BlzFrameSetTexture(UNITSTAT_Lock, "UI\\WOS\\portrait-lock.tga", 0, true)
+    call BlzFrameSetTexture(UNITSTAT_Lock, "UI\\WOS\\portrait-lock.blp", 0, true)
     call BlzFrameSetEnable(UNITSTAT_Lock, false)
     call BlzFrameSetVisible(UNITSTAT_Lock, false)
-    call BlzFrameSetTexture(UNITSTAT_LevelBadge, "UI\\WOS\\badge.tga", 0, true)
+    call BlzFrameSetTexture(UNITSTAT_LevelBadge, "UI\\WOS\\badge.blp", 0, true)
     call BlzFrameSetEnable(UNITSTAT_LevelBadge, false)
     set UNITSTAT_Level = BlzCreateFrameByType("TEXT", "WOSSelectedUnitLevel", UNITSTAT_LevelBadge, "", 0)
     call BlzFrameSetAllPoints(UNITSTAT_Level, UNITSTAT_LevelBadge)
@@ -969,34 +969,34 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     // Checkpoint 25b: stats column .2285-.3355. Left: attack (full width),
     // resistances, attributes; right of ONE divider: damage bonuses, attack
     // speed, move speed and attack range.
-    call UNITSTAT_WidgetCreate(0, "UI\\WOS\\icon-attack.tga", 0.2840, 0.0825, 0.103, events)
+    call UNITSTAT_WidgetCreate(0, "UI\\WOS\\icon-attack.blp", 0.2840, 0.0825, 0.103, events)
     // Resistances end at .2785; damage bonuses sit to their right on the same
     // rows (physical above, magical below) behind a thin vertical divider.
-    call UNITSTAT_WidgetCreate(1, "UI\\WOS\\icon-phys.tga", 0.2615, 0.0692, 0.058, events)
-    call UNITSTAT_WidgetCreate(2, "UI\\WOS\\icon-magic.tga", 0.2615, 0.0559, 0.058, events)
-    call UNITSTAT_WidgetCreate(8, "UI\\WOS\\icon-physdmg.tga", 0.3140, 0.0692, 0.040, events)
-    call UNITSTAT_WidgetCreate(9, "UI\\WOS\\icon-magdmg.tga", 0.3140, 0.0559, 0.040, events)
+    call UNITSTAT_WidgetCreate(1, "UI\\WOS\\icon-phys.blp", 0.2615, 0.0692, 0.058, events)
+    call UNITSTAT_WidgetCreate(2, "UI\\WOS\\icon-magic.blp", 0.2615, 0.0559, 0.058, events)
+    call UNITSTAT_WidgetCreate(8, "UI\\WOS\\icon-physdmg.blp", 0.3140, 0.0692, 0.040, events)
+    call UNITSTAT_WidgetCreate(9, "UI\\WOS\\icon-magdmg.blp", 0.3140, 0.0559, 0.040, events)
     set UNITSTAT_DividerB = WUI_Divider("WOSStatColumnDivider", UNITSTAT_Root, 0.2925, 0.0425, 0.066, true)
     call WUI_PlaceShiftLeft(UNITSTAT_DividerB, 0.2925, 0.0425, 0.004, 0.066)
     // Column C (mode 3) occupies .3355-.3795; the HUD to its right moves by
     // WUI_STATS_COLUMN while it is shown.
     set UNITSTAT_DividerC = WUI_Divider("WOSStatColumnDivider", UNITSTAT_Root, 0.3355, 0.0425, 0.066, true)
     call WUI_PlaceShiftLeft(UNITSTAT_DividerC, 0.3355, 0.0425, 0.004, 0.066)
-    call UNITSTAT_WidgetCreate(13, "UI\\WOS\\icon-physpen.tga", 0.3580, 0.0692, 0.040, events)
-    call UNITSTAT_WidgetCreate(14, "UI\\WOS\\icon-magpen.tga", 0.3580, 0.0559, 0.040, events)
-    call UNITSTAT_WidgetCreate(15, "UI\\WOS\\icon-shieldpen.tga", 0.3580, 0.0426, 0.040, events)
-    call UNITSTAT_WidgetCreate(16, "UI\\WOS\\icon-hpregen.tga", 0.3580, 0.0293, 0.040, events)
-    call UNITSTAT_WidgetCreate(17, "UI\\WOS\\icon-mpregen.tga", 0.3580, 0.0160, 0.040, events)
+    call UNITSTAT_WidgetCreate(13, "UI\\WOS\\icon-physpen.blp", 0.3580, 0.0692, 0.040, events)
+    call UNITSTAT_WidgetCreate(14, "UI\\WOS\\icon-magpen.blp", 0.3580, 0.0559, 0.040, events)
+    call UNITSTAT_WidgetCreate(15, "UI\\WOS\\icon-shieldpen.blp", 0.3580, 0.0426, 0.040, events)
+    call UNITSTAT_WidgetCreate(16, "UI\\WOS\\icon-hpregen.blp", 0.3580, 0.0293, 0.040, events)
+    call UNITSTAT_WidgetCreate(17, "UI\\WOS\\icon-mpregen.blp", 0.3580, 0.0160, 0.040, events)
     // Attribute rows end at .2765: the voice / hotkey toggles use the free
     // right part of this column.
-    call UNITSTAT_WidgetCreate(3, "UI\\WOS\\stat-str.tga", 0.2615, 0.0426, 0.058, events)
-    call UNITSTAT_WidgetCreate(4, "UI\\WOS\\stat-agi.tga", 0.2615, 0.0293, 0.058, events)
-    call UNITSTAT_WidgetCreate(5, "UI\\WOS\\stat-int.tga", 0.2615, 0.0160, 0.058, events)
+    call UNITSTAT_WidgetCreate(3, "UI\\WOS\\stat-str.blp", 0.2615, 0.0426, 0.058, events)
+    call UNITSTAT_WidgetCreate(4, "UI\\WOS\\stat-agi.blp", 0.2615, 0.0293, 0.058, events)
+    call UNITSTAT_WidgetCreate(5, "UI\\WOS\\stat-int.blp", 0.2615, 0.0160, 0.058, events)
     // Checkpoint 25: attack speed / move speed / attack range opposite the
     // attributes, behind a thin divider.
-    call UNITSTAT_WidgetCreate(10, "UI\\WOS\\icon-attackspeed.tga", 0.3140, 0.0426, 0.040, events)
-    call UNITSTAT_WidgetCreate(11, "UI\\WOS\\icon-movespeed.tga", 0.3140, 0.0293, 0.040, events)
-    call UNITSTAT_WidgetCreate(12, "UI\\WOS\\icon-range.tga", 0.3140, 0.0160, 0.040, events)
+    call UNITSTAT_WidgetCreate(10, "UI\\WOS\\icon-attackspeed.blp", 0.3140, 0.0426, 0.040, events)
+    call UNITSTAT_WidgetCreate(11, "UI\\WOS\\icon-movespeed.blp", 0.3140, 0.0293, 0.040, events)
+    call UNITSTAT_WidgetCreate(12, "UI\\WOS\\icon-range.blp", 0.3140, 0.0160, 0.040, events)
     loop
         exitwhen i >= 3
         // Under the value's first digits; drawn inside the stat row button.
@@ -1004,7 +1004,7 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
         call BlzFrameSetPoint(UNITSTAT_PrimaryMark[i], FRAMEPOINT_LEFT, UNITSTAT_Widget[3 + i], FRAMEPOINT_LEFT, 0.0120, -0.0060)
         call BlzFrameSetSize(UNITSTAT_PrimaryMark[i], 0.026, 0.0058)
         call BlzFrameSetLevel(UNITSTAT_PrimaryMark[i], 6)
-        call BlzFrameSetTexture(UNITSTAT_PrimaryMark[i], "UI\\WOS\\stat-underline.tga", 0, true)
+        call BlzFrameSetTexture(UNITSTAT_PrimaryMark[i], "UI\\WOS\\stat-underline.blp", 0, true)
         call BlzFrameSetEnable(UNITSTAT_PrimaryMark[i], false)
         call BlzFrameSetVisible(UNITSTAT_PrimaryMark[i], false)
         set i = i + 1
@@ -1034,7 +1034,7 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     call BlzFrameSetEnable(UNITSTAT_PortraitTipText, false)
     call BlzFrameSetVisible(UNITSTAT_PortraitTip, false)
     call TriggerAddAction(UNITSTAT_PortraitClick, function UNITSTAT_OnPortraitClick)
-    set UNITSTAT_VoiceToggle = WUI_ToggleButton("WOSVoiceToggle", 0.18725, 0.0870, 0.012, "UI\\WOS\\glyph-voice.tga")
+    set UNITSTAT_VoiceToggle = WUI_ToggleButton("WOSVoiceToggle", 0.18725, 0.0870, 0.012, "UI\\WOS\\glyph-voice.blp")
     call WUI_PlaceShiftLeft(UNITSTAT_VoiceToggle, 0.18725, 0.0870, 0.012, 0.012)
     // Hero voice is on by default.
     set i = 0
@@ -1048,14 +1048,14 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     set voiceClick = CreateTrigger()
     call BlzTriggerRegisterFrameEvent(voiceClick, UNITSTAT_VoiceToggle, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(voiceClick, function UNITSTAT_OnVoiceToggle)
-    set UNITSTAT_ModeButton = WUI_ToggleButton("WOSStatsMode", 0.20125, 0.0870, 0.012, "UI\\WOS\\glyph-cols2.tga")
+    set UNITSTAT_ModeButton = WUI_ToggleButton("WOSStatsMode", 0.20125, 0.0870, 0.012, "UI\\WOS\\glyph-cols2.blp")
     call WUI_RegisterHelpTarget(2, UNITSTAT_ModeButton)
     call WUI_PlaceShiftLeft(UNITSTAT_ModeButton, 0.20125, 0.0870, 0.012, 0.012)
     call WUI_TooltipSized(UNITSTAT_ModeButton, "|cffd5b876STATS COLUMNS|r|nClick: 1 column / 2 columns / 3 columns.|nThe third column shows penetration and regeneration; the rest of the HUD moves with it.", 0.190, 0.070, 0.007, 0.007, 0.018)
     set voiceClick = CreateTrigger()
     call BlzTriggerRegisterFrameEvent(voiceClick, UNITSTAT_ModeButton, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(voiceClick, function UNITSTAT_OnModeClick)
-    set UNITSTAT_AutoSelectToggle = WUI_ToggleButton("WOSAutoSelectHero", 0.21525, 0.0870, 0.012, "UI\\WOS\\glyph-hero-lock.tga")
+    set UNITSTAT_AutoSelectToggle = WUI_ToggleButton("WOSAutoSelectHero", 0.21525, 0.0870, 0.012, "UI\\WOS\\glyph-hero-lock.blp")
     call WUI_PlaceShiftLeft(UNITSTAT_AutoSelectToggle, 0.21525, 0.0870, 0.012, 0.012)
     static if LIBRARY_WOSTestMinimalRuntime then
         call BlzFrameSetVisible(UNITSTAT_AutoSelectToggle, false)
@@ -1073,12 +1073,12 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
         set y = 0.0835 - I2R(i) * 0.0138
         set back = BlzCreateFrameByType("BACKDROP", "WOSVitalsBack", UNITSTAT_Root, "", i)
         call WUI_PlaceShift(back, 0.479, y, 0.272, 0.011)
-        call BlzFrameSetTexture(back, "UI\\WOS\\bar-back.tga", 0, true)
+        call BlzFrameSetTexture(back, "UI\\WOS\\bar-back.blp", 0, true)
         call BlzFrameSetEnable(back, false)
         if i == 0 then
-            set UNITSTAT_Bar[i] = WUI_CreateFill("WOSVitalsHp", UNITSTAT_Root, 0.270, 0.009, 100.00, "UI\\WOS\\hp-dark.tga")
+            set UNITSTAT_Bar[i] = WUI_CreateFill("WOSVitalsHp", UNITSTAT_Root, 0.270, 0.009, 100.00, "UI\\WOS\\hp-dark.blp")
         else
-            set UNITSTAT_Bar[i] = WUI_CreateFill("WOSVitalsMp", UNITSTAT_Root, 0.270, 0.009, 100.00, "UI\\WOS\\mp-dark.tga")
+            set UNITSTAT_Bar[i] = WUI_CreateFill("WOSVitalsMp", UNITSTAT_Root, 0.270, 0.009, 100.00, "UI\\WOS\\mp-dark.blp")
         endif
         call BlzFrameSetPoint(UNITSTAT_Bar[i], FRAMEPOINT_LEFT, back, FRAMEPOINT_LEFT, 0.001, 0.000)
         set back = WUI_GoldFrame("WOSVitalsEdge", back, 0.0030, 0.0000)

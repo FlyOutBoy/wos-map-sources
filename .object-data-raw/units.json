@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3u",
-  "source_sha256": "c4feae25666413ff7813e231b5e3f53dfe9cafbe3e8a622deb3a90d5991d6c11",
+  "source_sha256": "0de48bb6a78fb5116c23cc60daf339987e4e03a043fb6e6aca5ba7625393a5e1",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -692,9 +692,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -1269,9 +1269,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -3045,9 +3045,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -4211,9 +4211,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -4805,9 +4805,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -5382,9 +5382,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -6868,9 +6868,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -7667,9 +7667,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -8261,9 +8261,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -8838,9 +8838,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -9415,9 +9415,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -9992,9 +9992,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -10569,9 +10569,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -12055,9 +12055,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -12632,9 +12632,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -13798,9 +13798,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -15732,9 +15732,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -19080,9 +19080,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -19737,9 +19737,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -20714,9 +20714,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -21885,9 +21885,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -22479,9 +22479,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -23359,9 +23359,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -23936,9 +23936,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -24498,9 +24498,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -25075,9 +25075,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -25955,9 +25955,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -26835,9 +26835,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -27446,9 +27446,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -28023,9 +28023,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -28600,9 +28600,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -29177,9 +29177,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -29737,9 +29737,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -30297,9 +30297,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -32103,9 +32103,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -32712,9 +32712,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -33271,9 +33271,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -33946,9 +33946,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -34453,11 +34453,13 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.8
+            "value": 1.7999999523162842,
+            "_original_value": 1.7999999523162842,
+            "_raw_hex": "6666E63F"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "H021",
+            "hex": "48303231"
           }
         },
         {
@@ -34566,9 +34568,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -34836,11 +34838,13 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.65
+            "value": 1.649999976158142,
+            "_original_value": 1.649999976158142,
+            "_raw_hex": "3333D33F"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "H021",
+            "hex": "48303231"
           }
         },
         {
@@ -34851,11 +34855,13 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.1
+            "value": 2.0999999046325684,
+            "_original_value": 2.0999999046325684,
+            "_raw_hex": "66660640"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "H021",
+            "hex": "48303231"
           }
         },
         {
@@ -35493,9 +35499,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -36676,9 +36682,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -37253,9 +37259,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -37813,9 +37819,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -38693,9 +38699,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -39287,9 +39293,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -39831,9 +39837,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -40693,9 +40699,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -42248,9 +42254,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -43518,9 +43524,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -44063,9 +44069,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -44640,9 +44646,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -45234,9 +45240,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -46032,9 +46038,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.0,
-            "_original_value": 1.0,
-            "_raw_hex": "0000803F"
+            "value": 1.75,
+            "_original_value": 1.75,
+            "_raw_hex": "0000E03F"
           },
           "sanity_check": {
             "text": "",
@@ -46100,7 +46106,7 @@
           "field_name": "Movement speed / Скорость движения",
           "type": "int",
           "data": {
-            "value": 275
+            "value": 290
           },
           "sanity_check": {
             "text": "",

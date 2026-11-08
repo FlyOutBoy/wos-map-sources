@@ -49,7 +49,7 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       local framehandle edge = WUI_Border("TasPortraitChargeEdge", box)
       call BlzFrameSetEnable(box, false)
       call BlzFrameSetEnable(edge, false)
-      call BlzFrameSetTexture(box, "UI\\WOS\\button.tga", 0, true)
+      call BlzFrameSetTexture(box, "UI\\WOS\\button.blp", 0, true)
       call BlzFrameSetPoint(box, FRAMEPOINT_TOPRIGHT, portrait, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
       call BlzFrameSetAllPoints(text, box)
       call BlzFrameSetFont(text, "Fonts/FRIZQT__.TTF", FONT_SIZE, 0)
@@ -146,6 +146,9 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
                set stacks = stacks + 1
             endif
             if GetUnitAbilityLevel(u, Starrk_Pas6ID) > 0 then
+               set stacks = stacks + 1
+            endif
+            if GetUnitAbilityLevel(u, Starrk_Pas7ID) > 0 then
                set stacks = stacks + 1
             endif
             if stacks > 0 then
@@ -310,7 +313,7 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
             static if LIBRARY_WOSTestNativeUI then
                call BlzFrameSetTexture(FrameIcon[i], "UI\\Widgets\\ToolTips\\Human\\human-tooltip-background.blp", 0, true)
             else
-            call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.tga", 0, true)
+            call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.blp", 0, true)
             endif
 
             call BlzFrameClearAllPoints(FrameText[i])
@@ -326,6 +329,13 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
          loop
             exitwhen i > 11
             set FrameBox[i] = BlzCreateSimpleFrame("TasAbilityChargeBox", BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i), i)
+            // The fdf box is SetAllPoints (0.039 wide, like the cooldown sprite) and
+            // WOSUI's cooldown cache took it by width. A badge-sized box keeps the
+            // counter out of that cache; icon/text are anchored to the button anyway.
+            call BlzFrameClearAllPoints(FrameBox[i])
+            call BlzFrameSetPoint(FrameBox[i], FRAMEPOINT_TOPRIGHT, BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i), FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+            call BlzFrameSetSize(FrameBox[i], BOX_SIZE, BOX_SIZE)
+            call WUI_RegisterChargeBox(FrameBox[i])
             // reserve HandleId, used Async later
             set FrameText[i] =  BlzGetFrameByName("TasAbilityChargeBoxText", i)
             set FrameIcon[i] = BlzGetFrameByName("TasAbilityChargeBoxTexture", i)
@@ -333,7 +343,7 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
             call BlzFrameClearAllPoints(FrameIcon[i])
             call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_TOPRIGHT, commandButton, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
             call BlzFrameSetSize(FrameIcon[i], BOX_SIZE, BOX_SIZE)
-            call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.tga", 0, true)
+            call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.blp", 0, true)
             call BlzFrameClearAllPoints(FrameText[i])
             call BlzFrameSetPoint(FrameText[i], FRAMEPOINT_TOPRIGHT, commandButton, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
             call BlzFrameSetSize(FrameText[i], BOX_SIZE, BOX_SIZE)

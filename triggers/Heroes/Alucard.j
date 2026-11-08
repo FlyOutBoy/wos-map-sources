@@ -128,6 +128,7 @@ library AlucardSpells uses GearSystems
         real AlucardW_DamageImmuneDuration = 3 // in seconds, 3 = 3 sec, also can be 3.5..... 4.1 ...... 5.. and any other number, but not lower than 0.5
         real AlucardW_SelfHealAgiBase = 2 //x agi
         real AlucardW_SelfHealAgiStep = 0.25 //x agi
+        real AlucardW_SelfHealAgi35 = 1.5 //x agi, extra from hero level 35
         real AlucardRW_DamageAgiBase = 5 // base number x Str damage for 1 level
         real AlucardRW_DamageAgiStep = 1 // additional number x Str damage for each next level
         real AlucardRW_Duration = 2 // in seconds, 3 = 3 sec, also can be 3.5..... 4.1 ...... 5.. and any other number, but not lower than 0.5
@@ -1000,6 +1001,9 @@ library AlucardSpells uses GearSystems
             call StartSpellUnit2(c)
           //  call StartSpellUnit2(td)
             set r5 = ( AlucardW_SelfHealAgiBase  + ( AlucardW_SelfHealAgiStep  * ( GetUnitAbilityLevel( c , AlucardW_ID) - 1 ) ) )*GetHeroAgi(c,true)
+            if GetHeroLevel(c) >= 35 then
+                set r5 = r5 + AlucardW_SelfHealAgi35 * GetHeroAgi(c, true)
+            endif
             if LoadInteger(hs,GetHandleId(c),SH_ALUCARD_G3) == 1 then  
             set r5 = r5 * 1.25
             endif

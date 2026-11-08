@@ -28,7 +28,7 @@ globals
     private constant string WCS_TEX_BLACK = WUI_PANEL_TEXTURE
     private constant string WCS_TEX_CLOSE = "Music\\Music_Close.blp"
     private constant string WCS_TEX_EMPTY = "Pick\\wos_stat"
-    private constant string WCS_TEX_OPEN = "UI\\WOS\\glyph-history.tga"
+    private constant string WCS_TEX_OPEN = "UI\\WOS\\glyph-history.blp"
 
     private framehandle WCS_Main = null
     private framehandle WCS_OpenButton = null
@@ -65,8 +65,8 @@ globals
     private constant real WCS_RANK_BAR_WIDTH = 0.300
     private constant real WCS_LEVEL_BAR_WIDTH = 0.236
     // Blend textures rank-fill-<rank>-<step>.tga (BlzFrameSetVertexColor does not tint BACKDROPs).
-    private constant string WCS_TEX_RANK_FILL = "UI\\WOS\\rank-fill-0-0.tga"
-    private constant string WCS_TEX_RANK_GOLD = "UI\\WOS\\rank-gold.tga"
+    private constant string WCS_TEX_RANK_FILL = "UI\\WOS\\rank-fill-0-0.blp"
+    private constant string WCS_TEX_RANK_GOLD = "UI\\WOS\\rank-gold.blp"
     private framehandle WCS_LevelText = null
     private framehandle WCS_LevelBack = null
     private framehandle WCS_LevelFill = null
@@ -166,17 +166,17 @@ endfunction
 
 private function WCS_CategoryTexture takes integer category returns string
     if category == 1 then
-        return "UI\\WOS\\pick-logo-gacha.tga"
+        return "UI\\WOS\\pick-logo-gacha.blp"
     elseif category == 2 then
-        return "UI\\WOS\\pick-logo-bleach.tga"
+        return "UI\\WOS\\pick-logo-bleach.blp"
     elseif category == 3 then
-        return "UI\\WOS\\pick-logo-fairytail.tga"
+        return "UI\\WOS\\pick-logo-fairytail.blp"
     elseif category == 4 then
-        return "UI\\WOS\\pick-logo-onepiece.tga"
+        return "UI\\WOS\\pick-logo-onepiece.blp"
     elseif category == 5 then
-        return "UI\\WOS\\pick-logo-jujutsu.tga"
+        return "UI\\WOS\\pick-logo-jujutsu.blp"
     endif
-    return "UI\\WOS\\pick-logo-other.tga"
+    return "UI\\WOS\\pick-logo-other.blp"
 endfunction
 
 private function WCS_X takes real x returns real
@@ -631,8 +631,8 @@ private function WCS_UpdateRank takes integer games returns nothing
     else
         // Status colour blends toward the next rank (10 steps per rank).
         set red = R2I(part * 9.0 + 0.5)
-        call BlzFrameSetTexture(WCS_RankFill, "UI\\WOS\\rank-fill-" + I2S(rank) + "-" + I2S(red) + ".tga", 0, true)
-        call BlzFrameSetTexture(WCS_LevelFill, "UI\\WOS\\rank-fill-" + I2S(rank) + "-0.tga", 0, true)
+        call BlzFrameSetTexture(WCS_RankFill, "UI\\WOS\\rank-fill-" + I2S(rank) + "-" + I2S(red) + ".blp", 0, true)
+        call BlzFrameSetTexture(WCS_LevelFill, "UI\\WOS\\rank-fill-" + I2S(rank) + "-0.blp", 0, true)
     endif
     call BlzFrameSetVisible(WCS_RankFill, status > 0.001)
     call BlzFrameSetSize(WCS_RankFill, RMaxBJ(0.001, WCS_S(WCS_RANK_BAR_WIDTH) * status), WCS_S(0.012))
@@ -1101,7 +1101,8 @@ private function WCS_OnOpen takes nothing returns nothing
         call WUI_ReleaseClickFocus()
         return
     endif
-    call WCS_SetOpen(viewer, true)
+    // A second click on the History button closes the window.
+    call WCS_SetOpen(viewer, not WCS_IsOpen[GetPlayerId(viewer)])
     set viewer = null
     call WUI_ReleaseClickFocus()
 endfunction
@@ -1490,7 +1491,7 @@ call BlzFrameSetVisible(WCS_Main, false)
     set WCS_CloseIcon = BlzCreateFrameByType("BACKDROP", "WcsCloseGlyph", WCS_CloseButton, "", 8215)
     call BlzFrameSetPoint(WCS_CloseIcon, FRAMEPOINT_TOPLEFT, WCS_CloseButton, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
     call BlzFrameSetPoint(WCS_CloseIcon, FRAMEPOINT_BOTTOMRIGHT, WCS_CloseButton, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
-    call BlzFrameSetTexture(WCS_CloseIcon, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetTexture(WCS_CloseIcon, "UI\\WOS\\glyph-close.blp", 0, true)
     call BlzFrameSetEnable(WCS_CloseIcon, false)
     call WUI_GoldFrame("WcsCloseEdge", WCS_CloseButton, 0.0026, 0.0000)
     set WCS_HomeButton = WCS_CreateTextButton(WCS_Main, 0.258, 0.430, 0.064, 0.024, "HOME", 8214)

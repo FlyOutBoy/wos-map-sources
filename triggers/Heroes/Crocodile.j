@@ -83,15 +83,17 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
 
 //================================ Crocodile W ========================================
         integer CrocodileW_ID = 'A0I8'
-        real CrocodileW_Duration = 3.0
+        real CrocodileW_Duration = 2.0
         real CrocodileW_CastTime = 0.45
         integer CrocodileW_Hits = 6
-        real CrocodileW_Aoe = 800.0
+        real CrocodileW_Aoe = 800.0 // max radius (level 5)
+        real CrocodileW_AoeBase = 480.0 // level 1 radius: -40%
+        real CrocodileW_AoeStep = 80.0 // +80 per level -> 480/560/640/720/800
         real CrocodileW_PullSpeed = 210
         real CrocodileW_EdgePullMultiplier = 0.50
         real CrocodileW_DecorDamage = 20.0
         real CrocodileW_DecorPeriod = 1.0
-        real CrocodileW_DamageAgi = 0.75
+        real CrocodileW_DamageAgi = 1.0
         integer CrocodileW_Slow = 30
         real CrocodileW_ComboDamageAgi = 2.0
         real CrocodileW_ComboStun = 1.5 // from CrocodileW_ComboFullLevel
@@ -125,9 +127,11 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
 
 //================================ Crocodile R ========================================
         integer CrocodileR_ID = 'A0IA'
-        real CrocodileR_Speed = 900.0
+        real CrocodileR_Distance = 2250.0 // travel length (was 900 speed x 2.5 sec)
+        real CrocodileR_Duration = 2.1
+        real CrocodileR_LaunchDelay = 0.35 // sec the tornado stays at Crocodile before it flies
+        real CrocodileR_Speed = CrocodileR_Distance/(CrocodileR_Duration-CrocodileR_LaunchDelay)
         real CrocodileR_SandSpacing = 100.0
-        real CrocodileR_Duration = 2.5
         real CrocodileR_StartScale = 0.15
         real CrocodileR_EndScale = 0.95
         real CrocodileR_CastTime = 0.45
@@ -1305,7 +1309,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             set c = NewC
             set x = NewX
             set y = NewY
-            set radius = CrocodileW_Aoe
+            set radius = RMinBJ(CrocodileW_Aoe,CrocodileW_AoeBase+CrocodileW_AoeStep*(GetUnitAbilityLevel(c,CrocodileW_ID)-1))
             set r = 0.0
             set rmax = RMaxBJ(0.03,CrocodileW_Duration)+0.51
             set decorPulse = 0.0
@@ -1923,7 +1927,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 if not endNow and SpellBoolCaster(c) and LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) != 0 then
                     set step = 0.0
                     if not stoppedByW then
-                        set step = CrocodileR_Speed*CrocodilePeriod
+                        // Launch delay: the tornado waits next to Crocodile so W can be cast ahead of it.
+                        if r + 0.001 >= CrocodileR_LaunchDelay then
+                            set step = CrocodileR_Speed*CrocodilePeriod
+                        endif
                         call MoveEff(e,step,a)
                         call MoveEff(e2,step,a)
                         set step = SR0(x,y,GetEffX(e),GetEffY(e))

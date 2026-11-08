@@ -33,7 +33,7 @@ class DamageStats(unittest.TestCase):
         for name in self.vm.methods:
             g[name] = lambda *a,n=name:self.vm.run(n,a)
         for name in ['DS_Count','DS_Total','DS_Order','DS_Recent','DS_SourceOrder','DS_RowPid','DS_SlotSource','DS_LastHero','DS_LastActive','DS_RowSource','DS_RowPortrait','DS_RowLines','DS_TabMode','DS_Phys','DS_Mag',
-                     'DS_PendSrc','DS_PendCount','DS_PendTotal','DS_PendMag','DS_PendPhys','DS_PendList','DS_SortValue','DS_SlotColor']:
+                     'DS_PendHead','DS_PendSrc','DS_PendCount','DS_PendTotal','DS_PendMag','DS_PendPhys','DS_SortValue','DS_SlotColor']:
             g[name] = defaultdict(int)
         g['DS_PlayerTexture']=defaultdict(lambda:'texture')
         for name in ['DS_Row','DS_Label','DS_Value','DS_Icon','DS_Art','DS_Number','DS_Tab','DS_Portrait','DS_Fill','DS_BarBack','DS_SourceRowIcon','DS_SourceRowArt','DS_SubLabel','DS_DirTab','DS_Sensor','DS_RowSensor','DS_RowFillTex','DS_RowBackTex']:
@@ -42,7 +42,7 @@ class DamageStats(unittest.TestCase):
             for key in list(t):
                 if key[1] == p:del t[key]
         g.update(NegativeAtMost=lambda n,limit:isinstance(n,(int,float)) and n<=limit,DS_Origins={},DS_Actors={},DS_TakenKeys={},DS_ActorCount=0,DS_OriginCount=0,DS_ScreenRight=-1.0,WUI_ScreenRight=lambda:.933333,WUI_InfoSourceIcon=lambda s:"",
-                 DS_Keys={},DS_Data={},DS_Pend={},DS_PendDirty=0,DS_PEND_CAP=400,DS_FlushTicks=10,DS_Sequence=0,DS_Version=0,DAMAGE_STATS_ENABLED=True,DamageStatsActive=True,
+                 DS_Keys={},DS_Data={},DS_Pend={},DS_PendDirty=0,DS_PEND_CAP=400,DS_FOLD_BUDGET=16,DS_PendCursor=0,ModuloInteger=lambda a,b:a%b,RemoveSavedReal=lambda t,p,c:t.pop(('r',p,c),None),DS_Sequence=0,DS_Version=0,DAMAGE_STATS_ENABLED=True,DamageStatsActive=True,
                  DS_Direction=0,DS_TabPage=-1,DS_TabDirection=-1,DS_HoverDetail=False,DS_Minimized=False,
                  DS_CELLS=12,DS_MAX_SOURCES=12,GearDamageVariants={},DS_PickHidden=False,DS_SmallBeforePick=False,DS_LINE=12,DS_PITCH=.0254,DS_SMALL=8,DS_SMALL_PITCH=.020,DamageStatsHitKind=0,DS_SourceKind={},DS_GameTip=defaultdict(lambda:None),DS_GameTipKeys='',
                  WUI_HOTKEY_CLEAR=3,WUI_HOTKEY_LOAD=4,WUI_GetHotkeyName=lambda c,p:'F3' if c==3 else 'F4',DS_SmallPitch=.028,DS_SmallGap=.0008,DS_SmallHeight=-1.,DS_LargeHeight=-1.,DS_Page=0,DS_Selected=-1,DS_SourcePage=0,DS_PlayerPage=0,DS_PLAYERS_PER_PAGE=5,DS_SOURCES_PER_PAGE=9,DS_LastVersion=-1,
@@ -90,6 +90,33 @@ class DamageStats(unittest.TestCase):
     def runj(self,name,*args):return self.vm.run(name,args)
     def hit(self,pid=0,source=100000,amount=10.):self.runj('DamageStatsRecord',pid,source,amount)
     def amount(self,page=0,pid=0,source=100000):return self.vm.g['LoadReal'](self.vm.g['DS_Data'],page*10+pid,source)
+
+    def test_master_switch_allocates_nothing_and_testmode_cannot_override_it(self):
+        vm = JassState(SOURCE.read_text(encoding='utf-8-sig').replace('static if DAMAGE_STATS_ENABLED then', 'if DAMAGE_STATS_ENABLED then'))
+        vm.g.update(self.vm.g)
+        vm.g.update(DAMAGE_STATS_ENABLED=False, DamageStatsActive=False)
+        for name in ('InitHashtable', 'CreateTimer', 'CreateTrigger', 'WUI_OnReady',
+                     'TimerStart', 'BlzCreateFrameByType', 'BlzTriggerRegisterFrameEvent'):
+            vm.g[name] = lambda *a,n=name:self.fail('disabled feature called ' + n)
+        vm.run('DS_Init')
+        vm.run('DamageStatsEnableForTest')
+        vm.run('DamageStatsSetPickHidden', (False,))
+        vm.run('DamageStatsRecord', (0, 100000, 50.))
+        self.assertFalse(vm.g['DamageStatsActive'])
+        self.assertEqual(0, vm.g['DS_PendDirty'])
+        globals_text = SOURCE.read_text(encoding='utf-8-sig').split('endglobals', 1)[0]
+        self.assertNotRegex(globals_text, r'= (?:CreateTimer|CreateTrigger|InitHashtable)\(')
+
+    def test_enabled_switch_allocates_once_before_registering_ui_startup(self):
+        vm = JassState(SOURCE.read_text(encoding='utf-8-sig').replace('static if DAMAGE_STATS_ENABLED then', 'if DAMAGE_STATS_ENABLED then'))
+        vm.g.update(self.vm.g)
+        calls = []
+        vm.g.update(DAMAGE_STATS_ENABLED=True, DamageStatsActive=True, DS_Timer=None, DS_PollTimer=None,
+                    InitHashtable=lambda:calls.append('table') or {},
+                    CreateTimer=lambda:calls.append('timer') or 'clock',
+                    WUI_OnReady=lambda f:calls.append('ready'))
+        vm.run('DS_Init')
+        self.assertEqual(['table'] * 7 + ['timer'] * 2 + ['ready'], calls)
 
     def test_round_and_game_accumulate_same_final_value_and_session_is_not_recorded(self):
         self.hit(amount=12.75);self.hit(source=100001,amount=30.25)
@@ -370,18 +397,50 @@ class DamageStats(unittest.TestCase):
         self.visible['small']=True;self.runj('DS_Tick')
         self.assertTrue(self.heights)
 
-    def test_hits_stay_buffered_until_the_synced_five_second_fold(self):
+    def test_repeated_hits_coalesce_before_the_next_bounded_slice(self):
         self.runj('DS_Pending',0,100000,10.);self.runj('DS_Pending',0,100000,2.);self.runj('DS_Pending',10,100001,4.)
         self.assertEqual(0.,self.runj('DamageStatsTotal',0,0));self.assertEqual(0,self.vm.g['DS_Version'])
-        for _ in range(9):self.runj('DS_Tick')
-        self.assertEqual(0.,self.runj('DamageStatsTotal',0,1))
         self.runj('DS_Tick')
         for page in range(3):
             self.assertEqual(12.,self.runj('DamageStatsTotal',0,page));self.assertEqual(4.,self.runj('DamageStatsTotal',0,4+page))
             self.assertEqual(12.,self.amount(page));self.assertEqual(1,self.vm.g['DS_Count'][page*10])
-        self.assertEqual(1,self.vm.g['DS_Version']);self.assertEqual(0,self.vm.g['DS_PendDirty'])
+        self.assertEqual(2,self.vm.g['DS_Version']);self.assertEqual(0,self.vm.g['DS_PendDirty'])
         self.runj('DS_Pending',0,100000,5.);self.runj('DamageStatsNextRound')
         self.assertEqual(17.,self.amount(3));self.assertEqual(0.,self.amount(0))
+
+    def test_slices_bound_work_and_preserve_interleaved_hits_and_exact_rounds(self):
+        g = self.vm.g
+        for source in range(30):self.runj('DS_Pending', 0, 100000 + source, 1.)
+        self.runj('DS_DrainSlice')
+        self.assertEqual(16, g['DS_Sequence'])
+        self.assertEqual(14, g['DS_PendCount'][0])
+        # One consumed key is queued again; one still pending key is coalesced.
+        self.runj('DS_Pending', 0, 100000, 5.)
+        self.runj('DS_Pending', 0, 100029, 7.)
+        self.runj('DS_Pending', 10, 200000, 3.)
+        self.runj('DS_DrainSlice')
+        self.assertLessEqual(g['DS_Sequence'] - 16, 16)
+        self.runj('DamageStatsNextRound')
+        self.assertEqual(42., self.runj('DamageStatsTotal', 0, 3))
+        self.assertEqual(3., self.runj('DamageStatsTotal', 0, 7))
+        self.assertEqual(0, g['DS_PendDirty'])
+        self.assertEqual(0., self.runj('DamageStatsTotal', 0, 0))
+        self.assertEqual(42., self.runj('DamageStatsTotal', 0, 2))
+
+    def test_fifo_wrap_and_overflow_never_flush_other_players_on_hit(self):
+        g = self.vm.g
+        g['DS_PEND_CAP'] = 4
+        self.runj('DS_Pending', 1, 999999, 8.)
+        for source in range(4):self.runj('DS_Pending', 0, 100000 + source, 1.)
+        self.runj('DS_Pending', 0, 100004, 2.)
+        self.assertEqual(1, g['DS_Sequence'])
+        self.assertEqual(1, g['DS_PendCount'][1])
+        self.runj('DS_Pending', 0, 100000, 3.)
+        self.runj('DamageStatsFlush')
+        self.assertEqual(9., self.runj('DamageStatsTotal', 0, 0))
+        self.assertEqual(4., self.amount(source=100000))
+        self.assertEqual(8., self.runj('DamageStatsTotal', 1, 0))
+        self.assertEqual(0, g['DS_PendDirty'])
 
     def test_top_cells_pick_the_biggest_sources_without_a_full_sort(self):
         for n in range(40):self.hit(source=100000+n,amount=float((n*17)%40+1))

@@ -10,7 +10,7 @@ Frame "SIMPLEFRAME" "WOSNativeHUDSurface" {
     Layer "BACKGROUND" {
         Texture "WOSNativeHUDTexture" {
             // Texture inherits the SIMPLEFRAME's actual size.
-            File "UI\WOS\panel.tga",
+            File "UI\WOS\panel.blp",
             AlphaMode "BLEND",
         }
     }
@@ -21,11 +21,11 @@ Frame "SIMPLEFRAME" "WOSNativeEmptyAbility" {
     Height 0.036,
     Layer "BACKGROUND" {
         Texture "WOSEmptyAbilityBack" {
-            File "UI\WOS\slot-empty.tga",
+            File "UI\WOS\slot-empty.blp",
             AlphaMode "BLEND",
         }
         Texture "WOSEmptyAbilityBorder" {
-            File "UI\WOS\border.tga",
+            File "UI\WOS\border.blp",
             AlphaMode "BLEND",
         }
     }

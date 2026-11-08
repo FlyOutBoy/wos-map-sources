@@ -320,9 +320,9 @@ private function MV_Render takes nothing returns nothing
             call WUI_SetText(MV_RowText[i], MV_Name(i))
             call BlzFrameSetVisible(MV_RowMark[i], (MV_Active[slot] or MV_ResultLeft[slot] > 0.00) and MV_Eligible[index] and MV_Choice[index] != 0)
             if MV_Choice[index] == 1 then
-                call BlzFrameSetTexture(MV_RowMark[i], "UI\\WOS\\checked.tga", 0, true)
+                call BlzFrameSetTexture(MV_RowMark[i], "UI\\WOS\\checked.blp", 0, true)
             else
-                call BlzFrameSetTexture(MV_RowMark[i], "UI\\WOS\\glyph-close.tga", 0, true)
+                call BlzFrameSetTexture(MV_RowMark[i], "UI\\WOS\\glyph-close.blp", 0, true)
             endif
             if Hero[i] != null then
                 call BlzFrameSetTexture(MV_RowIcon[i], BlzGetAbilityIcon(GetUnitTypeId(Hero[i])), 0, true)
@@ -485,10 +485,10 @@ private function MV_Build takes nothing returns nothing
         call WUI_Pin(part, MV_Button[i], 0.00, 0.00, 0.024, 0.024)
         call BlzFrameSetEnable(part, false)
         if i == 0 then
-            call BlzFrameSetTexture(part, "UI\\WOS\\vote-kick.tga", 0, true)
+            call BlzFrameSetTexture(part, "UI\\WOS\\vote-kick.blp", 0, true)
             call WUI_Tooltip(MV_Button[i], "Vote kick|nOpen a pending vote or choose a player to remove.")
         else
-            call BlzFrameSetTexture(part, "UI\\WOS\\vote-ff.tga", 0, true)
+            call BlzFrameSetTexture(part, "UI\\WOS\\vote-ff.blp", 0, true)
             call WUI_Tooltip(MV_Button[i], "Surrender|nOpen a pending team vote or propose surrender.")
         endif
         call BlzTriggerRegisterFrameEvent(click, MV_Button[i], FRAMEEVENT_CONTROL_CLICK)

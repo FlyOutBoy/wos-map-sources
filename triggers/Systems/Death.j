@@ -58,7 +58,7 @@ endif
 set k = k + 1
 endloop
     endif
-    if GetUnitTypeId(td) == Patriot_ID and GetHeroLevel(td)>=35 and LoadInteger(hs,GetHandleId(td),SH_Death_DEATHCHECK)== 0 then 
+    if GetUnitTypeId(td) == Patriot_ID and GetHeroLevel(td)>=35 and LoadInteger(hs,GetHandleId(td),SH_Death_DEATHCHECK)== 0 and not SinPiercesSurvival(c) then 
     call PatriotEE_Start(td,c)
     call SaveInteger(hs,GetHandleId(td),SH_Death_DEATHCHECK,1)
     call MyFlush(GetHandleId(td),SH_Death_DEATHCHECK,0,15)

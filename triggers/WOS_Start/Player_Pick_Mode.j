@@ -136,27 +136,6 @@ function RearrangeTeamUI takes nothing returns nothing
         call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerName[pid])
         call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerName[pid], FRAMEPOINT_CENTER, FRAME_StatusHero[pid], FRAMEPOINT_BOTTOM, 0.000, -0.006)
 
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerKill[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerKill[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.045 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDeath[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDeath[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.055 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDamagePhys[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamagePhys[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.065 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDamageMag[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageMag[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.075 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerHeal[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerHeal[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.085 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDamageTakenPhys[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenPhys[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.095 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDamageTakenMag[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenMag[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.105 * rkek3)
-
         set i = i + 1
     endloop
 
@@ -178,27 +157,6 @@ function RearrangeTeamUI takes nothing returns nothing
 
         call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerName[pid])
         call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerName[pid], FRAMEPOINT_CENTER, FRAME_StatusHero[pid], FRAMEPOINT_BOTTOM, 0.000, -0.006)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerKill[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerKill[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.045 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDeath[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDeath[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.055 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDamagePhys[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamagePhys[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.065 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDamageMag[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageMag[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.075 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerHeal[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerHeal[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.085 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDamageTakenPhys[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenPhys[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.095 * rkek3)
-
-        call BlzFrameClearAllPoints(FRAME_StatusHeroStringPlayerDamageTakenMag[pid])
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenMag[pid], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, xpos, y - 0.105 * rkek3)
 
         set i = i + 1
     endloop
@@ -635,7 +593,7 @@ endfunction
 function WOS_CaptainCrown takes framehandle parent, real x, real y returns nothing
     local framehandle crown = BlzCreateFrameByType("BACKDROP", "WOSCaptainCrown", parent, "", 0)
     call WUI_Place(crown, x, y, 0.010, 0.010)
-    call BlzFrameSetTexture(crown, "UI\\WOS\\glyph-crown.tga", 0, true)
+    call BlzFrameSetTexture(crown, "UI\\WOS\\glyph-crown.blp", 0, true)
     call BlzFrameSetEnable(crown, false)
     call BlzFrameSetLevel(crown, 6)
     set crown = null

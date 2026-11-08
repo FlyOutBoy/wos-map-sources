@@ -2212,16 +2212,16 @@ function SaveSystem_OnSettingsSync takes nothing returns nothing
                     if GetLocalPlayer() == p then
                         if FRAME_FastBuyIcon != null then
                             if ShopFastBuy[pid] then
-                                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.tga", 0, true)
+                                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.blp", 0, true)
                             else
-                                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.tga", 0, true)
+                                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.blp", 0, true)
                             endif
                         endif
                         if FRAME_FastSellIcon != null then
                             if ShopFastSell[pid] then
-                                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.tga", 0, true)
+                                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.blp", 0, true)
                             else
-                                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.tga", 0, true)
+                                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.blp", 0, true)
                             endif
                         endif
                     endif
@@ -3156,9 +3156,9 @@ private function SaveSystem_CreateHelp takes nothing returns nothing
         call BlzFrameSetEnable(ss_HelpCard[pid], false)
         set ss_HelpArrow[pid] = BlzCreateFrameByType("BACKDROP", "WOSHelpArrow", ss_HelpPanel, "", 0)
         if pid < 2 or pid == 4 then
-            call BlzFrameSetTexture(ss_HelpArrow[pid], "UI\\WOS\\help-arrow-up.tga", 0, true)
+            call BlzFrameSetTexture(ss_HelpArrow[pid], "UI\\WOS\\help-arrow-up.blp", 0, true)
         else
-            call BlzFrameSetTexture(ss_HelpArrow[pid], "UI\\WOS\\help-arrow-down.tga", 0, true)
+            call BlzFrameSetTexture(ss_HelpArrow[pid], "UI\\WOS\\help-arrow-down.blp", 0, true)
         endif
         call BlzFrameSetEnable(ss_HelpArrow[pid], false)
         set pid = pid + 1

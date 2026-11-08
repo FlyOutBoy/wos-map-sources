@@ -13,5 +13,7 @@
   "SR": "A128",
   "ST": "A129",
   "SF": "A12A",
-  "SG": "A12B"
+  "SG": "A12B",
+  "F_BuffSpell": "A166",
+  "F_Buff": "B075"
 }

@@ -49,3 +49,10 @@ Anime WoS2 0.34f
 - Frieren paired T2 black holes merge within 360 units, converge to one point and release all remaining damage through four shared explosions. Detonations pull enemies inward.
 - Siren's Tear drains up to 3x INT mana and returns 75% of the amount actually drained.
 - Frieren merged T2 black holes grow for 0.5 sec, then explode four times at 0.4 sec intervals, pulling enemies from 25% beyond the explosion radius. Clone-enhanced TW has smaller, less frequent lightning effects.
+
+- Fixed Erza casting the T-form W when switching to Water armor.
+- Holy Grail movement speed aura reduced to 10%; Dark Holy Grail reduced to 15%.
+- Frostnova base movement speed increased by 15 (275 -> 290).
+
+- Selectable ground combat units at the base can pass through each other. Normal unit collision returns outside the base; terrain collision remains enabled.
+- Unstuck recovery now covers selectable arena combat units, including summons and clones.

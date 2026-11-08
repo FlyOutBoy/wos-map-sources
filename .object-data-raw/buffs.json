@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3h",
-  "source_sha256": "9c3f6a7e82dc4cd99cfc6912dca69d6e8f6d419c623b018a673c713da58b5cf8",
+  "source_sha256": "4cf40a394bbdcb919fa380ed6c2289bcce49e86bd42f75316e79998b10f08620",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -3777,23 +3777,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B04D",
-            "hex": "42303444"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Physical 1"
     },
     {
@@ -3808,23 +3792,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B04E",
-            "hex": "42303445"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Physical 2"
     },
     {
@@ -3839,23 +3807,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B04F",
-            "hex": "42303446"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Physical 3"
     },
     {
@@ -3870,23 +3822,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B050",
-            "hex": "42303530"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Physical 4"
     },
     {
@@ -3901,23 +3837,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B051",
-            "hex": "42303531"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Physical 5"
     },
     {
@@ -3932,23 +3852,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B052",
-            "hex": "42303532"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Magic 1"
     },
     {
@@ -3963,23 +3867,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B053",
-            "hex": "42303533"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Magic 2"
     },
     {
@@ -3994,23 +3882,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B054",
-            "hex": "42303534"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Magic 3"
     },
     {
@@ -4025,23 +3897,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B055",
-            "hex": "42303535"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Magic 4"
     },
     {
@@ -4056,23 +3912,7 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
-          },
-          "sanity_check": {
-            "text": "B056",
-            "hex": "42303536"
-          }
-        }
-      ],
+      "modifications": [],
       "display_name": "Core Drill Magic 5"
     },
     {
@@ -4636,99 +4476,8 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "fnam",
-            "hex": "666E616D"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Heaven Severed"
-          },
-          "sanity_check": {
-            "text": "B074",
-            "hex": "42303734"
-          }
-        },
-        {
-          "field": {
-            "text": "ftip",
-            "hex": "66746970"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Heaven Severed"
-          },
-          "sanity_check": {
-            "text": "B074",
-            "hex": "42303734"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled."
-          },
-          "sanity_check": {
-            "text": "B074",
-            "hex": "42303734"
-          }
-        },
-        {
-          "field": {
-            "text": "fart",
-            "hex": "66617274"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp"
-          },
-          "sanity_check": {
-            "text": "B074",
-            "hex": "42303734"
-          }
-        },
-        {
-          "field": {
-            "text": "ftat",
-            "hex": "66746174"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "B074",
-            "hex": "42303734"
-          }
-        },
-        {
-          "field": {
-            "text": "feat",
-            "hex": "66656174"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "B074",
-            "hex": "42303734"
-          }
-        }
-      ],
-      "display_name": ""
+      "modifications": [],
+      "display_name": "Heaven Severed"
     }
   ]
 }

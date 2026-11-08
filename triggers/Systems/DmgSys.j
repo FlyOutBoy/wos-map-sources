@@ -439,8 +439,10 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     local boolean targetIsIllusion = IsUnitIllusion(td)
     local boolean shieldPen = HasShieldPen(c, td)
     static if LIBRARY_DamageStats then
-        if damageSourceId == 0 then
-            set damageSourceId = DamageStatsNativeSource(c)
+        static if DAMAGE_STATS_ENABLED then
+            if damageSourceId == 0 then
+                set damageSourceId = DamageStatsNativeSource(c)
+            endif
         endif
     endif
     if BlzGetEventAttackType() == ATTACK_TYPE_MAGIC then
@@ -469,7 +471,15 @@ function Trig_DmgSys_Actions takes nothing returns nothing
         endif
     endif
     if eventIsAttack or typedmg == 0 then // for attacks only
-    if HasCachedItem(c,'I03X') > 0 and GetUnitAbilityLevel(c, 'A0HT') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HT') == 0 then
+    // Dark Repulser (Lostvayne upgrade): the same extra hit on a shorter cooldown; replaces Lostvayne.
+    if HasCachedItem(c, DarkRepulser_ID) > 0 then
+    if GetUnitAbilityLevel(c, DarkRepulser_CD_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(c, DarkRepulser_CD_ID) == 0 then
+    call DamageSource(DarkRepulser_ID)
+    call NextDmg(c,td,GetAttack(c),2,0.5)
+    call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_daoguang_blue_hitsword.mdx",td,"origin"))
+    call BlzStartUnitAbilityCooldown(c,DarkRepulser_CD_ID,DarkRepulser_CD)
+    endif
+    elseif HasCachedItem(c,'I03X') > 0 and GetUnitAbilityLevel(c, 'A0HT') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HT') == 0 then
     call DamageSource('I03X')
     call NextDmg(c,td,GetAttack(c),2,0.5)
     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_daoguang_blue_hitsword.mdx",td,"origin"))
@@ -504,15 +514,7 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     
     
     set dmg = CrocodileG_OffensiveDamage(c,td,dmg)
-    static if LIBRARY_CrocodileSpells then
-        if targetId == Crocodile_ID and CrocodileT_IsChanneling(td) then
-            if GetHeroLevel(td) >= CrocodileT_DamageReductionHeroLevel then
-                set dmg = dmg*(1.0-CrocodileT_DamageReduction35)
-            else
-                set dmg = dmg*(1.0-CrocodileT_DamageReduction)
-            endif
-        endif
-    endif
+    // Crocodile T channel resistance is applied inside DamageBlock (before I00J/I00R penetration).
     static if LIBRARY_AltairSpells then
         set dmg = Altair_IncomingDamage(c, td, dmg, typedmg)
     endif
@@ -1010,6 +1012,12 @@ endif
    endif
     static if LIBRARY_ItemsSpells then
         set dmg = ItemsAnime_FinalDamage(c, td, dmg, typedmg, eventIsAttack or damageSourceId == 'A0BJ')
+        // Wrath / Lust Sin pierce an already running Patriot revive: the hit finishes him.
+        static if LIBRARY_PatriotSpells then
+            if dmg > 0.0 and GetUnitTypeId(td) == Patriot_ID and Patriot_InRevive(td) and SinPiercesSurvival(c) then
+                set dmg = RMaxBJ(dmg, GetWidgetLife(td) + 1.0)
+            endif
+        endif
         if eventIsAttack and isEnemy and dmg > 0 then
             call ItemsAnime_OnAttack(c, td)
         endif
@@ -1032,14 +1040,16 @@ endif
 call I02HReflect(c,td,dmg,typedmg)
 endif
     static if LIBRARY_DamageStats then
-        if DamageStatsActive and dmg > 0 and isEnemy and targetIsHero and not targetIsIllusion then // ally/self hits (heal-side effects) are not damage dealt
-            if typedmg == 1 then
-                set DamageStatsHitKind = 1
-            else
-                set DamageStatsHitKind = 2
+        static if DAMAGE_STATS_ENABLED then
+            if DamageStatsActive and dmg > 0 and isEnemy and targetIsHero and not targetIsIllusion then // ally/self hits (heal-side effects) are not damage dealt
+                if typedmg == 1 then
+                    set DamageStatsHitKind = 1
+                else
+                    set DamageStatsHitKind = 2
+                endif
+                call DamageStatsRecordHitFrom(c,id,id2,damageSourceId,dmg,quincyShare)
+                set DamageStatsHitKind = 0
             endif
-            call DamageStatsRecordHitFrom(c,id,id2,damageSourceId,dmg,quincyShare)
-            set DamageStatsHitKind = 0
         endif
     endif
     if dmg > 0 and isEnemy and targetIsHero and not targetIsIllusion and id2 < 10 and Hero[id2] == td then

@@ -1029,7 +1029,7 @@
         "ability": "A076",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1600.0
+        "fallback": 1350.0
     },
     {
         "item": "I01O",
@@ -2362,6 +2362,29 @@
         "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
     },
     {
+        "item": "I075",
+        "name": "Dark Repulser",
+        "abilities": [
+            {
+                "id": "A164",
+                "name": "CD Dark Repulser",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            },
+            {
+                "id": "A165",
+                "name": "Item Attack Speed +50%",
+                "base": "AIsx"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
         "item": "I03Y",
         "name": "Murasame",
         "abilities": [
@@ -2672,8 +2695,8 @@
         "reason": "No independent caster-centred reach: stats or a proc centred on its struck target.",
         "abilities": [
             {
-                "id": "A074",
-                "name": "Item Agi + 10",
+                "id": "A073",
+                "name": "Item Agi + 15",
                 "base": "AIx1"
             },
             {
@@ -2786,7 +2809,7 @@
         "ability": "A131",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 900.0
+        "fallback": 1600.0
     },
     {
         "item": "I053",
@@ -2812,7 +2835,7 @@
         "ability": "A133",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 900.0
+        "fallback": 1600.0
     },
     {
         "item": "I054",
@@ -3526,6 +3549,6 @@
         "ability": "A161",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 800.0
+        "fallback": 1600.0
     }
 ]

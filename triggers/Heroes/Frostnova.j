@@ -55,7 +55,7 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
         real FrostnovaW_DamageIntStep = 1
         real FrostnovaW_DamageStatic = 100.0
         boolean FrostnovaW_IsInvul = false
-        boolean FrostnovaTW_IsInvul = true
+        boolean FrostnovaTW_IsInvul = false
         real FrostnovaW_DecorDamage = 50.0
         real FrostnovaW_Range = 1600.0
         real FrostnovaW_RangeBonus35 = 150.0
@@ -82,8 +82,8 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
         real FrostnovaE_DamageIntStep = 0.05
         real FrostnovaE_Aoe = 850.0
         real FrostnovaE_Duration = 8.0
-        real FrostnovaE_Preparation = 0.75
-        real FrostnovaE_Invulnerability = 0.6
+        real FrostnovaE_Preparation = 0.35 // cast time (pause) before the burst
+        real FrostnovaE_Invulnerability = 0.0 // extra invulnerability after the cast; it ends with the burst
         boolean FrostnovaE_IsInvul = true
         real FrostnovaE_Push = 250.0
         real FrostnovaTE_Stun = 1.0
@@ -1006,11 +1006,8 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
                 call MakeSound(FrostnovaSoundPath + "W")
             endif
             call MakeSound(FrostnovaSoundPath + "W2")
-            if state.winterRemaining > 0.0 then
-                call StartSpellUnit(caster)
-            else
-                call StartSpellUnit2(caster)
-            endif
+            // TW is no longer invulnerable: both forms only pause for the cast.
+            call StartSpellUnit2(caster)
             if state.winterRemaining > 0.0 then
                 set k = -1
                 set maximum = 1
@@ -1043,7 +1040,7 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
                 set preparationRemaining = FrostnovaW_Preparation
                 set radius = FrostnovaW_StartAoe
                 set paused = k == 0
-                set ownsInvulnerability = paused and enhanced and not hadInvulnerability
+                set ownsInvulnerability = false
                 set voiced = k == 0
                 set mainEffect = null
                 set trail = null

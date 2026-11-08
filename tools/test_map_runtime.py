@@ -47,7 +47,7 @@ def minimal_ui(workspace: Path, destination: Path) -> None:
                     if not code or code.startswith(("private ", "//")):
                         continue
                     # Public declarations retain constants, but never allocate UI state.
-                    code = code.replace("InitHashtable()", "null")
+                    code = code.replace("InitHashtable()", "null").replace("CreateTrigger()", "null")
                     if re.search(r"\w+\s*\(", mask(code)):
                         raise ValueError(f"Unsafe minimal UI global: {code}")
                     declarations.append("    "+code)

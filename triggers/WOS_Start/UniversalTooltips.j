@@ -2100,7 +2100,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_002_CrocodileW_ID takes nothing returns nothing
-        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Dur("Cast Time", CrocodileW_CastTime) + T_Rad(CrocodileW_Aoe) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Prop("Max Passive Mana Burns", I2R(CrocodileW_ManaBurnHits)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("Q Combo", "Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage, " + FormatReal(CrocodileW_ComboStunEarly) + " sec stun and a partial pull.") + T_Bonus("Hero Lv. " + I2S(CrocodileW_ComboFullLevel), "Q Combo stun " + FormatReal(CrocodileW_ComboStun) + " sec and pulls enemies all the way to the center.") + T_Bonus("R Combo", "Extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Cast pause is halved. Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Dur("Cast Time", CrocodileW_CastTime) + T_PropS("Radius", I2S(R2I(CrocodileW_AoeBase)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep * 2)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep * 3)) + " / " + I2S(R2I(CrocodileW_Aoe))) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Prop("Max Passive Mana Burns", I2R(CrocodileW_ManaBurnHits)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("Q Combo", "Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage, " + FormatReal(CrocodileW_ComboStunEarly) + " sec stun and a partial pull.") + T_Bonus("Hero Lv. " + I2S(CrocodileW_ComboFullLevel), "Q Combo stun " + FormatReal(CrocodileW_ComboStun) + " sec and pulls enemies all the way to the center.") + T_Bonus("R Combo", "Extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Cast pause is halved. Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_003_CrocodileE_ID takes nothing returns nothing
@@ -2513,7 +2513,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_088_KiritoG_ID takes nothing returns nothing
-        call SpellData.createUtility(KiritoG_ID, 1, "Passive|nHeal: Agility x " + FormatReal(KiritoG_Heal) + " every " + FormatReal(KiritoG_Time) + " sec", "")
+        call SpellData.createUtility(KiritoG_ID, 1, "Passive|nHeal: Agility x " + FormatReal(KiritoG_Heal) + " every " + FormatReal(KiritoG_Time) + " sec", T_Bonus("Hero Lv. 35", "Each cast of Kirito's own ability brings the next heal " + FormatReal(KiritoG_CastReduce35) + " sec closer (an R strike counts once, not per hit)."))
     endfunction
 
     function WOS_UTB_Init_089_KiritoE2_ID takes nothing returns nothing
@@ -2553,7 +2553,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_096_AlucardW_ID takes nothing returns nothing
-        call SpellData.create(AlucardW_ID, 5, 1, 2, AlucardW_DamageAgiBase, AlucardW_DamageAgiStep, AlucardW_Damage2StaticBase, AlucardW_Damage2StaticStep, "Heal: Agility x <L:" + FormatReal(AlucardW_SelfHealAgiBase) + "/" + FormatReal(AlucardW_SelfHealAgiBase+AlucardW_SelfHealAgiStep) + "/" + FormatReal(AlucardW_SelfHealAgiBase+AlucardW_SelfHealAgiStep*2) + "/" + FormatReal(AlucardW_SelfHealAgiBase+AlucardW_SelfHealAgiStep*3) + "/" + FormatReal(AlucardW_SelfHealAgiBase+AlucardW_SelfHealAgiStep*4) + ">", "").setPreviewChannel().setPreviewDirected()
+        call SpellData.create(AlucardW_ID, 5, 1, 2, AlucardW_DamageAgiBase, AlucardW_DamageAgiStep, AlucardW_Damage2StaticBase, AlucardW_Damage2StaticStep, "Heal: Agility x <L:" + FormatReal(AlucardW_SelfHealAgiBase) + "/" + FormatReal(AlucardW_SelfHealAgiBase+AlucardW_SelfHealAgiStep) + "/" + FormatReal(AlucardW_SelfHealAgiBase+AlucardW_SelfHealAgiStep*2) + "/" + FormatReal(AlucardW_SelfHealAgiBase+AlucardW_SelfHealAgiStep*3) + "/" + FormatReal(AlucardW_SelfHealAgiBase+AlucardW_SelfHealAgiStep*4) + ">", T_Bonus("Hero Lv. 35", "Heal +" + FormatReal(AlucardW_SelfHealAgi35) + "x Agility.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_097_AlucardE_ID takes nothing returns nothing
@@ -2638,7 +2638,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_115_StarrkG_ID takes nothing returns nothing
-        call SpellData.createUtility(StarrkG_ID, 1, "Passive (Unlocks at Lv. 12)|nCondition: No allies within " + I2S(R2I(StarkG_Aoe12)) + "/" + I2S(R2I(StarkG_Aoe25)) + "/" + I2S(R2I(StarkG_Aoe35)) + " range|nOn Cast (3+ sec CD):|n- Restores 0.85/1.05/1.25% Max HP & MP|n- Grants +4 Agi, +2 Str/Int for " + I2S(R2I(StarkG_TimeStatAdd)) + " sec|n- Max Stacks: 2/4/6", "")
+        call SpellData.createUtility(StarrkG_ID, 1, "Passive (Unlocks at Lv. 12)|nCondition: No allies within " + I2S(R2I(StarkG_Aoe12)) + "/" + I2S(R2I(StarkG_Aoe25)) + "/" + I2S(R2I(StarkG_Aoe35)) + " range|nOn Cast (3+ sec CD):|n- Restores 1.00/1.20/1.40% Max HP & MP|n- Grants +4 Agi, +2 Str/Int for " + I2S(R2I(StarkG_TimeStatAdd)) + " sec|n- Max Stacks: 3/5/7", "")
     endfunction
 
     function WOS_UTB_Init_116_StarrkQ_ID takes nothing returns nothing
@@ -3758,7 +3758,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_356_FrierenG_ID takes nothing returns nothing
-        call SpellData.createUtility(FrierenG_ID, 1, T_Rad(FrierenG_DamageAoe) + "Consumes Magic Stacks to grant a protective buff|n" + T_Dur("Buff Duration", FrierenG_Duration), "").setPreviewChannel()
+        call SpellData.createUtility(FrierenG_ID, 1, T_Rad(FrierenG_DamageAoe) + "Consumes Magic Stacks to grant a protective buff|n" + T_Dur("Barrier Duration", FrierenG_ShieldDuration), "").setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_357_FrierenQ2_ID takes nothing returns nothing
@@ -3770,7 +3770,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_359_FrierenW2_ID takes nothing returns nothing
-        call SpellData.create(FrierenW2_ID, 5, 2, 3, FrierenW2_DamageIntBase, 0.0, FrierenW2_Damage2StaticBase, 0.0, T_Rad(FrierenW2_DamageAoe) + T_Dur("Orb Growth", 0.75) + "Stationary orb at the target point; lightning and damage area grow with it.|n" + T_PropS("Hits per target", "Up to " + I2S(FrierenW2_MaxHits)), T_Bonus("With Clone", "Creates one orb: +" + FormatReal(FrierenR_CloneDamageMultiplier2) + "% damage, double radius and lightning reach")).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(FrierenW2_ID, 5, 2, 3, FrierenW2_DamageIntBase, 0.0, FrierenW2_Damage2StaticBase, 0.0, T_Rad(FrierenW2_DamageAoe) + T_Dur("Orb Growth", FrierenW2_GrowTime) + "Stationary orb at the target point; deals damage only after it has formed.|n" + T_PropS("Hits per target", "Up to " + I2S(FrierenW2_MaxHits) + ", once per " + FormatReal(FrierenW2_HitWindow) + " sec"), T_Bonus("With Clone", "Creates one orb: +" + FormatReal(FrierenR_CloneDamageMultiplier2) + "% damage, double radius and lightning reach")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_360_FrierenT2_ID takes nothing returns nothing

@@ -158,19 +158,13 @@ class HoverAndHandles(unittest.TestCase):
         vm.run('UNITSTAT_ShowTooltip', (4,))
         self.assertEqual(1, len(moved))
 
-    def test_f2_only_hides_obsolete_stats_window(self):
-        vm = ui.load_source('Scoreboard.j')
-        visible = {key: True for key in ('top', 'options', 'camera', 'taken', 'old-stats')}
-        vm.g.update(FRAME_StatusHeroMain='top', FRAME_StatusHeroMain2='taken',
-                    FRAME_StatusHeroMain3='options', FRAME_StatusHeroMain4='camera', FRAME_StatsMain='old-stats',
-                    BlzFrameIsVisible=lambda f: visible[f],
-                    BlzFrameSetVisible=lambda f, v: visible.update({f: v}),
-                    WOS_STATS_Show=lambda f, v: visible.update({f: v}))
-        vm.run('WOS_STATS_SaveAndHideLegacyUI', (0,))
-        vm.run('WOS_STATS_HideLegacyUI')
-        self.assertFalse(visible['old-stats'])
-        for key in ('top', 'taken', 'options', 'camera'):
-            self.assertTrue(visible[key])
+    def test_obsolete_f2_stats_window_is_removed(self):
+        # 2026-11-06: the hidden legacy stats window (FRAME_StatsMain) and its
+        # 1 s text refresh were cut; F2 must not depend on it any more.
+        for name in ('Scoreboard.j', 'WoS_Hero_Icons_Init.j', 'WOSUI.j'):
+            text = (ROOT / 'triggers' / 'WOS_Start' / name).read_text(encoding='utf-8')
+            for token in ('FRAME_StatsMain', 'LegacyUI', 'OldHeroStatsVisible', 'SH_STATS_LEFT'):
+                self.assertNotIn(token, text.replace('//call BlzFrameSetTexture(FRAME_StatsMain', ''), name)
 
     def test_ten_player_expanded_f2_fits_between_minimap_and_top_strip(self):
         vm = ui.load_source('Scoreboard.j')
@@ -236,7 +230,7 @@ class SharedMeterClocks(unittest.TestCase):
         end = source.index('    endstruct', begin) + len('    endstruct')
         self.assertNotIn('WUI_TrackedMeter', source[begin:end])
         self.assertNotIn('Loop_KiritoGMeter', source[begin:end])
-        self.assertIn('call BlzStartUnitAbilityCooldown(c, KiritoG_ID, TimerGetRemaining(t_KiritoG))', source[begin:end])
+        self.assertIn('call BlzStartUnitAbilityCooldown(c, KiritoG_ID, r2)', source[begin:end])  # per-hero countdown since 2026-11-04
 
 
 

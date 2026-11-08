@@ -115,7 +115,7 @@ def collect(main):
                     and texture.replace('/', '\\').split('\\')[-1].casefold() in library:
                 files[texture.replace('/', '\\')] = library[texture.replace('/', '\\').split('\\')[-1].casefold()]
     # Icons, the hero model with its textures and the Hero_Altair_*.mp3 voice lines cut from the anime.
-    for path in [*ICONS.rglob('*.blp'), *ICONS.rglob('*.mdx'), *ICONS.rglob('*.mp3')]:
+    for path in [*ICONS.rglob('*.blp'), *ICONS.rglob('*.mdx'), *ICONS.rglob('*.mp3'), *ICONS.rglob('*.tga')]:
         files[path.relative_to(ICONS).as_posix().replace('/', '\\')] = path
     return files, missing
 
@@ -150,7 +150,7 @@ def run_archive(mode, archive, directory, names, library):
                     '-Directory', str(directory), '-Library', str(library), '-NamesFile', str(names)], check=True)
 
 
-def install(dry_run):
+def install(dry_run, add_only=False):
     config = json.loads((ROOT/'.vscode/wos-build.json').read_text('utf-8-sig'))
     if config.get('testHero') != 'Altair':
         raise ValueError('Select testHero Altair first')
@@ -197,6 +197,9 @@ def install(dry_run):
             (stage/'owned.json').write_text(json.dumps(owned, ensure_ascii=False), encoding='utf8')
             run_archive('Extract', archive, existing, stage/'owned.json', library)
             changed = [n for n in owned if (existing/n).read_bytes() != files[n].read_bytes()]
+        if add_only:
+            # Keep whatever the map already has (the user edits imports in World Editor).
+            changed = []
         regions = with_realm((stage/'war3map.w3r').read_bytes())
         print(f'{len(files)} assets resolved, {len(added)} new payloads, {len(changed)} changed, {len(register)} new import records,'
               f' realm rect {"missing" if regions else "present"}')
@@ -213,19 +216,38 @@ def install(dry_run):
             shutil.copy2(files[name], target)
         (stage/'war3map.imp').write_bytes(struct.pack('<II', version, count+len(register))+imp[8:]+
                                           b''.join(b'\x0d'+n.encode('utf8')+b'\0' for n in register))
-        # The archive script's Update guard expects the trigger pair; only listed names are written.
-        for name in ('war3map.wtg', 'war3map.wct'):
-            shutil.copy2(PROFILE/'unpacked'/name, stage/name)
-        written = ['war3map.imp', '(listfile)', *added, *changed]
+        # The MPQ hash table has a fixed size and the batch no longer fits, so the whole
+        # archive is extracted, extended and packed again with a larger table.
+        full = stage/'full'
+        full_names = sorted({n for n in [*listed, 'war3map.imp', 'war3map.w3r', 'war3map.w3i', 'war3map.j'] if n.strip()
+                             and n.casefold() not in ('(listfile)', '(attributes)', '(signature)')})
+        (stage/'full.json').write_text(json.dumps(full_names, ensure_ascii=False), encoding='utf8')
+        subprocess.run(['powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', str(ROOT/'.vscode/test-map-archive.ps1'),
+                        '-Mode', 'Extract', '-Map', str(archive), '-Directory', str(full), '-Library', str(library),
+                        '-NamesFile', str(stage/'full.json'), '-Lenient'], check=True)
+        for name in [*added, *changed]:
+            target = full/name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(files[name], target)
+        (full/'war3map.imp').write_bytes(struct.pack('<II', version, count+len(register))+imp[8:]+
+                                         b''.join(b'\x0d'+n.encode('utf8')+b'\0' for n in register))
         if regions:
-            (stage/'war3map.w3r').write_bytes(regions)
-            written.append('war3map.w3r')
-        names.write_text(json.dumps(written, ensure_ascii=False), encoding='utf8')
-        run_archive('Update', archive, stage, names, library)
+            (full/'war3map.w3r').write_bytes(regions)
+        packed = sorted(p.relative_to(full).as_posix() for p in full.rglob('*') if p.is_file())
+        (stage/'pack.json').write_text(json.dumps(packed, ensure_ascii=False), encoding='utf8')
+        output = stage/'Altair.packed.w3x'
+        run_archive('Pack', output, full, stage/'pack.json', library)
+        # The packed copy must at least keep every payload of the old one before it replaces the archive.
+        old_count = len([n for n in listed if n.strip()])
+        if len(packed) < old_count*0.95:
+            raise ValueError(f'Repack lost entries: {len(packed)} files for {old_count} listed')
+        shutil.copy2(output, archive)
         print('Altair assets installed; backup', backup)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dry-run', action='store_true')
-    install(parser.parse_args().dry_run)
+    parser.add_argument('--add-only', action='store_true', help='only add missing payloads, never replace existing ones')
+    args = parser.parse_args()
+    install(args.dry_run, args.add_only)

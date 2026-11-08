@@ -127,6 +127,57 @@ class PresentationAndMetadata(unittest.TestCase):
   self.assertIn('RegisterCraft(\'I023\', "I037")',text)
   for dst,prev in [('I037','I036'),('I036','I035')]:self.assertIn(f'RegisterCraft(\'{dst}\', "{prev}")',text)
 
+class BasePhase(unittest.TestCase):
+ def setUp(self):
+  text=source('Systems/EnterRegion.j')
+  self.vm=JassState('\n'.join(function(text,n) for n in ('ArenaWalkEligible','BasePhaseEligible','BasePhaseApply','BasePhaseLeave','HeroUnstuck_Tick')))
+  self.u=self.vm.unit();self.selected=True;self.hidden=False;self.inside=True;self.kind=None;self.calls=[];self.owned={}
+  g=self.vm.g
+  g.update(UnitAddAbility=lambda u,a:self.vm.add_ability(u,a) or True,BASE_PHASE_ABILITY='Aeth',BasePhaseOwnedKey='phase',hs=self.owned,
+   BlzIsUnitSelectable=lambda _:self.selected,IsUnitHidden=lambda _:self.hidden,
+   UNIT_TYPE_STRUCTURE='structure',UNIT_TYPE_FLYING='flying',IsUnitType=lambda u,t:t==self.kind,
+   gg_rct_Arena='arena',gg_rct_Base='base',CheckCoordsInRect=lambda *a:self.inside,
+   UnitMakeAbilityPermanent=lambda *a:self.calls.append(('permanent',)),
+   SaveBoolean=lambda h,u,k,v:h.update({(u,k):v}),LoadBoolean=lambda h,u,k:h.get((u,k),False),
+   RemoveSavedBoolean=lambda h,u,k:h.pop((u,k),None),GetTriggerUnit=lambda:self.u)
+ def test_eligibility_excludes_off_arena_hidden_unselectable_structures_flyers_and_locust(self):
+  self.assertTrue(self.vm.run('BasePhaseEligible',(self.u,)))
+  for attr,value in [('selected',False),('hidden',True),('inside',False),('kind','structure'),('kind','flying')]:
+   before=getattr(self,attr);setattr(self,attr,value)
+   self.assertFalse(self.vm.run('BasePhaseEligible',(self.u,)))
+   setattr(self,attr,before)
+  self.vm.add_ability(self.u,'Aloc');self.assertFalse(self.vm.run('BasePhaseEligible',(self.u,)))
+ def test_phase_has_no_orders_no_pathing_toggle_and_removes_copied_ability(self):
+  for n in ('SetUnitPathing','IssueImmediateOrder','IssuePointOrder','SetUnitMoveSpeed','SetUnitVertexColor'):
+   self.vm.g[n]=lambda *a,n=n:self.fail(n)
+  self.vm.run('BasePhaseApply',(self.u,));self.vm.run('BasePhaseApply',(self.u,))
+  self.assertEqual(1,self.vm.g['GetUnitAbilityLevel'](self.u,'Aeth'));self.assertEqual([('permanent',)],self.calls)
+  self.vm.run('BasePhaseLeave');self.assertEqual(0,self.vm.g['GetUnitAbilityLevel'](self.u,'Aeth'))
+  self.vm.add_ability(self.u,'Aeth');self.calls.clear()
+  self.vm.run('BasePhaseApply',(self.u,));self.vm.run('BasePhaseLeave')
+  self.assertEqual(0,self.vm.g['GetUnitAbilityLevel'](self.u,'Aeth'));self.assertEqual([],self.calls)
+
+ def test_phase_applies_only_in_base_not_in_arena(self):
+  self.vm.g['CheckCoordsInRect']=lambda rect,x,y:rect=='arena'
+  self.assertTrue(self.vm.run('ArenaWalkEligible',(self.u,)))
+  self.assertFalse(self.vm.run('BasePhaseEligible',(self.u,)))
+  self.vm.run('BasePhaseApply',(self.u,))
+  self.assertEqual(0,self.vm.g['GetUnitAbilityLevel'](self.u,'Aeth'))
+  self.assertEqual([],self.calls)
+ def test_tick_reuses_group_for_base_phase_and_arena_unstuck(self):
+  other=self.vm.unit();units=[self.u,other];queue=[];probed=[]
+  g=self.vm.g
+  g.update(ArenaWalkScan=queue,
+   GroupEnumUnitsInRect=lambda group,rect,f:group.extend([self.u] if rect=='base' else units),
+   FirstOfGroup=lambda group:group[0] if group else None,
+   GroupRemoveUnit=lambda group,u:group.remove(u),
+   ArenaWalkEligible=lambda u:u is self.u,
+   BasePhaseApply=lambda u:self.calls.append(u),HeroUnstuck_Unit=lambda u:probed.append(u))
+  self.vm.add_ability(self.u,'Aeth')
+  self.vm.run('HeroUnstuck_Tick')
+  self.assertEqual(0,self.vm.g['GetUnitAbilityLevel'](self.u,'Aeth'))
+  self.assertEqual([self.u],probed);self.assertEqual([self.u],self.calls);self.assertEqual([],queue)
+
 class OrdersAndUnstuck(unittest.TestCase):
  def test_scripted_instant_windup_preserves_orders_and_invulnerability_pair(self):
   text=source('Systems/Systems2.j')
@@ -141,7 +192,7 @@ class OrdersAndUnstuck(unittest.TestCase):
  def test_unstuck_only_moves_embedded_ground_heroes_to_a_clear_point(self):
   vm=JassState(function(source('Systems/EnterRegion.j'),'HeroUnstuck_Unit'))
   u=vm.unit();u.fly_height=0.;u.paused=False
-  vm.g.update(IsUnitHidden=lambda _:False,IsUnitPaused=lambda u:u.paused,GetUnitFlyHeight=lambda u:u.fly_height,
+  vm.g.update(ArenaWalkEligible=lambda _:True,IsUnitHidden=lambda _:False,IsUnitPaused=lambda u:u.paused,GetUnitFlyHeight=lambda u:u.fly_height,
     UNIT_TYPE_FLYING='flying',IsUnitType=lambda *_:False,hs={},HeroUnstuckCastKey='cast',TestMode=False,
     HeroUnstuck_Point=lambda x,y:x>=100.,HeroUnstuck_Free=lambda x,y:x>=100.,
     IssuePointOrder=lambda *_:self.fail('unstuck must not replace orders'),IssueImmediateOrder=lambda *_:self.fail('unstuck must not replace orders'))

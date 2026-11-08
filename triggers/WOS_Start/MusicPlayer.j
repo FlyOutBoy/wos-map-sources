@@ -20,8 +20,8 @@ globals
     private constant string LMP_LINK_URL = "bit.ly/4x8cOaB"
     private constant string LMP_TEX_BLACK = WUI_PANEL_TEXTURE
     private constant string LMP_TEX_CLOSE = "Music\\Music_Close.blp"
-    private constant string LMP_TEX_OPEN = "UI\\WOS\\glyph-music.tga"
-    private constant string LMP_TEX_LINK = "UI\\WOS\\wos-app-link.tga"
+    private constant string LMP_TEX_OPEN = "UI\\WOS\\glyph-music.blp"
+    private constant string LMP_TEX_LINK = "UI\\WOS\\wos-app-link.blp"
     private constant string LMP_TEX_LOOP_OFF = "Music\\Music_LoopOff.blp"
     private constant string LMP_TEX_LOOP_ON = "Music\\Music_LoopOn.blp"
     private constant string LMP_TEX_SHUFFLE_OFF = "Music\\Music_MergeOff.blp"
@@ -626,7 +626,7 @@ private function LMP_SetVisible takes player whichPlayer, boolean flag returns n
         call BlzFrameSetVisible(lmpSeek, flag)
         call BlzFrameSetVisible(lmpSeekBlocker, flag)
         call BlzFrameSetVisible(lmpVolumeSlider, flag)
-        call BlzFrameSetVisible(lmpOpenButton, not flag and WUI_TopShown())
+        call BlzFrameSetVisible(lmpOpenButton, WUI_TopShown())
     endif
 
     if flag then
@@ -940,7 +940,8 @@ private function LMP_OnClick takes nothing returns nothing
     set lmpClickBusy[pid] = true
 
     if clicked == lmpOpenButton then
-        call LMP_SetVisible(p, true)
+        // The button stays visible; a second click closes the player.
+        call LMP_SetVisible(p, not lmpVisible[pid])
     elseif clicked == lmpLinkButton then
         set lmpLinkVisible[pid] = true
         if GetLocalPlayer() == p then
@@ -1411,7 +1412,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     
     set lmpLinkActiveButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.584, LMP_LINK_SIZE, 102)
     call WUI_PlaceRight(lmpLinkActiveButton, .054, 0.584, LMP_LINK_SIZE, LMP_LINK_SIZE)
-    set lmpLinkActiveIcon = LMP_CreateIcon(lmpLinkActiveButton, "UI\\WOS\\glyph-close.tga")
+    set lmpLinkActiveIcon = LMP_CreateIcon(lmpLinkActiveButton, "UI\\WOS\\glyph-close.blp")
     call BlzFrameSetLevel(lmpLinkActiveButton, 100)
     call BlzFrameSetLevel(lmpLinkActiveIcon, 101)
     call BlzFrameSetVisible(lmpLinkActiveButton, false)
@@ -1455,7 +1456,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     set icon = BlzCreateFrameByType("BACKDROP", "LMPCloseGlyph", lmpCloseButton, "", 0)
     call BlzFrameSetPoint(icon, FRAMEPOINT_TOPLEFT, lmpCloseButton, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
     call BlzFrameSetPoint(icon, FRAMEPOINT_BOTTOMRIGHT, lmpCloseButton, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
-    call BlzFrameSetTexture(icon, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetTexture(icon, "UI\\WOS\\glyph-close.blp", 0, true)
     call BlzFrameSetEnable(icon, false)
     set icon = WUI_GoldFrame("LMPCloseEdge", lmpCloseButton, 0.0026, 0.0000)
 

@@ -563,8 +563,8 @@ private struct MilimWKS
 
         call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Milim_MILIMW_ID, 0)
         set aoe = MilimW_DamageAoe
-        set dmg = GetHeroAgi(c, true) * (MilimW2_DamageAgiBase + (MilimW2_DamageAgiStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1)))
-        set dmg = dmg + MilimW2_Damage2StaticBase + (MilimW2_Damage2StaticStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1))
+        set dmg = GetHeroAgi(c, true) * (MilimW_DamageAgiBase + (MilimW_DamageAgiStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1)))
+        set dmg = dmg + MilimW_Damage2StaticBase + (MilimW_Damage2StaticStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1))
         if LoadInteger(hs,GetHandleId(c),SH_MODE_T) == 1 then
            set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)    
         endif
@@ -1918,21 +1918,21 @@ private struct MilimGKS
                 call UnitAddAbility(c, MilimG_Stat_ID1)
                 call UnitMakeAbilityPermanent(c, true, MilimG_Stat_ID1)
             endif
-            call MakeSound("war3mapimported\\Hero_Milim_G1")
+            call MakeSound("war3mapimported\\Hero_Milim_G 1")
         endif
         if GetHeroLevel(c) >= 25 and oldDamage < MilimG_DamagetoStats2 and newDamage >= MilimG_DamagetoStats2 then
             if GetUnitAbilityLevel(c, MilimG_Stat_ID2) == 0 then
                 call UnitAddAbility(c, MilimG_Stat_ID2)
                 call UnitMakeAbilityPermanent(c, true, MilimG_Stat_ID2)
             endif
-            call MakeSound("war3mapimported\\Hero_Milim_G2")
+            call MakeSound("war3mapimported\\Hero_Milim_G 2")
         endif
         if GetHeroLevel(c) >= 35 and oldDamage < MilimG_DamagetoStats3 and newDamage >= MilimG_DamagetoStats3 then
             if GetUnitAbilityLevel(c, MilimG_Stat_ID3) == 0 then
                 call UnitAddAbility(c, MilimG_Stat_ID3)
                 call UnitMakeAbilityPermanent(c, true, MilimG_Stat_ID3)
             endif
-            call MakeSound("war3mapimported\\Hero_Milim_G3")
+            call MakeSound("war3mapimported\\Hero_Milim_G 3")
         endif
 
         call thistype.Start(c)

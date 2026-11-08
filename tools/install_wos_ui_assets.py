@@ -57,7 +57,7 @@ FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc', 'UI/WOS/Music.fdf',
 BLANK_TEXTURE = r'UI\Widgets\EscMenu\Human\blank-background.blp'
 EMPTY_ICON = r'UI\WOS\empty.tga'
 SKIN_VALUES = {f'ConsoleTexture{i:02}': BLANK_TEXTURE for i in range(1, 7)}
-SKIN_VALUES.update(PlacementCursor=r'UI\WOS\cast-range-red.tga',
+SKIN_VALUES.update(PlacementCursor=r'UI\WOS\cast-range-red.blp',
                    ConsoleTexture05Overlay=BLANK_TEXTURE, ConsoleTexture06Overlay=BLANK_TEXTURE,
                    ConsoleInventoryCoverTexture=BLANK_TEXTURE,
                    # Checkpoint 27e: resource bar stays visible for /fps /ping; its icons are transparent.
@@ -65,17 +65,17 @@ SKIN_VALUES.update(PlacementCursor=r'UI\WOS\cast-range-red.tga',
                    TimeOfDayIndicator=CONSOLE_MODEL.replace('/', '\\'))
 # Stock menu definitions resolve these skin keys before any player opens F10.
 # This also covers menu panels that are created lazily by the engine.
-SKIN_VALUES.update(EscMenuBackground=r'UI\WOS\panel.tga',
-                   EscMenuBorder=r'UI\WOS\menu-edge.tga',
-                   EscMenuButtonBackground=r'UI\WOS\fill-normal.tga',
-                   EscMenuButtonPushedBackground=r'UI\WOS\fill-pressed.tga',
-                   EscMenuButtonDisabledBackground=r'UI\WOS\fill-disabled.tga',
-                   EscMenuButtonDisabledPushedBackground=r'UI\WOS\fill-disabled.tga',
-                   EscMenuButtonBorder=r'UI\WOS\menu-edge-button.tga',
-                   EscMenuButtonPushedBorder=r'UI\WOS\menu-edge-button.tga',
-                   EscMenuButtonDisabledBorder=r'UI\WOS\menu-edge-button.tga',
-                   EscMenuButtonDisabledPushedBorder=r'UI\WOS\menu-edge-button.tga',
-                   EscMenuButtonMouseOverHighlight=r'UI\WOS\esc-hover.tga')
+SKIN_VALUES.update(EscMenuBackground=r'UI\WOS\panel.blp',
+                   EscMenuBorder=r'UI\WOS\menu-edge.blp',
+                   EscMenuButtonBackground=r'UI\WOS\fill-normal.blp',
+                   EscMenuButtonPushedBackground=r'UI\WOS\fill-pressed.blp',
+                   EscMenuButtonDisabledBackground=r'UI\WOS\fill-disabled.blp',
+                   EscMenuButtonDisabledPushedBackground=r'UI\WOS\fill-disabled.blp',
+                   EscMenuButtonBorder=r'UI\WOS\menu-edge-button.blp',
+                   EscMenuButtonPushedBorder=r'UI\WOS\menu-edge-button.blp',
+                   EscMenuButtonDisabledBorder=r'UI\WOS\menu-edge-button.blp',
+                   EscMenuButtonDisabledPushedBorder=r'UI\WOS\menu-edge-button.blp',
+                   EscMenuButtonMouseOverHighlight=r'UI\WOS\esc-hover.blp')
 
 
 def validate_frame_resources(asset_root):
@@ -195,7 +195,7 @@ def install_ui(map_dir):
     validate_passive_texture(ROOT / 'assets')
     install(map_dir,ROOT/'assets/UI/WOS',ROOT/'backups/ui-redesign/assets',ASSET_NAMES,'UI/WOS')
     quickbuy = ROOT/'assets/UI/WOS/quickbuy'
-    names = {p.stem for p in quickbuy.glob('*.tga')}
+    names = {p.stem for p in quickbuy.glob('*.blp')}
     if names:
         install(map_dir,quickbuy,ROOT/'backups/ui-redesign/quickbuy',names,'UI/WOS/QuickBuy')
     install_console(map_dir)

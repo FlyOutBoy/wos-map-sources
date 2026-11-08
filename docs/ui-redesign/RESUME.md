@@ -3435,3 +3435,85 @@ Music Hide UI follow-up (2026-10-31): exclusive-window transitions and player
 close/init now respect WUI_TopVisible/WUI_TopShown when restoring the Music
 launcher. Previously the unconditional show resurrected it after round-end
 statistics. Regression: test_wos_ui_top_input (local/remote, hidden/shown).
+
+ShowAlly/shop navigation follow-up (2026-10-31): AHUI_IsEligibleHero accepts
+hero illusions so selection keeps ability icons and descriptions instead of
+revealing clones through an empty command overlay. Cooldown permissions still
+use the selected unit's owner/alliance; enemy clones never read cooldowns.
+Catalogue tabs, VIP and page arrows use WUI_ResetClickedButtonFocus after
+rendering. Page arrows disabled by navigation remain disabled; search editbox
+focus release stays separate. No new frames, polling or gameplay state writes.
+Validation: MAIN compile/dispatch passed; 19 focus tests and 32 of 33 ability
+UI tests passed. The Rimuru Black Flame native-G failure reproduces on HEAD
+before this change. Warcraft clone appearance and keyboard focus need game QA.
+
+ShowAlly/shop follow-up published to MAIN/STABLE without game launch.
+5517-function compiled/source parity and packed script verification passed;
+final sync reports zero binary changes and zero source differences. The normal
+save safely rebased newer World Editor object data; no conflicts were reported.
+STABLE SHA-256: 91180060c12f6b71ad527edd38f406117701e2fb5dcc274faf06ebc4b77f0923.
+Previous STABLE retained under backups/main-stable/20261031-110318-351.
+Publication report: _build/showally-shop-main-result.json. In-game QA pending.
+
+Erza/Grail/Frostnova follow-up published (2026-10-31): all 45 Erza command
+abilities audited, including retained same-slot armor forms. A03O now uses
+carrionswarm instead of the water selector A02W acidbomb. Grail native Uau1
+is .10/.15; Frostnova umvs is 290. Native values, script and WCT/WTG verified
+inside the packed archive; final object/source sync is zero. 24 focused tests
+pass plus six button tests; three old explicit-field fixture errors reproduce
+on the pre-change object backup. MAIN compile/dispatch and 5517-function
+parity passed. MAIN/STABLE updated without launch; previous STABLE backed up
+under backups/main-stable/20261031-130528-654. Report: _build/erza-grail-main-result.json.
+STABLE SHA-256: b5960621a35f1cc552d42f4c1e5ff5442a08b7908ee6525da64e83c6f1ae95a5.
+Erza form-switch behavior still needs Warcraft acceptance.
+
+DamageStats diagnostic follow-up (2026-10-31): DAMAGE_STATS_ENABLED=false in
+DamageStats.j fully disables the L/details/previous-round feature, including
+TestMode. No global timer/table allocation; DS_Init is statically empty and all
+external combat/pick/scoreboard hooks compile out. True restores initialization.
+Enabled collector now uses FIFO pending queues and up to 16 source folds per
+existing .50s tick, rotating players/directions. Overflow drains one source
+from only its own queue instead of globally flushing inside a hit callback.
+F3/F4 and round boundaries retain exact full flushes. Repeated hits coalesce;
+source rows may catch up after totals under backlog. Damage-only rendering
+retains its 5s throttle; no new timers/events or per-hit UI work.
+45 collector +21 layout tests passed; both flag values compile/dispatch pass.
+MAIN/STABLE published without launch, 5519-function parity passed; packed
+script audit proves false flag, empty DS_Init, no external DS calls or global
+DS handle allocation. Final sync is zero. Previous STABLE saved under
+backups/main-stable/20261031-131341-502. Report: _build/damage-stats-main-result.json;
+audit: _build/damage-stats-disabled-audit.json. SHA-256:
+163a5e8247fe5994b2dd81f8557af8391474fe28b481211ca1f5fbc3cc6dbd06.
+Periodic/DPS freeze causality still requires the same-fight false/true game test.
+
+Arena phase/unstuck follow-up (2026-10-31, sources only): EnterRegion uses
+Ghost (Visible) Aeth on selectable living ground arena combat units, including
+clones/summons. Adds on entry and reconciles on the existing 2s unstuck scan;
+removes only system-owned Aeth on exit. No invisibility, pathing disable or
+orders. Unstuck now scopes probes to selectable non-locust/non-building ground
+units in Arena instead of the global Hero list. DragCaught is Constellation
+Coil movement and remains unchanged. Effect indexing is not implemented.
+MAIN compile/dispatch passed; five targeted phase/unstuck checks passed.
+World Editor was closed before publication; an unsaved MAIN had been open
+during source preparation. Native pass-through/terrain/cast behavior needs
+Warcraft QA; source tests do not establish engine behavior.
+
+Arena phase follow-up published to MAIN/STABLE without launch. 5523-function
+parity passed; packed script contains Aeth integration and arena enter/leave
+registration. Final sync: zero object/source differences. Previous STABLE:
+backups/main-stable/20261031-133044-003; report: _build/arena-phase-main-result.json.
+SHA-256: fd809dae8ee00e2f4459150786a50237231ea8cea951bdc7ced25348d721128e.
+Engine pathing/attack/invisibility acceptance remains pending.
+
+Base-only correction (2026-10-31): previous Arena phasing scope is superseded.
+Aeth now applies only inside gg_rct_Base; Base leave and Arena entry remove it,
+including inherited Aeth on clones without an ownership marker. The existing
+2s clock reconciles Base phasing and Arena-only unstuck via one reusable group.
+Six focused tests pass, including no application in Arena and copied-ability
+removal. Compile/dispatch passed; effect indexing remains unmodified.
+Base-only MAIN/STABLE publication complete without launch. 5524-function
+parity and packed Base application/Arena removal checks passed; final sync zero.
+Previous STABLE: backups/main-stable/20261031-133405-446. Report:
+_build/base-phase-main-result.json. SHA-256:
+b6942e239ea0165aee2db1eb577f547b84e54b3e4d26e36c1ae31d7965ea3f47.
+Native terrain/collision/cast behavior still needs in-game acceptance.

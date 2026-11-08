@@ -475,9 +475,9 @@ private function OnEmojiFrameClick takes nothing returns nothing
             set PlayerEmojiEnabled[pid] = not PlayerEmojiEnabled[pid]
 
             if PlayerEmojiEnabled[pid] then
-                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.tga", 0, true)
+                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.blp", 0, true)
             else
-                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\unchecked.tga", 0, true)
+                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\unchecked.blp", 0, true)
                 set FeedCount = 0
                 call HideFeedFrames()
             endif
@@ -719,7 +719,7 @@ private function CreateEmojiPalette takes nothing returns nothing
     // Checkpoint 26e: toolbar buttons are visible from UI startup on.
     set EmojiToggleIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiToggleIcon", EmojiToggle, "", 0)
     call BlzFrameSetAllPoints(EmojiToggleIcon, EmojiToggle)
-    call BlzFrameSetTexture(EmojiToggleIcon, "UI\\WOS\\toolbar-chat.tga", 0, true)
+    call BlzFrameSetTexture(EmojiToggleIcon, "UI\\WOS\\toolbar-chat.blp", 0, true)
     call BlzFrameSetAlpha(EmojiToggleIcon, 255)
     call BlzFrameSetEnable(EmojiToggleIcon, false)
     call WUI_Tooltip(EmojiToggle, "CHAT EMOJIS|nOpen the chat emoji palette.")
@@ -727,12 +727,12 @@ private function CreateEmojiPalette takes nothing returns nothing
     call WUI_PlaceToolbar(EmojiMuteButton, 2, 1)
     set EmojiMuteIcon = WUI_Panel("WOSChatMuteButtonBack", EmojiMuteButton, 0.023, 0.023)
     call BlzFrameSetAllPoints(EmojiMuteIcon, EmojiMuteButton)
-    call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\button.tga", 0, true)
+    call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\button.blp", 0, true)
 
     set EmojiMuteIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiMuteIcon", EmojiMuteButton, "", 0)
     call BlzFrameSetPoint(EmojiMuteIcon, FRAMEPOINT_CENTER, EmojiMuteButton, FRAMEPOINT_CENTER, 0.00, 0.00)
     call BlzFrameSetSize(EmojiMuteIcon, 0.022, 0.022)
-    call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.tga", 0, true)
+    call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.blp", 0, true)
     call BlzFrameSetAlpha(EmojiMuteIcon, 255)
     call BlzFrameSetEnable(EmojiMuteIcon, false)
     call WUI_Tooltip(EmojiMuteButton, "SHOW CHAT EMOJIS|nChecked: enabled. Unchecked: muted.")

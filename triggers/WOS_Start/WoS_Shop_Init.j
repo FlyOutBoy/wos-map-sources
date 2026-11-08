@@ -229,6 +229,7 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_ATTACK,        'I00P') // Tsuchikage Hat
     call ShopCat(SHOP_TAB_ATTACK,        'I02C') // Tsuchikage Hat Evolved
     call ShopCat(SHOP_TAB_ATTACK,        'I03X') // Demon Sword Lostvayne
+    call ShopCat(SHOP_TAB_ATTACK,        DarkRepulser_ID) // Dark Repulser
     call ShopCat(SHOP_TAB_ATTACK,        'I03Y') // Murasame
     call ShopCat(SHOP_TAB_ATTACK,        'I046') // Kusanagi
     call ShopCat(SHOP_TAB_ATTACK,        'I047') // Kusanagi: Blaze Release
@@ -419,7 +420,7 @@ integer array ItemsSearchAll_Index
     unit priceshop = null
     unit pricesell = null
     boolean array UsedSlot
-    real Refund100Time = 15 // how much time after buy you have to refund item for full price
+    real Refund100Time = 20 // how much time after buy you have to refund item for full price (also Quick Buy / Auto Buy)
     // Value of consumed components that were still inside their full-refund window.
     integer ShopCraftRefundCredit = 0
     // Charges of a consumed Cup of Tea: the Evolved cup keeps the old threshold.
@@ -536,6 +537,8 @@ globals
     integer array QB_Lock
     integer array QB_Inventory
     boolean array QB_Used
+    // Earlier queue goals already reserved as a part of a later goal (per rebuild).
+    boolean array QB_GoalClaimed
     integer array QB_Stack
     integer QB_BuildPid = 0
     integer QB_BuildGroup = 0
@@ -2083,7 +2086,8 @@ function CheckBanItems takes integer id, unit c returns boolean
     // the base cannot be bought next to its Evolved.
     if (id == ArmamentHaki_ID and IsItemInInventory(c, ArmamentHakiEvolved_ID) > 0) or (id == 'I00Z' and IsItemInInventory(c, NaofumiShieldEvolved_ID) > 0) /*
     */ or (id == 'I012' and IsItemInInventory(c, FairyTailEvolved_ID) > 0) or (id == 'I02H' and IsItemInInventory(c, YataMirrorEvolved_ID) > 0) /*
-    */ or (id == 'I040' and IsItemInInventory(c, PhilosopherEvolved_ID) > 0) or (id == BloodPactRing_ID and IsItemInInventory(c, BloodPactRingEvolved_ID) > 0) then
+    */ or (id == 'I040' and IsItemInInventory(c, PhilosopherEvolved_ID) > 0) or (id == BloodPactRing_ID and IsItemInInventory(c, BloodPactRingEvolved_ID) > 0) /*
+    */ or (id == 'I03X' and IsItemInInventory(c, DarkRepulser_ID) > 0) then
         return true
     endif
     // One zanpakuto: a base and another type's Evolved never go together; base -> own Evolved upgrades.
@@ -2232,6 +2236,7 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft('I03V', "I00U")
     call RegisterCraft('I03W', "I035")
     call RegisterCraft('I03X', "I02P I01J")
+    call RegisterCraft(DarkRepulser_ID, "I03X I01F") // Dark Repulser: Lostvayne + Elucidator (+4250)
     call RegisterCraft('I03Y', "I02P I03Z")
     call RegisterCraft('I040', "I02O")
     call RegisterCraft('I041', "I03F")
@@ -3461,18 +3466,18 @@ function ShopVipCard takes integer tier, real x, real y, real width, real height
     local real bottom = y - height * 0.5
     set card = BlzCreateFrameByType("BACKDROP", "ShopVipCard", FRAME_ShopVipPage, "", tier)
     call Shop_Place(card, x, y, width, height)
-    call BlzFrameSetTexture(card, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetTexture(card, "UI\\WOS\\panel-soft.blp", 0, true)
     call BlzFrameSetLevel(card, 2)
     call BlzFrameSetEnable(card, false)
     // Bronze / silver / gold metal frame per tier.
     set part = BlzCreateFrameByType("BACKDROP", "ShopVipCardFrame", FRAME_ShopVipPage, "", tier)
     call Shop_Place(part, x, y, width + 0.004, height + 0.004)
     if tier == 1 then
-        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-bronze.tga", 0, true)
+        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-bronze.blp", 0, true)
     elseif tier == 2 then
-        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-silver.tga", 0, true)
+        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-silver.blp", 0, true)
     else
-        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-gold.tga", 0, true)
+        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-gold.blp", 0, true)
     endif
     call BlzFrameSetLevel(part, 3)
     call BlzFrameSetEnable(part, false)
@@ -3493,7 +3498,7 @@ function ShopVipCard takes integer tier, real x, real y, real width, real height
     call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     set part = BlzCreateFrameByType("BACKDROP", "ShopVipHeart", FRAME_ShopVipOwned[tier], "", tier)
     call Shop_Place(part, x + 0.062, bottom + 0.009, 0.0115, 0.0115)
-    call BlzFrameSetTexture(part, "UI\\WOS\\heart.tga", 0, true)
+    call BlzFrameSetTexture(part, "UI\\WOS\\heart.blp", 0, true)
     call BlzFrameSetEnable(part, false)
     call BlzFrameSetVisible(FRAME_ShopVipOwned[tier], false)
     set card = null
@@ -3679,7 +3684,7 @@ function OnClickItem takes nothing returns nothing
         set clicked = null
         set d = null
         set p = null
-        call WUI_ReleaseClickFocus()
+        call WUI_ResetClickedButtonFocus()
         return
     endif
 
@@ -3688,7 +3693,7 @@ if frameCode == 100 + SHOP_TAB_VIP then
         set clicked = null
         set d = null
         set p = null
-        call WUI_ReleaseClickFocus()
+        call WUI_ResetClickedButtonFocus()
         return
     endif
 
@@ -3719,7 +3724,7 @@ if frameCode >= 100 and frameCode <= 100 + SHOP_PAGE_LAST then
         set clicked = null
         set d = null
         set p = null
-        call WUI_ReleaseClickFocus()
+        call WUI_ResetClickedButtonFocus()
         return
     endif
 
@@ -4245,6 +4250,19 @@ function QB_Expand takes integer id, integer depth returns nothing
         endif
         set slot = slot + 1
     endloop
+    // A part that is itself an earlier goal of the queue (Tsuchikage Hat before
+    // Tsuchikage Hat Evolved) is bought by that goal: the final step then waits
+    // for it in the inventory (QB_CanBuyStep) instead of building a second copy.
+    set slot = 0
+    loop
+        exitwhen depth == 0 or slot >= QB_BuildGroup
+        if not QB_Excluded[QB_BuildPid * 768 + QB_BuildGroup * QB_MAX_STEPS + endNode] and not QB_GoalClaimed[slot] and QB_Target[QB_BuildPid * 6 + slot] == id then
+            set QB_GoalClaimed[slot] = true
+            call QB_SkipOwnedNodes(id, depth)
+            return
+        endif
+        set slot = slot + 1
+    endloop
     loop
         exitwhen i >= depth
         if QB_Stack[i] == id then
@@ -4440,6 +4458,7 @@ function QB_Rebuild takes integer pid returns nothing
         set it = UnitItemInSlot(Hero[pid], i)
         set QB_Inventory[pid * 6 + i] = GetItemTypeId(it)
         set QB_Used[i] = false
+        set QB_GoalClaimed[i] = false
         set i = i + 1
     endloop
     set i = 0
@@ -4999,9 +5018,9 @@ function QB_RenderLocal takes nothing returns nothing
         call BlzFrameSetText(QB_StateText, WUI_TEXT + label + "|r")
         call BlzFrameSetVisible(QB_StateIcon, QB_Status[pid] == 1 or QB_Status[pid] == 3)
         if QB_Status[pid] == 1 then
-            call BlzFrameSetTexture(QB_StateIcon, QB_TEXTURE + "gold.tga", 0, true)
+            call BlzFrameSetTexture(QB_StateIcon, QB_TEXTURE + "gold.blp", 0, true)
         else
-            call BlzFrameSetTexture(QB_StateIcon, QB_TEXTURE + "error.tga", 0, true)
+            call BlzFrameSetTexture(QB_StateIcon, QB_TEXTURE + "error.blp", 0, true)
         endif
     endif
     set i = 0
@@ -5370,7 +5389,18 @@ function QB_OnSync takes nothing returns nothing
     elseif op == "D" and value >= 0 and value < QB_StepCount[pid] then
         set goalIndex = QB_Group[pid * QB_MAX_STEPS + value]
         set node = QB_StepKey[pid * QB_MAX_STEPS + value]
-        set QB_Excluded[pid * 768 + goalIndex * QB_MAX_STEPS + node] = true
+        // Minus removes the whole recipe: the final step drops its goal, a
+        // sub-recipe excludes every part of its subtree together with itself.
+        if QB_SubtreeStart[pid * QB_MAX_STEPS + value] == 0 and QB_Step[pid * QB_MAX_STEPS + value] == QB_Target[pid * 6 + goalIndex] then
+            call QB_RemoveTarget(pid, goalIndex)
+        else
+            set i = QB_SubtreeStart[pid * QB_MAX_STEPS + value]
+            loop
+                exitwhen i > node
+                set QB_Excluded[pid * 768 + goalIndex * QB_MAX_STEPS + i] = true
+                set i = i + 1
+            endloop
+        endif
         set QB_Lock[pid] = 0
         call QB_Rebuild(pid)
         call StartSoundForPlayerBJ(Player(pid), QB_RemoveSound)
@@ -5946,8 +5976,8 @@ function QB_CreateUI takes nothing returns nothing
         call BlzTriggerRegisterFrameEvent(QB_ClickTrigger, FRAME_ShopItem[i], FRAMEEVENT_MOUSE_UP)
         set i = i + 1
     endloop
-    set REC_DragLight = QB_Decor("WOSRecommendedDrag", FRAME_ShopItemList, QB_TEXTURE + "drag.tga")
-    set REC_DropLine = QB_Decor("WOSRecommendedDrop", FRAME_ShopItemList, QB_TEXTURE + "drop.tga")
+    set REC_DragLight = QB_Decor("WOSRecommendedDrag", FRAME_ShopItemList, QB_TEXTURE + "drag.blp")
+    set REC_DropLine = QB_Decor("WOSRecommendedDrop", FRAME_ShopItemList, QB_TEXTURE + "drop.blp")
     call BlzFrameSetLevel(REC_DragLight, 50)
     call BlzFrameSetLevel(REC_DropLine, 50)
     call BlzFrameSetVisible(REC_DragLight, false)
@@ -5963,7 +5993,7 @@ function QB_CreateUI takes nothing returns nothing
     call BlzFrameSetText(QB_Hint, WUI_TEXT + "Hold RMB: drag left / right / up / down. Shift + RMB: tell allies the final item|r")
     set QB_StateText = QB_Text("WOSQuickBuyState", QB_Panel, 0.60)
     call Shop_Place(QB_StateText, QB_Left + QB_Width * 0.50, 0.107, (QB_Width - 0.046) / 0.60, 0.010 / 0.60)
-    set QB_StateIcon = QB_Decor("WOSQuickBuyStateIcon", QB_Panel, QB_TEXTURE + "gold.tga")
+    set QB_StateIcon = QB_Decor("WOSQuickBuyStateIcon", QB_Panel, QB_TEXTURE + "gold.blp")
     call Shop_Place(QB_StateIcon, QB_Left + 0.010, 0.328, 0.014, 0.014)
     set QB_Clear = QB_Button("WOSQuickBuyClear", QB_Panel, "clear", 300)
     call Shop_Place(QB_Clear, QB_Right - 0.012, 0.328, 0.018, 0.018)
@@ -5979,13 +6009,13 @@ function QB_CreateUI takes nothing returns nothing
         call Shop_Place(QB_Slot[i], QB_SlotX(i), QB_SlotY(i), QB_Size, QB_Size)
         set QB_Icon[i] = QB_Decor("WOSQuickBuyIcon", QB_Slot[i], WUI_EMPTY_TEXTURE)
         call BlzFrameSetPoint(QB_Icon[i], FRAMEPOINT_CENTER, QB_Slot[i], FRAMEPOINT_CENTER, 0.00, 0.00)
-        set QB_SlotEdge[i] = QB_Decor("WOSQuickBuySlotEdge", QB_Slot[i], QB_TEXTURE + "rim.tga")
+        set QB_SlotEdge[i] = QB_Decor("WOSQuickBuySlotEdge", QB_Slot[i], QB_TEXTURE + "rim.blp")
         call BlzFrameSetAllPoints(QB_SlotEdge[i], QB_Slot[i])
-        set QB_SlotBolt[i] = QB_Decor("WOSQuickBuySlotBolt", QB_Slot[i], QB_TEXTURE + "bolt.tga")
+        set QB_SlotBolt[i] = QB_Decor("WOSQuickBuySlotBolt", QB_Slot[i], QB_TEXTURE + "bolt.blp")
         call BlzFrameSetPoint(QB_SlotBolt[i], FRAMEPOINT_CENTER, QB_Slot[i], FRAMEPOINT_CENTER, 0.00, 0.00)
         call BlzFrameSetSize(QB_SlotBolt[i], 0.018, 0.018)
         call BlzFrameSetAlpha(QB_SlotBolt[i], 180)
-        set QB_StepPlate[i] = QB_Decor("WOSQuickBuyPricePlate", QB_Slot[i], "UI\\WOS\\price-plate.tga")
+        set QB_StepPlate[i] = QB_Decor("WOSQuickBuyPricePlate", QB_Slot[i], "UI\\WOS\\price-plate.blp")
         call BlzFrameSetPoint(QB_StepPlate[i], FRAMEPOINT_BOTTOM, QB_Slot[i], FRAMEPOINT_BOTTOM, 0.00, 0.001)
         call BlzFrameSetSize(QB_StepPlate[i], RMinBJ(0.034, QB_Size), 0.010)
         set QB_PriceText[i] = QB_Text("WOSQuickBuyPrice", QB_Slot[i], 0.57)
@@ -6007,23 +6037,23 @@ function QB_CreateUI takes nothing returns nothing
         call BlzFrameSetVisible(QB_Remove[i], false)
         set i = i + 1
     endloop
-    set QB_First = QB_Decor("WOSQuickBuyFirst", QB_Panel, QB_TEXTURE + "first.tga")
+    set QB_First = QB_Decor("WOSQuickBuyFirst", QB_Panel, QB_TEXTURE + "first.blp")
     call Shop_Place(QB_First, QB_SlotX(0), QB_SlotY(0), QB_Size + 0.004, QB_Size + 0.004)
-    set QB_DragLight = QB_Decor("WOSQuickBuyDrag", QB_Panel, QB_TEXTURE + "drag.tga")
+    set QB_DragLight = QB_Decor("WOSQuickBuyDrag", QB_Panel, QB_TEXTURE + "drag.blp")
     set i = 0
     loop
         exitwhen i >= 8
         if i < 4 then
-            set QB_DragArrow[i] = QB_Decor("WOSDragPointer", QB_Panel, "UI\\WOS\\drag-arrow-right.tga")
+            set QB_DragArrow[i] = QB_Decor("WOSDragPointer", QB_Panel, "UI\\WOS\\drag-arrow-right.blp")
         else
-            set QB_DragArrow[i] = QB_Decor("WOSDragPointer", FRAME_ShopItemList, "UI\\WOS\\drag-arrow-right.tga")
+            set QB_DragArrow[i] = QB_Decor("WOSDragPointer", FRAME_ShopItemList, "UI\\WOS\\drag-arrow-right.blp")
         endif
         if ModuloInteger(i, 4) == 1 then
-            call BlzFrameSetTexture(QB_DragArrow[i], "UI\\WOS\\drag-arrow-left.tga", 0, true)
+            call BlzFrameSetTexture(QB_DragArrow[i], "UI\\WOS\\drag-arrow-left.blp", 0, true)
         elseif ModuloInteger(i, 4) == 2 then
-            call BlzFrameSetTexture(QB_DragArrow[i], "UI\\WOS\\drag-arrow-up.tga", 0, true)
+            call BlzFrameSetTexture(QB_DragArrow[i], "UI\\WOS\\drag-arrow-up.blp", 0, true)
         elseif ModuloInteger(i, 4) == 3 then
-            call BlzFrameSetTexture(QB_DragArrow[i], "UI\\WOS\\drag-arrow-down.tga", 0, true)
+            call BlzFrameSetTexture(QB_DragArrow[i], "UI\\WOS\\drag-arrow-down.blp", 0, true)
         endif
         call BlzFrameSetEnable(QB_DragArrow[i], false)
         call BlzFrameSetLevel(QB_DragArrow[i], 60)
@@ -6031,7 +6061,7 @@ function QB_CreateUI takes nothing returns nothing
         set i = i + 1
     endloop
 
-    set QB_DropLine = QB_Decor("WOSQuickBuyDrop", QB_Panel, QB_TEXTURE + "drop.tga")
+    set QB_DropLine = QB_Decor("WOSQuickBuyDrop", QB_Panel, QB_TEXTURE + "drop.blp")
     call BlzFrameSetLevel(QB_First, 40)
     call BlzFrameSetLevel(QB_DragLight, 40)
     call BlzFrameSetLevel(QB_DropLine, 40)
@@ -6064,14 +6094,14 @@ function QB_CreateUI takes nothing returns nothing
         call BlzFrameSetPoint(QB_PreviewIcon[i], FRAMEPOINT_CENTER, QB_Preview[i], FRAMEPOINT_CENTER, 0.00, 0.00)
         call BlzFrameSetSize(QB_PreviewIcon[i], 0.026, 0.026)
         call BlzFrameSetAlpha(QB_PreviewIcon[i], 100)
-        set QB_PreviewEdge[i] = QB_Decor("WOSQuickBuyPreviewEdge", QB_Preview[i], "UI\\WOS\\QuickBuy\\BTNPAS.tga")
+        set QB_PreviewEdge[i] = QB_Decor("WOSQuickBuyPreviewEdge", QB_Preview[i], "UI\\WOS\\QuickBuy\\BTNPAS.blp")
         call BlzFrameSetAllPoints(QB_PreviewEdge[i], QB_Preview[i])
         call BlzFrameSetAlpha(QB_PreviewEdge[i], 170)
-        set QB_PreviewBolt[i] = QB_Decor("WOSQuickBuyPreviewBolt", QB_Preview[i], QB_TEXTURE + "bolt.tga")
+        set QB_PreviewBolt[i] = QB_Decor("WOSQuickBuyPreviewBolt", QB_Preview[i], QB_TEXTURE + "bolt.blp")
         call BlzFrameSetPoint(QB_PreviewBolt[i], FRAMEPOINT_CENTER, QB_Preview[i], FRAMEPOINT_CENTER, 0.00, 0.00)
         call BlzFrameSetSize(QB_PreviewBolt[i], 0.016, 0.016)
         call BlzFrameSetAlpha(QB_PreviewBolt[i], 180)
-        set QB_PreviewPlate[i] = QB_Decor("WOSQuickBuyPreviewPlate", QB_Preview[i], "UI\\WOS\\price-plate.tga")
+        set QB_PreviewPlate[i] = QB_Decor("WOSQuickBuyPreviewPlate", QB_Preview[i], "UI\\WOS\\price-plate.blp")
         call BlzFrameSetPoint(QB_PreviewPlate[i], FRAMEPOINT_BOTTOM, QB_Preview[i], FRAMEPOINT_BOTTOM, 0.00, 0.001)
         call BlzFrameSetSize(QB_PreviewPlate[i], 0.026, 0.010)
         call BlzFrameSetAlpha(QB_PreviewPlate[i], 220)
@@ -6690,9 +6720,9 @@ function ShopShowAutoBuyState takes boolean on returns nothing
     // White AUTOBUY over a green (on) / red (off) fill.
     call WUI_SetButtonText(FRAME_AutoBuyToggle, "|cffffffffAUTOBUY|r")
     if on then
-        call WUI_SetButtonFill(FRAME_AutoBuyToggle, "UI\\WOS\\autobuy-on.tga")
+        call WUI_SetButtonFill(FRAME_AutoBuyToggle, "UI\\WOS\\autobuy-on.blp")
     else
-        call WUI_SetButtonFill(FRAME_AutoBuyToggle, "UI\\WOS\\autobuy-off.tga")
+        call WUI_SetButtonFill(FRAME_AutoBuyToggle, "UI\\WOS\\autobuy-off.blp")
     endif
 endfunction
 
@@ -6833,18 +6863,18 @@ function ShopFastToggleClick takes nothing returns nothing
         set ShopFastBuy[pid] = not ShopFastBuy[pid]
         if GetLocalPlayer() == p then
             if ShopFastBuy[pid] then
-                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.blp", 0, true)
             else
-                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.blp", 0, true)
             endif
         endif
     elseif BlzGetTriggerFrame() == FRAME_FastSellToggle then
         set ShopFastSell[pid] = not ShopFastSell[pid]
         if GetLocalPlayer() == p then
             if ShopFastSell[pid] then
-                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.blp", 0, true)
             else
-                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.blp", 0, true)
             endif
         endif
     endif
@@ -6858,14 +6888,14 @@ function ShopCreateFastToggles takes nothing returns nothing
     call Shop_Place(FRAME_FastBuyToggle, SHOP_INV_X - 0.024, 0.169, 0.022, 0.022)
     set FRAME_FastBuyIcon = BlzCreateFrameByType("BACKDROP", "ShopFastBuyIcon", FRAME_FastBuyToggle, "", 0)
     call BlzFrameSetAllPoints(FRAME_FastBuyIcon, FRAME_FastBuyToggle)
-    call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.tga", 0, true)
+    call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.blp", 0, true)
     call BlzFrameSetEnable(FRAME_FastBuyIcon, false)
     call WUI_Tooltip(FRAME_FastBuyToggle, "|cff7ee870FAST BUY|r|nWhen on: double-click an item in the list or the tree to buy it.")
     set FRAME_FastSellToggle = BlzCreateFrameByType("BUTTON", "ShopFastSell", FRAME_ShopItemInventory, "WOSIconButtonTemplate", 0)
     call Shop_Place(FRAME_FastSellToggle, SHOP_INV_X + 0.024, 0.169, 0.022, 0.022)
     set FRAME_FastSellIcon = BlzCreateFrameByType("BACKDROP", "ShopFastSellIcon", FRAME_FastSellToggle, "", 0)
     call BlzFrameSetAllPoints(FRAME_FastSellIcon, FRAME_FastSellToggle)
-    call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.tga", 0, true)
+    call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.blp", 0, true)
     call BlzFrameSetEnable(FRAME_FastSellIcon, false)
     call WUI_Tooltip(FRAME_FastSellToggle, "|cffff8a73FAST SELL|r|nWhen on: double-click an item of your inventory to sell it.")
     call BlzTriggerRegisterFrameEvent(click, FRAME_FastBuyToggle, FRAMEEVENT_CONTROL_CLICK)
@@ -6874,10 +6904,10 @@ function ShopCreateFastToggles takes nothing returns nothing
     // Saved settings may arrive before these handles are created.
     // Both handles already exist here; only paint the owner's existing icons.
     if ShopFastBuy[GetPlayerId(GetLocalPlayer())] then
-        call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.blp", 0, true)
     endif
     if ShopFastSell[GetPlayerId(GetLocalPlayer())] then
-        call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.blp", 0, true)
     endif
     call TimerStart(ShopClock, 1000000.00, false, null)
     set click = null
@@ -6946,8 +6976,8 @@ function WOS_LayoutShop takes nothing returns nothing
     call Shop_Place(FRAME_ShopSearchPageText, SHOP_LIST_X, 0.1885, 0.050, 0.012)
     call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.85)
     call Shop_Place(FRAME_ShopSearchNext, SHOP_LIST_X + 0.042, 0.1885, 0.018, 0.016)
-    call ShopStylePageButton(FRAME_ShopSearchPrevious, FRAME_ShopSearchPreviousIcon, "UI\\WOS\\glyph-prev.tga")
-    call ShopStylePageButton(FRAME_ShopSearchNext, FRAME_ShopSearchNextIcon, "UI\\WOS\\glyph-next.tga")
+    call ShopStylePageButton(FRAME_ShopSearchPrevious, FRAME_ShopSearchPreviousIcon, "UI\\WOS\\glyph-prev.blp")
+    call ShopStylePageButton(FRAME_ShopSearchNext, FRAME_ShopSearchNextIcon, "UI\\WOS\\glyph-next.blp")
     if FRAME_FastBuyToggle == null then
         call ShopCreateFastToggles()
         call ShopCreateDescScroll()
@@ -7239,7 +7269,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetSize(FRAME_ShopSearchClear, 0.020, 0.020)
     set FRAME_ShopSearchClearIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchClearIcon", FRAME_ShopSearchClear, "", 0)
     call BlzFrameSetAllPoints(FRAME_ShopSearchClearIcon, FRAME_ShopSearchClear)
-    call BlzFrameSetTexture(FRAME_ShopSearchClearIcon, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetTexture(FRAME_ShopSearchClearIcon, "UI\\WOS\\glyph-close.blp", 0, true)
     call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopSearchClear), 0, 405)
     call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopSearchClear, FRAMEEVENT_CONTROL_CLICK)
     set FRAME_ShopSearchPrevious = BlzCreateFrameByType("BUTTON", "ShopSearchPrevious", FRAME_ShopMAIN, "WOSIconButtonTemplate", 0)
@@ -7288,7 +7318,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     set border = BlzCreateFrameByType("BACKDROP", "ShopCloseGlyph", FRAME_ShopClose, "", 0)
     call BlzFrameSetPoint(border, FRAMEPOINT_TOPLEFT, FRAME_ShopClose, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
     call BlzFrameSetPoint(border, FRAMEPOINT_BOTTOMRIGHT, FRAME_ShopClose, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
-    call BlzFrameSetTexture(border, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetTexture(border, "UI\\WOS\\glyph-close.blp", 0, true)
     call BlzFrameSetEnable(border, false)
     call WUI_MinimalEdge(FRAME_ShopClose)
     call WUI_Tooltip(FRAME_ShopClose, "|cffd5b876CLOSE WINDOW|r|nHotkey: ESC")
@@ -7306,7 +7336,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetLevel(border, 3)
     call WUI_MinimalEdge(border)
     set border = BlzCreateFrameByType("BACKDROP", "ShopTreeDivider", FRAME_ShopItemDescription, "", 0)
-    call BlzFrameSetTexture(border, "UI\\WOS\\divider-h.tga", 0, true)
+    call BlzFrameSetTexture(border, "UI\\WOS\\divider-h.blp", 0, true)
     call BlzFrameSetPoint(border, FRAMEPOINT_LEFT, FRAME_ShopItemDescription, FRAMEPOINT_TOPLEFT, 0.012, 0.00)
     call BlzFrameSetPoint(border, FRAMEPOINT_RIGHT, FRAME_ShopItemDescription, FRAMEPOINT_TOPRIGHT, -0.012, 0.00)
     call BlzFrameSetSize(border, 0.00, 0.004)
@@ -7320,7 +7350,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     loop
         exitwhen line >= SHOP_TREE_SLOTS * 3
         set FRAME_ShopRecipeLine[line] = BlzCreateFrameByType("BACKDROP", "ShopRecipeEdge", FRAME_ShopItemCraft, "", line)
-        call BlzFrameSetTexture(FRAME_ShopRecipeLine[line], "UI\\WOS\\meter.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_ShopRecipeLine[line], "UI\\WOS\\meter.blp", 0, true)
         call BlzFrameSetLevel(FRAME_ShopRecipeLine[line], 2)
         call BlzFrameSetEnable(FRAME_ShopRecipeLine[line], false)
         call BlzFrameSetVisible(FRAME_ShopRecipeLine[line], false)
@@ -7424,7 +7454,7 @@ function WOS_CreateShopCatalogue takes nothing returns nothing
         call BlzFrameSetScale(FRAME_ShopItemName[i], 0.64)
         call BlzFrameSetEnable(FRAME_ShopItemName[i], false)
         set FRAME_ShopItemPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopPricePlate", FRAME_ShopItem[i], "", i)
-        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.blp", 0, true)
         call BlzFrameSetEnable(FRAME_ShopItemPricePlate[i], false)
         call BlzFrameSetVisible(FRAME_ShopItemPricePlate[i], false)
         set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)
@@ -7468,7 +7498,7 @@ function WOS_CreateShopRecipes takes nothing returns nothing
         call BlzFrameSetPoint(FRAME_ShopItem[i], FRAMEPOINT_LEFT, FRAME_ShopItemCraft, FRAMEPOINT_TOPLEFT, x + 0.05 * k, y )
         call BlzFrameSetSize(FRAME_ShopItem[i], 0.04, 0.04)
         set FRAME_ShopItemPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopTreePricePlate", FRAME_ShopItem[i], "", i)
-        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.blp", 0, true)
         call BlzFrameSetEnable(FRAME_ShopItemPricePlate[i], false)
         call BlzFrameSetVisible(FRAME_ShopItemPricePlate[i], false)
         set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)
@@ -7509,7 +7539,7 @@ function WOS_CreateShopRecipes takes nothing returns nothing
         call BlzFrameSetAllPoints(FRAME_ShopItemBack[i], FRAME_ShopItem[i])
         call Shop_Place(FRAME_ShopItem[i], 0.552, 0.377, 0.036, 0.036)
         set FRAME_ShopItemPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopTreePricePlate", FRAME_ShopItem[i], "", i)
-        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
+        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.blp", 0, true)
         call BlzFrameSetEnable(FRAME_ShopItemPricePlate[i], false)
         call BlzFrameSetVisible(FRAME_ShopItemPricePlate[i], false)
         set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)
@@ -7588,7 +7618,7 @@ function WOS_CreateShopInventory takes nothing returns nothing
         set FRAME_ShopInventoryPricePlate[i] = null
         if i < 6 then
             set FRAME_ShopInventoryPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopInventoryPricePlate", FRAME_ShopItemInventorySlot[i], "", i)
-            call BlzFrameSetTexture(FRAME_ShopInventoryPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ShopInventoryPricePlate[i], "UI\\WOS\\price-plate.blp", 0, true)
             call BlzFrameSetEnable(FRAME_ShopInventoryPricePlate[i], false)
             call BlzFrameSetVisible(FRAME_ShopInventoryPricePlate[i], false)
         endif
@@ -7596,11 +7626,11 @@ function WOS_CreateShopInventory takes nothing returns nothing
         call BlzFrameSetPoint(FRAME_ShopItemInventorySlotCost[i], FRAMEPOINT_BOTTOM, FRAME_ShopItemInventory, FRAMEPOINT_TOPLEFT, (x + 0.02) + 0.05 * k, y - 0.032 )
         if i == 6 then
             call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[i], "")
-            call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "UI\\WOS\\btn-buy.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "UI\\WOS\\btn-buy.blp", 0, true)
             call BlzFrameSetAlpha(FRAME_ShopItemInventorySlotBack[i], 255)
         elseif i == 7 then
             call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[i], "")
-            call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "UI\\WOS\\btn-sell.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "UI\\WOS\\btn-sell.blp", 0, true)
         else
             call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[i], "|c00FFFF00|r")
         endif

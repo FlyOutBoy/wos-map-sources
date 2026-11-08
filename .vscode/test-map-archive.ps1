@@ -4,7 +4,8 @@ param(
     [Parameter(Mandatory = $true)][string]$Map,
     [Parameter(Mandatory = $true)][string]$Directory,
     [Parameter(Mandatory = $true)][string]$Library,
-    [string]$NamesFile
+    [string]$NamesFile,
+    [switch]$Lenient
 )
 $ErrorActionPreference = 'Stop'
 if ($Mode -eq 'Update') {
@@ -16,6 +17,7 @@ if ($Mode -eq 'Update') {
 if ([IntPtr]::Size -ne 4) {
     $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $PSCommandPath, '-Mode', $Mode, '-Map', $Map, '-Directory', $Directory, '-Library', $Library)
     if ($NamesFile) { $arguments += @('-NamesFile', $NamesFile) }
+    if ($Lenient) { $arguments += '-Lenient' }
     & "$env:WINDIR\SysWOW64\WindowsPowerShell\v1.0\powershell.exe" @arguments
     if ($LASTEXITCODE -ne 0) { throw "MPQ $Mode failed ($LASTEXITCODE)" }
     return
@@ -147,7 +149,7 @@ try {
         }
         $file = [IntPtr]::Zero
         if (-not [TestMpq]::SFileOpenFileEx($handle, (Get-MpqNameBytes $name), 0, [ref]$file)) {
-            if ($NamesFile) { throw "Requested archive entry is missing: $name" }
+            if ($NamesFile -and -not $Lenient) { throw "Requested archive entry is missing: $name" }
             continue
         }
         try {

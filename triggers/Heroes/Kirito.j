@@ -147,6 +147,8 @@ library KiritoSpells uses GearSystems
         integer KiritoG2_ID = 'A0E3'
         real KiritoG_Heal = 1 // x agi
         real KiritoG_Time = 5.00 // every 5 sec heal
+        real KiritoG_CastReduce35 = 1.00 // hero level 35: each own ability cast (one R strike = one cast) -1 sec to the next heal
+        private integer SH_KIRITO_G = StringHash("kirito g passive")
 //---------------F ability-----------------------------------------------------
         integer KiritoF_ID = 'A0DA'
 //--------------------------------------Kirito--------------------------------------------------------------
@@ -1477,9 +1479,10 @@ library KiritoSpells uses GearSystems
         private static timer t_KiritoG = CreateTimer()
         private static integer array m_KiritoG
         private static integer MUI_KiritoG = -1
+        private static constant real PERIOD = 0.10
         unit c
         unit td
-        real r2
+        real r2 // time left to the next heal
         real r5
         group g
         effect e
@@ -1492,14 +1495,19 @@ library KiritoSpells uses GearSystems
                 exitwhen i > MUI_KiritoG
                 set this = m_KiritoG[i]
                 if c != null and GetUnitTypeId(c) != 0 then
-                    // The passive button shows the time to the next heal.
-                    call BlzStartUnitAbilityCooldown(c, KiritoG_ID, KiritoG_Time)
-                    if IsUnitType(c,UNIT_TYPE_DEAD)==false and GetUnitState(c, UNIT_STATE_LIFE) < GetUnitState(c, UNIT_STATE_MAX_LIFE) then
-                        set r5 = GetHeroAgi(c, true)*KiritoG_Heal
-                        call SetHpCurrent2Quiet(c,c, r5)
-                        call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_e_buffgreen2a.mdx", c, "origin"))
+                    set r2 = r2 - PERIOD
+                    if r2 <= 0.001 then
+                        set r2 = KiritoG_Time
+                        // The passive button shows the time to the next heal.
+                        call BlzStartUnitAbilityCooldown(c, KiritoG_ID, r2)
+                        if IsUnitType(c,UNIT_TYPE_DEAD)==false and GetUnitState(c, UNIT_STATE_LIFE) < GetUnitState(c, UNIT_STATE_MAX_LIFE) then
+                            set r5 = GetHeroAgi(c, true)*KiritoG_Heal
+                            call SetHpCurrent2Quiet(c,c, r5)
+                            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_e_buffgreen2a.mdx", c, "origin"))
+                        endif
                     endif
                 else
+                    call RemoveSavedInteger(hs, GetHandleId(c), SH_KIRITO_G)
                     call SetUnitTimeScale(c, 1)
                     call DestroyGroup(g)
                     set c = null
@@ -1524,12 +1532,23 @@ library KiritoSpells uses GearSystems
             set MUI_KiritoG = MUI_KiritoG + 1
             set m_KiritoG[ MUI_KiritoG] = this
             set c = NewC
-            set r2 = 0
+            set r2 = KiritoG_Time
+            call SaveInteger(hs, GetHandleId(c), SH_KIRITO_G, this)
             // No separate "Next heal" meter: the G button cooldown shows it.
             if MUI_KiritoG == 0 then
-                call TimerStart( t_KiritoG, KiritoG_Time, true, function thistype.Loop_KiritoG)
+                call TimerStart( t_KiritoG, PERIOD, true, function thistype.Loop_KiritoG)
             endif
-            call BlzStartUnitAbilityCooldown(c, KiritoG_ID, TimerGetRemaining(t_KiritoG))
+            call BlzStartUnitAbilityCooldown(c, KiritoG_ID, r2)
+        endmethod
+
+        // Hero level 35: each own ability cast brings the next G heal closer.
+        public static method KiritoG_CastReduce takes unit NewC returns nothing
+            local thistype this = LoadInteger(hs, GetHandleId(NewC), SH_KIRITO_G)
+            if this == 0 or c != NewC or GetHeroLevel(NewC) < 35 then
+                return
+            endif
+            set r2 = RMaxBJ(PERIOD, r2 - KiritoG_CastReduce35)
+            call BlzStartUnitAbilityCooldown(c, KiritoG_ID, r2)
         endmethod
 
     endstruct
@@ -1671,6 +1690,9 @@ endfunction
     endfunction
     function KiritoT2_Start takes unit c, real x,real y returns nothing
         call KiritoSpells_T.KiritoT2_Start( c , x,y)
+    endfunction
+    function KiritoG_CastReduce takes unit c returns nothing
+        call KiritoSpells_G.KiritoG_CastReduce(c)
     endfunction
     function KiritoPas takes unit c returns nothing
         if LoadInteger(hs, GetHandleId(c), SH_PASSIVE_ACTIVE) == 0 then

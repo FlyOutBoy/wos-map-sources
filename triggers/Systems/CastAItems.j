@@ -1,7 +1,52 @@
-globals 
+globals
 timer array clonetimer
-unit array castitem1 
+unit array castitem1
+// Toggle items (Prison Realm, slimes) swap after the cast event, in the same slot.
+// Removing the used item inside its own cast event left the unit's order stuck.
+unit array ItemSwapUnit
+integer array ItemSwapFrom
+integer array ItemSwapTo
+integer ItemSwapCount = 0
+timer ItemSwapClock = null
 endglobals
+function ItemSwapApply takes nothing returns nothing
+local unit c
+local integer slot
+loop
+    exitwhen ItemSwapCount == 0
+    set ItemSwapCount = ItemSwapCount - 1
+    set c = ItemSwapUnit[ItemSwapCount]
+    set ItemSwapUnit[ItemSwapCount] = null
+    if c != null and GetUnitTypeId(c) != 0 then
+        set slot = IsItemInInventory3(c, ItemSwapFrom[ItemSwapCount])
+        if slot >= 0 then
+            call RemoveItem(UnitItemInSlot(c, slot))
+            call UnitAddItemToSlotById(c, ItemSwapTo[ItemSwapCount], slot)
+        endif
+    endif
+endloop
+set c = null
+endfunction
+function ItemSwapLater takes unit c, integer fromId, integer toId returns nothing
+local integer i = 0
+loop
+    exitwhen i >= ItemSwapCount
+    if ItemSwapUnit[i] == c and ItemSwapFrom[i] == fromId then
+        return
+    endif
+    set i = i + 1
+endloop
+set ItemSwapUnit[ItemSwapCount] = c
+set ItemSwapFrom[ItemSwapCount] = fromId
+set ItemSwapTo[ItemSwapCount] = toId
+set ItemSwapCount = ItemSwapCount + 1
+if ItemSwapCount == 1 then
+    if ItemSwapClock == null then
+        set ItemSwapClock = CreateTimer()
+    endif
+    call TimerStart(ItemSwapClock, 0.0, false, function ItemSwapApply)
+endif
+endfunction
 function FixCloneModel takes nothing returns nothing
 local timer t = GetExpiredTimer()
 local integer h = GetHandleId(t)
@@ -77,24 +122,19 @@ static if LIBRARY_ItemsSpells then
     call ItemsElements_Cast(c, td, x, y, id)
 endif
 if id == 'A0BZ' then 
-if IsItemInInventory(c,'I024')>0 then 
-call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I024')))
-call UnitAddItemById(c,'I025')
+if IsItemInInventory(c,'I024')>0 then
+call ItemSwapLater(c,'I024','I025')
 elseif IsItemInInventory(c,'I025')>0 then
-call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I025')))
-call UnitAddItemById(c,'I024')
+call ItemSwapLater(c,'I025','I024')
 endif
 endif
-if id == 'A0G0' or  id == 'A0G1'  or  id == 'A0FD' then 
-if IsItemInInventory(c,'I02T')>0 then 
-call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I02T')))
-call UnitAddItemById(c,'I03E')
+if id == 'A0G0' or  id == 'A0G1'  or  id == 'A0FD' then
+if IsItemInInventory(c,'I02T')>0 then
+call ItemSwapLater(c,'I02T','I03E')
 elseif IsItemInInventory(c,'I03E')>0 then
-call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I03E')))
-call UnitAddItemById(c,'I03F')
+call ItemSwapLater(c,'I03E','I03F')
 elseif IsItemInInventory(c,'I03F')>0 then
-call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I03F')))
-call UnitAddItemById(c,'I02T')
+call ItemSwapLater(c,'I03F','I02T')
 endif
 endif
 if id == 'A0E4' then 

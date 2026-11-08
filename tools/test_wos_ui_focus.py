@@ -214,6 +214,33 @@ class FocusContract(unittest.TestCase):
         self.assertFalse(vm.g["Shop_Active"][0])
         self.assertEqual(self.calls, [("shop-panel", False), ("button", False)])
 
+    def test_shop_navigation_resets_clicked_button_after_render(self):
+        for code in (100, 101, 108, 406, 407):
+            for local in (0, 1):
+                with self.subTest(code=code, local=local):
+                    self.local = local
+                    self.calls.clear()
+                    self.reset_fixture()
+                    vm = load_source('WoS_Shop_Init.j')
+                    vm.g.update(self.vm.g)
+                    vm.g.update(
+                        GetPlayerId=lambda p:p, GetSelectedHeroForPlayer=lambda p:None,
+                        ShopFrameTable={}, LoadInteger=lambda *_:code,
+                        SHOP_PAGE_LAST=7, SHOP_TAB_VIP=8,
+                        ShopSearchActive=defaultdict(bool),
+                        ItemsFrameCurrentPage_ID=defaultdict(lambda:1),
+                        ShopSectionPage=defaultdict(int), SHOP_SECTION_STRIDE=8,
+                        ShopShowVip=lambda *a:None, ShopGetSectionPageCount=lambda *a:3,
+                        ReloadItemPage=lambda *a:self.calls.append(('render',)),
+                        ShopUpdateCatalogueNavigation=lambda *a:self.calls.append(('navigation',)),
+                        WUI_ResetClickedButtonFocus=lambda:self.vm.run('WUI_ResetClickedButtonFocus'),
+                        WUI_ReleaseClickFocus=lambda:self.fail('weak navigation focus release'))
+                    vm.run('OnClickItem')
+                    expected = [] if code == 108 else [('render',), ('navigation',)]
+                    if local == 0:
+                        expected += [('enabled', self.frame, False), ('enabled', self.frame, True)]
+                    self.assertEqual(expected, self.calls)
+
     def test_link_open_transfers_to_editbox_after_button_cleanup(self):
         vm = load_source("WoS_Hero_Icons_Init.j")
         vm.g.update(self.vm.g)
@@ -289,6 +316,9 @@ class FocusAudit(unittest.TestCase):
                     self.assertNotRegex(body, r'BlzFrameSetEnable\(([^\n]+),\s*false\)\s*call BlzFrameSetEnable\(\1,\s*true\)', str(path))
                 if 'call WUI_ResetClickedButtonFocus()' in body:
                     # Mixed toolbar/QB branches are mutually exclusive by frame/code.
+                    if name == 'OnClickItem':
+                        # Search exit releases its editbox; button cleanup still targets only the click.
+                        body = body.replace('call BlzFrameSetFocus(FRAME_ShopSearchEditBox, false)', '')
                     self.assertNotIn('BlzFrameSetFocus', body, f'{path}:{name}')
         wui = functions[ROOT / 'triggers/WOS_Start/WOSUI.j']
         helper = wui['WUI_ResetClickedButtonFocus']

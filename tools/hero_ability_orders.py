@@ -41,7 +41,8 @@ def audit(abilities=None,root=ROOT):
   for order,buttons in orders.items():
    for i,(aid,slot,name) in enumerate(buttons):
     for other,other_slot,other_name in buttons[i+1:]:
-     if slot==other_slot:continue
+     # Erza retains disabled armor skills, including same-slot replacements.
+     if slot==other_slot and hero!='Erza_ID':continue
      pair=frozenset((aid,other))
      if pair in EXCLUSIVE_PAIRS:exceptions.append((hero,order,sorted(pair),EXCLUSIVE_PAIRS[pair]))
      else:errors.append((hero,order,(aid,slot,name),(other,other_slot,other_name)))

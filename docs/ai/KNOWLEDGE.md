@@ -659,6 +659,32 @@ ordinary controlled summon attacks map to the summoning ability. Modifiers added
 to an existing attack stay within that attack's source; the collector does not
 change combat to split multiplicative bonuses. Runtime multiplayer is untested.
 
+DamageStats hard-off diagnostic (2026-10-31): DAMAGE_STATS_ENABLED in
+triggers/WOS_Start/DamageStats.j is now false. It is a build-time master switch
+for the L/Open Details/Previous Round panel, including TestMode. DS globals no
+longer allocate handles; DS_Init allocates seven tables and two timers and
+registers WUI_OnReady only in the true static branch. All external callers in
+DmgSys, RoundEnd, Starts, picker and Scoreboard are statically gated, including
+native source lookup before the final hit filter. False therefore has no
+collector calls on combat paths, no hotkey/click registration, UI or polling.
+True restores the existing feature after rebuild; this is not a live toggle.
+Existing F2 scoreboard and shared DamageSource attribution remain independent.
+Potential freeze contributor, not proved in engine: the previous DS_Tick folded
+up to 20 pending buckets of 400 source keys into three histories in one 5-second
+tick; DS_FoldSource may scan 12 retained rows per history. Overflow also used to
+flush every player inside a damage callback. This is now a FIFO ring per bucket
+with a shared budget of 16 distinct source folds per existing .50 s tick, rotating
+across players/directions. Repeated hits still coalesce before processing.
+Overflow drains one entry of only the full bucket. F3/F4 and round rollover
+still drain all pending entries for exact boundary totals. New hits between
+slices, consumed-key requeue, FIFO wrap and overflow are covered in tests.
+Totals transfer once per touched bucket while source rows catch up by slices.
+Hidden UI still collects and processes budgeted slices when enabled. Rendering itself is throttled to 5 s,
+hover polling to .10 s. Compare the same high-DPS fight with false/true before
+claiming this is the cause; no gameplay/performance watchdog was added.
+Checks: test_damage_stats (disabled allocation/TestMode + enabled startup),
+test_damage_stats_layout, both flag values compile, packed disabled call audit.
+
 CP51 presentation follow-up: DamageStats used SetScale followed by SetSize with
 width/scale and height/scale, unlike the working Scoreboard text constructor.
 User screenshots showed names, amounts and headings outside rows; the shared
@@ -2204,8 +2230,10 @@ https://www.hiveworkshop.com/threads/ui-frames-and-tooltips.316665/ .
 
 ### Ground-hero unstuck probe (2026-10-29)
 
-Systems/EnterRegion.j checks the ten Hero slots (plus distinct TestUnit/TestAllyUnit
-in TestMode) every 2 seconds. No chat/range message is emitted. It repairs an invalid
+Systems/EnterRegion.j now scans only selectable living ground combat units in
+gg_rct_Arena every 2 seconds (2026-10-31), using one reusable group. Locust, hidden,
+unselectable units and buildings never enter the repair path. This includes
+summons and clones as requested; off-arena heroes/TestUnits are excluded. No chat/range message is emitted. It repairs an invalid
 current centre, not a lack of movement: playable-area bounds, walkability and one
 reused hidden invulnerable item probe detect obstruction (item displacement >16).
 Only a blocked centre triggers the bounded search: rings 64..1536 by 64, 16 rays per
@@ -2214,6 +2242,25 @@ valid point wins; SetUnitX/Y preserves orders. Null/removed/dead/hidden/paused/f
 fly-height >50 and active spell-p units are skipped. The ordinary path needs only a
 centre probe; no per-tick item/unit/group allocations. Source tests:
 test_elemental_marks_followup.OrdersAndUnstuck and MAIN compiler/dispatch audit.
+
+Base phasing (2026-10-31, corrected scope): BasePhaseApply gives native Ghost
+(Visible), Aeth, only to eligible units inside gg_rct_Base, on base entry with
+the existing 2s scan covering revives and late selectable state. All eligible
+sides at base receive it so they can pass each other; arena units retain normal
+collision. The same reusable group scans Base for phasing and Arena for unstuck.
+No Wind Walk orders, SetUnitPathing(false), transparency, invisibility or combat
+stat changes. Base exit and Arena entry remove Aeth even when copied by an illusion without
+the marker. The Arena scan also clears inherited Aeth; Aeth is reserved for
+base phasing (there are no preexisting native Aeth owners in object data). Permanent ability survives morphs; scan retries
+if a form replacement removes it. Native collision/terrain/invisibility/cast
+acceptance still needs Warcraft QA. Hive first-hand test reports Aeth makes a
+unit passable to others, so both sides need it:
+https://www.hiveworkshop.com/threads/ghost-spell-without-invisibility.250091/ .
+Wind Walk negative transition was rejected here because interaction with Apiv
+can prevent attacks and casts can interrupt the buff:
+https://www.hiveworkshop.com/threads/passive-go-throught-units-like-wind-walk.354569/ .
+DragCaught belongs to Constellation Coil's COILSHOT pull, not the unstuck repair.
+No effect index optimization or damage/resistance/shield/heal changes included.
 
 ### Elemental item effect carriers and return snapshots (2026-10-29)
 
@@ -2489,7 +2536,7 @@ asserts every other native field survives a complete re-sort unchanged.
 
 Reviewed command changes: A093 Yamamoto defensive Q, A03M Erza Samurai G and
 A0DY Kyoraku skip use Aroa; their other instant slots keep separate foundations.
-Channel Ncl6: A03L clusterrockets,A03O acidbomb,A113 charm,A0FS grabtree,
+Channel Ncl6: A03L clusterrockets,A03O carrionswarm,A113 charm,A0FS grabtree,
 A0A0 ancestralspirit. Native field IDs/costs survive in both object layers.
 Publication passed50 focused tests, MAIN compile/dispatch,5499-function parity
 and packed native/payload scope checks; MAIN/STABLE updated. Final sync is zero.
@@ -2511,3 +2558,18 @@ This is the old formula plus75*effective round for BOTH hits; training stays R1.
 Checks: test_item_trail_vision_train, fire/elemental/item/pause regressions,
 the full60-item native gate audit and check_wos_ui. Engine fog/render acceptance
 remains separate from mocks and compilation.
+
+Erza order follow-up (2026-10-31): A03O acidbomb collided with the water-armor
+selector A02W, so clicking the selector could invoke T-form W. Erza retains
+armor abilities while unavailable, so different forms in the same logical slot
+must have distinct orders too. A03O now uses carrionswarm in native data and
+stage_instant_foundations.CHANNEL_ORDERS. hero_ability_orders rejects same-slot
+collisions for Erza; all 45 command abilities and every Channel rank are covered
+by test_hero_orders_vision_tooltips, including a regression restoring acidbomb.
+Auxiliary passive/stat abilities retain their native foundations. No dispatch,
+targeting, cost or cooldown changes. Engine form-switch acceptance is pending.
+Grail Uau1 is explicit: A09X .10, A0CY .15; descriptions derive the percentage
+from native data. Frostnova H002 umvs is 290 (was 275). The scoped codec staging
+helper is tools/stage_erza_grail_followup.py; it backs up before writing and is
+idempotent. Project AGENTS.md permanently authorizes MAIN/STABLE publication
+after all changes, without launching the game.

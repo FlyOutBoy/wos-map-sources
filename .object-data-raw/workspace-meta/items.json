@@ -63,19 +63,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 0,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -171,19 +158,6 @@
             "group": "custom_objects",
             "object_index": 6,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 6,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -293,19 +267,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 7,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -401,19 +362,6 @@
             "group": "custom_objects",
             "object_index": 1,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 1,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -523,19 +471,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 2,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -631,19 +566,6 @@
             "group": "custom_objects",
             "object_index": 8,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 8,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -766,19 +688,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 9,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -894,19 +803,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 3,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -1002,19 +898,6 @@
             "group": "custom_objects",
             "object_index": 4,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 4,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -1124,19 +1007,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 5,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -1232,19 +1102,6 @@
             "group": "custom_objects",
             "object_index": 10,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 10,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -1367,19 +1224,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 11,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -1495,19 +1339,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 12,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -1616,19 +1447,6 @@
             "group": "custom_objects",
             "object_index": 13,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 13,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -1764,19 +1582,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 14,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -1885,19 +1690,6 @@
             "group": "custom_objects",
             "object_index": 15,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 15,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -2033,19 +1825,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 16,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -2167,19 +1946,6 @@
             "group": "custom_objects",
             "object_index": 17,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 17,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -2315,19 +2081,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 18,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -2412,32 +2165,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 19,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 19,
-            "modification_index": 5
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -2558,19 +2285,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 20,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -2666,19 +2380,6 @@
             "group": "custom_objects",
             "object_index": 21,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 21,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -2794,19 +2495,6 @@
             "group": "custom_objects",
             "object_index": 22,
             "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 22,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -2968,19 +2656,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 23,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -3102,19 +2777,6 @@
             "group": "custom_objects",
             "object_index": 24,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 24,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -3250,19 +2912,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 25,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -3391,19 +3040,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 26,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -3514,32 +3150,6 @@
             "modification_index": 3
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 27,
-            "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 27,
-            "modification_index": 5
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -3686,19 +3296,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 28,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -3827,19 +3424,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 29,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -3961,19 +3545,6 @@
             "group": "custom_objects",
             "object_index": 30,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 30,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -4122,19 +3693,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 31,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -4245,32 +3803,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 32,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 32,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -4397,19 +3929,6 @@
             "group": "custom_objects",
             "object_index": 33,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 33,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -4558,19 +4077,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 34,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -4712,19 +4218,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 35,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -4853,19 +4346,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 36,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -4974,19 +4454,6 @@
             "group": "custom_objects",
             "object_index": 37,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 37,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -5104,32 +4571,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 38,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 38,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -5256,19 +4697,6 @@
             "group": "custom_objects",
             "object_index": 39,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 39,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -5417,19 +4845,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 40,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -5551,19 +4966,6 @@
             "group": "custom_objects",
             "object_index": 41,
             "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 41,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -5712,19 +5114,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 42,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -5846,19 +5235,6 @@
             "group": "custom_objects",
             "object_index": 43,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 43,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -5994,19 +5370,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 44,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -6104,32 +5467,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 45,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 45,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -6263,19 +5600,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 46,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -6384,19 +5708,6 @@
             "group": "custom_objects",
             "object_index": 47,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 47,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -6532,19 +5843,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 48,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -6673,19 +5971,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 49,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -6801,19 +6086,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 50,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -6909,19 +6181,6 @@
             "group": "custom_objects",
             "object_index": 51,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 51,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -7044,19 +6303,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 52,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -7165,19 +6411,6 @@
             "group": "custom_objects",
             "object_index": 53,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 53,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -7300,19 +6533,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 54,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -7428,19 +6648,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 55,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -7536,19 +6743,6 @@
             "group": "custom_objects",
             "object_index": 56,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 56,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -7671,32 +6865,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 57,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 57,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -7794,32 +6962,6 @@
             "modification_index": 3
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 58,
-            "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 58,
-            "modification_index": 5
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -7966,19 +7108,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 59,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -8089,32 +7218,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 60,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 60,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -8235,32 +7338,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 61,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 61,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -8371,32 +7448,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 62,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 62,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -8530,19 +7581,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 63,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -8651,19 +7689,6 @@
             "group": "custom_objects",
             "object_index": 64,
             "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 64,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -8799,19 +7824,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 65,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -8920,19 +7932,6 @@
             "group": "custom_objects",
             "object_index": 66,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 66,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -9055,32 +8054,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 67,
-            "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 67,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -9191,32 +8164,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 68,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 68,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -9363,32 +8310,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 69,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 69,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -9499,32 +8420,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 70,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 70,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -9658,19 +8553,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 71,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -9766,19 +8648,6 @@
             "group": "custom_objects",
             "object_index": 72,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 72,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -9896,32 +8765,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 73,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 73,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -10068,19 +8911,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 74,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -10191,32 +9021,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 75,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 75,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -10356,19 +9160,6 @@
             "group": "custom_objects",
             "object_index": 76,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 76,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -10517,19 +9308,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 77,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -10658,19 +9436,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 78,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -10766,19 +9531,6 @@
             "group": "custom_objects",
             "object_index": 79,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 79,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -10888,19 +9640,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 80,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -10996,19 +9735,6 @@
             "group": "custom_objects",
             "object_index": 81,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 81,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -11131,19 +9857,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 82,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -11254,32 +9967,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 83,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 83,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -11426,19 +10113,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 84,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -11549,32 +10223,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 85,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 85,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -11708,32 +10356,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 86,
-            "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 86,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -11844,32 +10466,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 87,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 87,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -12003,19 +10599,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 88,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -12124,19 +10707,6 @@
             "group": "custom_objects",
             "object_index": 89,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 89,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -12259,19 +10829,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 90,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -12367,19 +10924,6 @@
             "group": "custom_objects",
             "object_index": 91,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 91,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -12515,19 +11059,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 92,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -12636,19 +11167,6 @@
             "group": "custom_objects",
             "object_index": 93,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 93,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -12766,32 +11284,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 94,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 94,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -12918,19 +11410,6 @@
             "group": "custom_objects",
             "object_index": 95,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 95,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -13066,19 +11545,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 96,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -13207,19 +11673,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 97,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -13328,19 +11781,6 @@
             "group": "custom_objects",
             "object_index": 98,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 98,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -13463,19 +11903,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 99,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -13586,32 +12013,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 100,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 100,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -13758,19 +12159,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 101,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -13899,19 +12287,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 102,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -14020,19 +12395,6 @@
             "group": "custom_objects",
             "object_index": 103,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 103,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -14155,19 +12517,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 104,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -14276,19 +12625,6 @@
             "group": "custom_objects",
             "object_index": 105,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 105,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -14411,19 +12747,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 106,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -14532,19 +12855,6 @@
             "group": "custom_objects",
             "object_index": 107,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 107,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -14667,19 +12977,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 108,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -14788,19 +13085,6 @@
             "group": "custom_objects",
             "object_index": 109,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 109,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -14923,19 +13207,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 110,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -15051,19 +13322,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 111,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -15159,19 +13417,6 @@
             "group": "custom_objects",
             "object_index": 112,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 112,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -15281,19 +13526,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 113,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -15389,19 +13621,6 @@
             "group": "custom_objects",
             "object_index": 114,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 114,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -15511,19 +13730,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 115,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -15619,19 +13825,6 @@
             "group": "custom_objects",
             "object_index": 116,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 116,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -15741,19 +13934,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 117,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -15849,19 +14029,6 @@
             "group": "custom_objects",
             "object_index": 118,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 118,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -15971,19 +14138,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 119,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -16079,19 +14233,6 @@
             "group": "custom_objects",
             "object_index": 120,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 120,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -16207,19 +14348,6 @@
             "group": "custom_objects",
             "object_index": 121,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 121,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -16348,19 +14476,6 @@
             "group": "custom_objects",
             "object_index": 122,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 122,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -16509,19 +14624,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 123,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -16650,19 +14752,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 124,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "max_hit_points": {
           "source": {
             "file": "war3map.w3t",
@@ -16771,19 +14860,6 @@
             "group": "custom_objects",
             "object_index": 125,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 125,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -16906,19 +14982,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 126,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -17027,19 +15090,6 @@
             "group": "custom_objects",
             "object_index": 127,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 127,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -17162,19 +15212,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 128,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -17283,19 +15320,6 @@
             "group": "custom_objects",
             "object_index": 129,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 129,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -17418,19 +15442,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 130,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -17539,19 +15550,6 @@
             "group": "custom_objects",
             "object_index": 131,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 131,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -17674,19 +15672,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 132,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -17795,19 +15780,6 @@
             "group": "custom_objects",
             "object_index": 133,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 133,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -17930,19 +15902,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 134,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -18051,19 +16010,6 @@
             "group": "custom_objects",
             "object_index": 135,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 135,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -18186,19 +16132,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 136,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -18296,32 +16229,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 137,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 137,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -18455,32 +16362,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 138,
-            "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 138,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -18605,32 +16486,6 @@
           },
           "field_id": "iusa",
           "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 139,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 139,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
           "level": null,
           "variation": null,
           "data_pointer": null
@@ -18763,32 +16618,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 140,
-            "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 140,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -18910,19 +16739,6 @@
             "group": "custom_objects",
             "object_index": 141,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 141,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -19058,19 +16874,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 142,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -19199,19 +17002,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 143,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -19296,32 +17086,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 144,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 144,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -19437,32 +17201,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 145,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 145,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -19609,19 +17347,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 146,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -19730,19 +17455,6 @@
             "group": "custom_objects",
             "object_index": 147,
             "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 147,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -19891,32 +17603,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 148,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 148,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -20045,19 +17731,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 149,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
             "file": "war3mapSkin.w3t",
@@ -20166,19 +17839,6 @@
             "group": "custom_objects",
             "object_index": 150,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 150,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -20327,19 +17987,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 151,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -20474,19 +18121,6 @@
             "group": "custom_objects",
             "object_index": 152,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 152,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -20635,19 +18269,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 153,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -20789,19 +18410,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 154,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -20912,32 +18520,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 155,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 155,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -21071,19 +18653,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 156,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -21129,19 +18698,6 @@
             "group": "custom_objects",
             "object_index": 156,
             "modification_index": 0
-          },
-          "field_id": "iabi",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "abilities [iabi]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 156,
-            "modification_index": 7
           },
           "field_id": "iabi",
           "type": "string",
@@ -21218,19 +18774,6 @@
             "group": "custom_objects",
             "object_index": 157,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 157,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -21335,32 +18878,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 158,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 158,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -21494,19 +19011,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 159,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -21628,19 +19132,6 @@
             "group": "custom_objects",
             "object_index": 160,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 160,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -21789,19 +19280,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 161,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -21936,19 +19414,6 @@
             "group": "custom_objects",
             "object_index": 162,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 162,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -22097,19 +19562,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 163,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -22251,19 +19703,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 164,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -22385,19 +19824,6 @@
             "group": "custom_objects",
             "object_index": 165,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 165,
-            "modification_index": 6
           },
           "field_id": "icla",
           "type": "string",
@@ -22533,19 +19959,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 166,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -22670,32 +20083,6 @@
           },
           "field_id": "iusa",
           "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 167,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 167,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
           "level": null,
           "variation": null,
           "data_pointer": null
@@ -22841,19 +20228,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 168,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -22982,32 +20356,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 169,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 169,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -23118,32 +20466,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 170,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 170,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -23264,32 +20586,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 171,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 171,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -23405,32 +20701,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 172,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 172,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -23541,32 +20811,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 173,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 173,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -23713,19 +20957,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 174,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -23850,32 +21081,6 @@
           },
           "field_id": "iusa",
           "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 175,
-            "modification_index": 4
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 175,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
           "level": null,
           "variation": null,
           "data_pointer": null
@@ -24014,19 +21219,6 @@
             "group": "custom_objects",
             "object_index": 176,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 176,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -24175,19 +21367,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 177,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -24322,19 +21501,6 @@
             "group": "custom_objects",
             "object_index": 178,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 178,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -24483,19 +21649,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 179,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -24630,19 +21783,6 @@
             "group": "custom_objects",
             "object_index": 180,
             "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 180,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -24791,19 +21931,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 181,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -24925,19 +22052,6 @@
             "group": "custom_objects",
             "object_index": 182,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 182,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -25073,19 +22187,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 183,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -25207,19 +22308,6 @@
             "group": "custom_objects",
             "object_index": 184,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 184,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -25355,19 +22443,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 185,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -25489,19 +22564,6 @@
             "group": "custom_objects",
             "object_index": 186,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 186,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -25637,19 +22699,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 187,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -25771,19 +22820,6 @@
             "group": "custom_objects",
             "object_index": 188,
             "modification_index": 2
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 188,
-            "modification_index": 5
           },
           "field_id": "icla",
           "type": "string",
@@ -25919,19 +22955,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 189,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -26042,32 +23065,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 190,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 190,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -26188,32 +23185,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 191,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 191,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -26324,32 +23295,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 192,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 192,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -26470,32 +23415,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 193,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 193,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -26606,32 +23525,6 @@
             "modification_index": 2
           },
           "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 194,
-            "modification_index": 3
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 194,
-            "modification_index": 6
-          },
-          "field_id": "icla",
           "type": "string",
           "level": null,
           "variation": null,
@@ -26765,32 +23658,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 195,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 195,
-            "modification_index": 5
-          },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "cooldown_group": {
           "source": {
             "file": "war3map.w3t",
@@ -26861,26 +23728,13 @@
     "I074": {
       "base_id": "rde1",
       "name_source": {
-        "file": "war3map.w3t",
+        "file": "war3mapSkin.w3t",
         "group": "custom_objects",
         "object_index": 196,
-        "modification_index": 6
+        "modification_index": 0
       },
       "fields": {
         "tooltip": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 7
-          },
-          "field_id": "utip",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "tooltip [utip]": {
           "source": {
             "file": "war3mapSkin.w3t",
             "group": "custom_objects",
@@ -26895,23 +23749,10 @@
         },
         "extended_tooltip": {
           "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 8
-          },
-          "field_id": "utub",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "extended_tooltip [utub]": {
-          "source": {
             "file": "war3mapSkin.w3t",
             "group": "custom_objects",
             "object_index": 196,
-            "modification_index": 3
+            "modification_index": 2
           },
           "field_id": "utub",
           "type": "string",
@@ -26921,23 +23762,10 @@
         },
         "icon": {
           "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 10
-          },
-          "field_id": "iico",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "icon [iico]": {
-          "source": {
             "file": "war3mapSkin.w3t",
             "group": "custom_objects",
             "object_index": 196,
-            "modification_index": 2
+            "modification_index": 4
           },
           "field_id": "iico",
           "type": "string",
@@ -26950,49 +23778,10 @@
             "file": "war3map.w3t",
             "group": "custom_objects",
             "object_index": 196,
-            "modification_index": 11
-          },
-          "field_id": "iusa",
-          "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "actively_used [iusa]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 12
-          },
-          "field_id": "iusa",
-          "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
             "modification_index": 3
           },
-          "field_id": "icla",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "classification [icla]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 6
-          },
-          "field_id": "icla",
-          "type": "string",
+          "field_id": "iusa",
+          "type": "int",
           "level": null,
           "variation": null,
           "data_pointer": null
@@ -27010,77 +23799,12 @@
           "variation": null,
           "data_pointer": null
         },
-        "cooldown_group [icid]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 8
-          },
-          "field_id": "icid",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "use_automatically_when_acquired": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 5
-          },
-          "field_id": "ipow",
-          "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "use_automatically_when_acquired [ipow]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 11
-          },
-          "field_id": "ipow",
-          "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "name [unam]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 0
-          },
-          "field_id": "unam",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "description": {
           "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 9
-          },
-          "field_id": "ides",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "description [ides]": {
-          "source": {
             "file": "war3mapSkin.w3t",
             "group": "custom_objects",
             "object_index": 196,
-            "modification_index": 4
+            "modification_index": 3
           },
           "field_id": "ides",
           "type": "string",
@@ -27114,45 +23838,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "abilities [iabi]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 7
-          },
-          "field_id": "iabi",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "lumber_cost": {
-          "source": {
-            "file": "war3map.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 4
-          },
-          "field_id": "ilum",
-          "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "lumber_cost [ilum]": {
-          "source": {
-            "file": "war3mapSkin.w3t",
-            "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 10
-          },
-          "field_id": "ilum",
-          "type": "int",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "gold_cost": {
           "source": {
             "file": "war3map.w3t",
@@ -27165,13 +23850,128 @@
           "level": null,
           "variation": null,
           "data_pointer": null
-        },
-        "gold_cost [igol]": {
+        }
+      }
+    },
+    "I075": {
+      "base_id": "rde1",
+      "name_source": {
+        "file": "war3mapSkin.w3t",
+        "group": "custom_objects",
+        "object_index": 197,
+        "modification_index": 0
+      },
+      "fields": {
+        "tooltip": {
           "source": {
             "file": "war3mapSkin.w3t",
             "group": "custom_objects",
-            "object_index": 196,
-            "modification_index": 9
+            "object_index": 197,
+            "modification_index": 1
+          },
+          "field_id": "utip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 197,
+            "modification_index": 3
+          },
+          "field_id": "utub",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 197,
+            "modification_index": 2
+          },
+          "field_id": "iico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "classification": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 197,
+            "modification_index": 3
+          },
+          "field_id": "icla",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "cooldown_group": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 197,
+            "modification_index": 2
+          },
+          "field_id": "icid",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "description": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 197,
+            "modification_index": 4
+          },
+          "field_id": "ides",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uhot": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 197,
+            "modification_index": 5
+          },
+          "field_id": "uhot",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "abilities": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 197,
+            "modification_index": 0
+          },
+          "field_id": "iabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "gold_cost": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 197,
+            "modification_index": 1
           },
           "field_id": "igol",
           "type": "int",

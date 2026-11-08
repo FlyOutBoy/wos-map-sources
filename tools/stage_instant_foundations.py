@@ -32,7 +32,7 @@ BASES.update(dict.fromkeys(PAUSED_CHANNELS,'ANcl'))
 ORDER_BASES={'A093':'Aroa','A03M':'Aroa','A0DY':'Aroa'}
 HERO_BASES.update(ORDER_BASES)
 BASES.update(ORDER_BASES)
-CHANNEL_ORDERS={'A03L':'clusterrockets','A03O':'acidbomb','A113':'charm',
+CHANNEL_ORDERS={'A03L':'clusterrockets','A03O':'carrionswarm','A113':'charm',
                 'A0FS':'grabtree','A0A0':'ancestralspirit'}
 CHANNEL_FIELDS={'Ncl1','Ncl2','Ncl3','Ncl4','Ncl5','Ncl6'}
 ART_FIELDS={'acat','atat','asat','aeat','aaea','alig','amat','aefs','aefl','aani','acap','aca1','ata0','ata1','ata2','ata3','ata4','ata5'}

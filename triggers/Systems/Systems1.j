@@ -2153,7 +2153,7 @@ endfunction
                 set count = count + 1
                 if count > 1 then
                     if count2 == 0 then
-                        call DisplayTimedTextToPlayer(GetOwningPlayer(u), 0, 0, 3, "|c00F20000You cant own more than 1 item of same type!|r")
+                        call DisplayTimedTextToPlayer(GetOwningPlayer(u), 0, 0, 3, "|c00F20000You can't own more than one item of the same type!|r")
                         set count2 = count2 + 1
                     endif
                     set gold = GetItemValue(GetItemTypeId(ti))
@@ -2181,7 +2181,7 @@ endfunction
                 set count = count + 1
                 if count > 1 then
                     if count2 == 0 then
-                        call DisplayTimedTextToPlayer(GetOwningPlayer(u), 0, 0, 3, "|c00F20000You cant own more than 1 item of same type!|r")
+                        call DisplayTimedTextToPlayer(GetOwningPlayer(u), 0, 0, 3, "|c00F20000You can't own more than one item of the same type!|r")
                         set count2 = count2 + 1
                     endif
                     set gold = GetItemValue(GetItemTypeId(ti))
@@ -2564,7 +2564,16 @@ function SlowUnit takes unit c, unit u, integer percent, integer time returns no
     // percent: 5 to 95 in multiples of 5 (5, 10, 15 ... 95)
     // time:    1, 2, 3, or 4 seconds
     local integer i = GetPlayerId(GetOwningPlayer(u))
-    local integer level = GetSlowAbilityLevel(percent, time)
+    local integer level
+
+    // Frozen Heart aura: weaker slow, same duration.
+    if u != null and GetUnitAbilityLevel(u, FrozenHeart_Buff_ID) > 0 then
+        set percent = percent - FrozenHeart_SlowResist
+        if percent < 5 then
+            return
+        endif
+    endif
+    set level = GetSlowAbilityLevel(percent, time)
 
     if u != null and GetWidgetLife(u)>5 then
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
@@ -2972,6 +2981,14 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
 
         if stacks > 0 then
             set dmg = dmg * (1.0 - stacks * MahoragaT_DamageReductionPerStack / 100.0)
+        endif
+    endif
+
+    // Crocodile T/T2 channel resistance: before item penetration so I00J/I00R and
+    // resist-reduction debuffs pierce it like any other resistance.
+    static if LIBRARY_CrocodileSpells then
+        if targetId == Crocodile_ID then
+            set dmg = dmg * HeroChannelDamageFactor(td)
         endif
     endif
     
@@ -3443,7 +3460,7 @@ endif
     // Native aura buffs carry the rank; percentage resistance applies to both damage families.
     set dmg = InoriE_ApplyAuraResistance(td, dmg, typedmg)
     if InvertedSpear_IsActive(td) then
-        set value = HeroChannelDamageFactor(td)
+        set value = 1.0 // Crocodile channel factor is already inside dmg.
         static if LIBRARY_FrostnovaSpells then
             if GetUnitAbilityLevel(td, FrostnovaE_ResistBuffID) > 0 then
                 set value = value * (1.0 - FrostnovaE_Resist)
@@ -3463,7 +3480,7 @@ endfunction
 function GetPhysRes takes unit c returns real
 local real result = 0
 local real check = 0
-set check = 1-DamageBlock(null,c,1.00,2,true)*HeroChannelDamageFactor(c)
+set check = 1-DamageBlock(null,c,1.00,2,true)
 static if LIBRARY_FrostnovaSpells then
     if GetUnitAbilityLevel(c, FrostnovaE_ResistBuffID) > 0 then
         set check = 1.0-(1.0-check)*(1.0-FrostnovaE_Resist)
@@ -3475,7 +3492,7 @@ endfunction
 function GetMagRes takes unit c returns real
 local real result = 0
 local real check = 0
-set check = 1-DamageBlock(null,c,1.00,1,true)*HeroChannelDamageFactor(c)
+set check = 1-DamageBlock(null,c,1.00,1,true)
 static if LIBRARY_FrostnovaSpells then
     if GetUnitAbilityLevel(c, FrostnovaE_ResistBuffID) > 0 then
         set check = 1.0-(1.0-check)*(1.0-FrostnovaE_Resist)

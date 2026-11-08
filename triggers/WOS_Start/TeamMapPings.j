@@ -444,7 +444,7 @@ private function TMP_ToggleMute takes nothing returns nothing
     set TMP_Muted = not TMP_Muted
     call TMP_Close()
     if TMP_Muted then
-        call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping-muted.tga", 0, true)
+        call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping-muted.blp", 0, true)
         call DisplayTimedTextToPlayer(GetLocalPlayer(), 0, 0, 1.50, "|cffffcc66Team pings muted. Press Z to send your own.|r")
         loop
             exitwhen pid >= 10
@@ -455,7 +455,7 @@ private function TMP_ToggleMute takes nothing returns nothing
             set pid = pid + 1
         endloop
     else
-        call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping.tga", 0, true)
+        call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping.blp", 0, true)
         call DisplayTimedTextToPlayer(GetLocalPlayer(), 0, 0, 1.50, "|cff70ef90Team pings enabled.|r")
     endif
     loop
@@ -654,11 +654,11 @@ private function TMP_StartUI takes nothing returns nothing
     set TMP_Red[5] = 189
     set TMP_Green[5] = 154
     set TMP_Blue[5] = 255
-    set TMP_Texture[1] = "UI\\TeamPings\\move.tga"
-    set TMP_Texture[2] = "UI\\TeamPings\\attack.tga"
-    set TMP_Texture[3] = "UI\\TeamPings\\danger.tga"
-    set TMP_Texture[4] = "UI\\TeamPings\\help.tga"
-    set TMP_Texture[5] = "UI\\TeamPings\\rally.tga"
+    set TMP_Texture[1] = "UI\\TeamPings\\move.blp"
+    set TMP_Texture[2] = "UI\\TeamPings\\attack.blp"
+    set TMP_Texture[3] = "UI\\TeamPings\\danger.blp"
+    set TMP_Texture[4] = "UI\\TeamPings\\help.blp"
+    set TMP_Texture[5] = "UI\\TeamPings\\rally.blp"
     set TMP_Model[1] = "war3mapImported\\wos_ping_onmyway.mdx"
     set TMP_Model[2] = "war3mapImported\\wos_ping_attack.mdx"
     set TMP_Model[3] = "war3mapImported\\wos_ping_danger.mdx"
@@ -680,7 +680,7 @@ private function TMP_StartUI takes nothing returns nothing
     set TMP_Panel = BlzCreateFrameByType("BACKDROP", "TeamPingPanel", ui, "", 0)
     call BlzFrameSetSize(TMP_Panel, TMP_BUTTON_SIZE, TMP_BUTTON_SIZE)
     // Graphite + antique-gold wheel matching the HUD (was a bright stock-looking disc).
-    call BlzFrameSetTexture(TMP_Panel, "UI\\WOS\\wheel-base.tga", 0, true)
+    call BlzFrameSetTexture(TMP_Panel, "UI\\WOS\\wheel-base.blp", 0, true)
     call BlzFrameSetAlpha(TMP_Panel, 170)
     call BlzFrameSetLevel(TMP_Panel, 20)
     call BlzFrameSetAbsPoint(TMP_Panel, FRAMEPOINT_CENTER, 0.40, 0.35)
@@ -724,7 +724,7 @@ private function TMP_StartUI takes nothing returns nothing
     call WUI_PlaceToolbar(TMP_Toggle, 0, 1)
     set TMP_ToggleIcon = BlzCreateFrameByType("BACKDROP", "TeamPingToggleIcon", TMP_Toggle, "", 0)
     call BlzFrameSetAllPoints(TMP_ToggleIcon, TMP_Toggle)
-    call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping.tga", 0, true)
+    call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping.blp", 0, true)
     call BlzFrameSetAlpha(TMP_ToggleIcon, 255)
     call BlzFrameSetEnable(TMP_ToggleIcon, false)
     set TMP_ToggleText = BlzCreateFrameByType("TEXT", "TeamPingToggleText", TMP_Toggle, "", 0)

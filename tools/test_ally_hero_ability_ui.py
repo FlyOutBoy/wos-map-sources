@@ -466,12 +466,24 @@ class AllyAbilityUI(unittest.TestCase):
     def test_own_heroes_allow_placeholders_and_observers_keep_permissions(self):
         self.assertTrue(self.vm.run('AHUI_IsEligibleHero',(self.c,1)))
         self.c.illusion=True
-        self.assertFalse(self.vm.run('AHUI_IsEligibleHero',(self.c,0)))
+        self.assertTrue(self.vm.run('AHUI_IsEligibleHero',(self.c,0)))
         self.c.illusion=False
         self.allies.clear()
         self.assertTrue(self.vm.run('AHUI_IsEligibleHero',(self.c,0)))
         self.assertFalse(self.vm.run('AHUI_CanReadCooldown',(self.c,0)))
         self.assertTrue(self.vm.run('AHUI_CanReadCooldown',(self.c,10)))
+
+    def test_enemy_clone_keeps_all_descriptions_without_reading_cooldowns(self):
+        self.allies.clear()
+        self.c.illusion = True
+        self.refresh()
+        self.assertIs(self.c, self.vm.g['AHUI_SelectedHero'][0])
+        for slot, key in enumerate('QWERTFG'):
+            self.assertTrue(self.value('AHUI_Icon', slot, 'visible'))
+            self.assertTrue(self.hover_tooltip(slot))
+            ability = self.vm.g['Crocodile' + key + '_ID']
+            self.assertIn('Description ' + ability, self.value('AHUI_TooltipText', 0, 'text'))
+        self.assertFalse(self.reads)
 
     def test_own_hero_keeps_native_commands_and_previews_unlearned_cells(self):
         self.c.owner = self.viewer

@@ -990,7 +990,6 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
             set chain = AddLightningEx("TJ01", true, GetUnitX(NewC), GetUnitY(NewC), 110.0, x, y, 110.0)
             call SetUnitFacing(NewC, a * bj_RADTODEG)
             call SetUnitAnimationByIndex(NewC, 13)
-            call MakeSound("war3mapImported\\Hero_Toji_W")
             call VisionTimed(GetOwningPlayer(NewC), NewX, NewY, 750, 6)
             if MUI_TojiW == 0 then
                 call TojiTimer03Acquire()
@@ -2086,14 +2085,10 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
             call PosUnit(NewC, NewX, NewY)
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), GetUnitFacing(c), 1, 1.8, 600))
 
-            if GetUnitAbilityLevel(NewC, 'Amrf') == 0 then
-                call UnitAddAbility(NewC, 'Amrf')
-                call UnitRemoveAbility(NewC, 'Amrf')
-            endif
             if pierceAdded then
                 call UnitAddAbility(NewC, TojiT_ShieldPierceBuff_ID)
             endif
-            call SetUnitFlyHeight(NewC, TojiT_FlyHeight, 0.0)
+            call SetFly(NewC, TojiT_FlyHeight) // no Amrf add/remove: keeps the target's aiming
             call SetUnitAnimationByIndex(NewC, 8)
             call SetAnimIndex(c, 0.03, 8)
             call VisionTimed(GetOwningPlayer(NewC), NewX, NewY, TojiT_DamageAoe, TojiT_HitInterval * TojiT_HitCount + TojiT_DescendDuration)

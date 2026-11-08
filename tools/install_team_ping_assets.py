@@ -14,7 +14,7 @@ ASSET_NAMES = {'base', 'move', 'attack', 'danger', 'help', 'rally',
 def install(map_dir: Path, source: Path | None = None, backup_root: Path | None = None, expected_names: set | None = None, prefix: str = 'UI/TeamPings'):
     source = source or ROOT/'assets/UI/TeamPings'
     backup_root = backup_root or ROOT/'backups/team-ping-assets'
-    assets = sorted(source.glob('*.tga'))
+    assets = sorted(p for p in source.iterdir() if p.suffix.lower() in ('.tga', '.blp'))  # UI is BLP since 2026-11-06
     if {asset.stem for asset in assets} != (expected_names or ASSET_NAMES):
         raise ValueError('Expected the complete command wheel, minimap and toolbar texture set')
     imp = map_dir/'war3map.imp'
