@@ -294,8 +294,8 @@ library AlterSaberSpells uses GearSystems
                                     call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_tx-ha_nitu.mdl", GetUnitX(c) - 70 * Cos(a), GetUnitY(c) - 70 * Sin(a), a * bj_RADTODEG , 2, 2.725, 1, 255, 255, 255, 155))
                                     call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_tx-ha_nitu.mdl", GetUnitX(c) - 70 * Cos(a + 0.25 * bj_DEGTORAD), GetUnitY(c) - 70 * Sin(a + 0.25 * bj_DEGTORAD), a * bj_RADTODEG + 55 , 2, 2.725, 1, 255, 255, 255, 155))
                                     call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_tx-ha_nitu.mdl", GetUnitX(c) - 70 * Cos(a - 0.25 * bj_DEGTORAD), GetUnitY(c) - 70 * Sin(a - 0.25 * bj_DEGTORAD), a * bj_RADTODEG - 55 , 2, 2.725, 1, 255, 255, 255, 155))
-                                    call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c) + 100 * Cos(a), GetUnitY(c) + 100 * Sin(a), a * bj_RADTODEG + 180, 1.75, 3, 120, 255, 255, 255, 120))
-                                    call MyRemoveEff(EffectSpawnColor3("war3mapImported\\wos_Efect125.mdl", GetUnitX(c) + 135 * Cos(a), GetUnitY(c) + 135 * Sin(a), a * bj_RADTODEG, 1, 1.7, 250, -90, 255, 255, 255, 125), 0.33)
+                                    call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c) + 100 * Cos(a), GetUnitY(c) + 100 * Sin(a), a * bj_RADTODEG + 180, 1.75, 3, 120, 255, 255, 255, 120))
+                                    call MyRemoveEff(EffectSpawnColor3("war3mapImported\\wos_Efect125_lite.mdl", GetUnitX(c) + 135 * Cos(a), GetUnitY(c) + 135 * Sin(a), a * bj_RADTODEG, 1, 1.7, 250, -90, 255, 255, 255, 125), 0.33)
                                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_rraiden-esfx-6.mdl", GetUnitX(c) + 135 * Cos(a), GetUnitY(c) + 135 * Sin(a), a * bj_RADTODEG , 1.25, 0.86, 125))
                                 endif
                                 call GroupClear( g )
@@ -322,7 +322,7 @@ library AlterSaberSpells uses GearSystems
                                 call SetUnitTimeScale(c, 1)
                                 call SetUnitAnimationByIndex(c, 1)
                                 call MakeSound("war3mapimported\\Hero_AlterSaber_Q")
-                                call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c) + 111 * Cos(a), GetUnitY(c) + 111 * Sin(a), a * bj_RADTODEG, 1, 1.5, 120, 255, 255, 255, 100))
+                                call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c) + 111 * Cos(a), GetUnitY(c) + 111 * Sin(a), a * bj_RADTODEG, 1, 1.5, 120, 255, 255, 255, 100))
                                 call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_Mdx_Effect_05 Mikoto AZ_Dust Rush 01.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG , 1, 1.1, 1, 255, 255, 255, 65))
                             endif
                             if r < r_prepare then
@@ -338,7 +338,7 @@ library AlterSaberSpells uses GearSystems
                                 set y = GetUnitY(c) + 50 * Sin(a)
                                 if r2 > 0.1 then
                                     set r2 = 0
-                                    call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c) + 111 * Cos(a), GetUnitY(c) + 111 * Sin(a), a * bj_RADTODEG, 1, 1.5, 120, 255, 255, 255, 100))
+                                    call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c) + 111 * Cos(a), GetUnitY(c) + 111 * Sin(a), a * bj_RADTODEG, 1, 1.5, 120, 255, 255, 255, 100))
                                     call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_Mdx_Effect_05 Mikoto AZ_Dust Rush 01.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG , 1, 1.1, 1, 255, 255, 255, 65))
                                 else
                                     set r2 = r2 + 0.03
@@ -376,7 +376,7 @@ library AlterSaberSpells uses GearSystems
                                     call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Eff_Ord_YeYe_Wid_KuoSan_3.mdl", x, y, GetRandomReal(0, 359), 1.15, 2.35, 1, 255, 255, 255, 90))
                                 endif
                                 if r == 0.21 then
-                                    call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c) + 111 * Cos(a), GetUnitY(c) + 111 * Sin(a), a * bj_RADTODEG, 1.35, 1.5, 120, 255, 255, 255, 45))
+                                    call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c) + 111 * Cos(a), GetUnitY(c) + 111 * Sin(a), a * bj_RADTODEG, 1.35, 1.5, 120, 255, 255, 255, 45))
                                     call MakeSound("war3mapimported\\Hero_AlterSaber_Q4")
                                 endif
                                 if r > 0.15 and r < 0.42 and SR2(c, td) > 110 then
@@ -622,9 +622,9 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                         call MakeSound("war3mapimported\\Hero_AlterSaber_T5")
                         set r2 = 10
                         call StopSpellUnit2(c)
-                        set e2 = EffectSpawn3("war3mapImported\\wos_Efect125.mdl", GetUnitX(c) + 215 * Cos(a), GetUnitY(c) + 215 * Sin(a), a * bj_RADTODEG, 2, 0.95, 125, -90)
+                        set e2 = EffectSpawn3("war3mapImported\\wos_Efect125_lite.mdl", GetUnitX(c) + 215 * Cos(a), GetUnitY(c) + 215 * Sin(a), a * bj_RADTODEG, 2, 0.95, 125, -90)
                         set e = EffectSpawn("war3mapImported\\wos_az_chongci-red%2E.mdl", GetUnitX(c) + 125 * Cos(a), GetUnitY(c) + 125 * Sin(a), a * bj_RADTODEG, 2, 2.5, 1)
-                        set e3 = EffectSpawn("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c) + 125 * Cos(a), GetUnitY(c) + 125 * Sin(a), a * bj_RADTODEG + 180, 2, 1.3, 150)
+                        set e3 = EffectSpawn("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c) + 125 * Cos(a), GetUnitY(c) + 125 * Sin(a), a * bj_RADTODEG + 180, 2, 1.3, 150)
                     endif
                     if r > 0.45 then
                         set x = GetEffX(e)
@@ -655,9 +655,9 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                         if r6 >= 0.09 then
                             set r6 = 0
                             call BlzPlaySpecialEffect(e3, ANIM_TYPE_DEATH)
-                            call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5.mdl", x , y, a * bj_RADTODEG, 1.75, 1, 130, 255, 255, 255, 100))
+                            call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", x , y, a * bj_RADTODEG, 1.75, 1, 130, 255, 255, 255, 100))
                             call VisionTimed(GetOwningPlayer(c), x , y, 750, 2)
-                            call MyRemoveEff(EffectSpawnColor3("war3mapImported\\wos_Efect125.mdl", x , y, a * bj_RADTODEG + 180, 1.75, 0.9, 220, -90, 255, 255, 255, 125), 0.21)
+                            call MyRemoveEff(EffectSpawnColor3("war3mapImported\\wos_Efect125_lite.mdl", x , y, a * bj_RADTODEG + 180, 1.75, 0.9, 220, -90, 255, 255, 255, 125), 0.21)
                         else
                             set r6 = r6 + 0.03
                         endif
@@ -801,9 +801,9 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                                 call GroupRemoveUnit(g, u)
                             endloop
                             set r2 = r2 + move
-                            if r6 >= 0.0 then
+                            if r6 > 0.03 then // every 0.06 s (was every tick)
                                 set r6 = 0
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5.mdl", x + r2 * Cos(a), y + r2 * Sin(a), a * bj_RADTODEG, 1.25, scale / 1.15, 120))
+                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", x + r2 * Cos(a), y + r2 * Sin(a), a * bj_RADTODEG, 1.25, scale / 1.15, 120))
                                 call VisionTimed(GetOwningPlayer(c), x + r2 * Cos(a), y + r2 * Sin(a), 850, 2)
                             else
                                 set r6 = r6 + 0.03
@@ -846,7 +846,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                                     call GroupRemoveUnit(g, u)
                                 endloop
                                 call MakeSound("war3mapimported\\Hero_AlterSaber_E4")
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 2.15, 120))
+                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 2.15, 120))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_rraiden-esfx-6.mdl", GetUnitX(td) - 235 * Cos(a), GetUnitY(td) - 235 * Sin(a), a * bj_RADTODEG , 1.25, 0.9, 125))
                             endif
                         endif
@@ -964,7 +964,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                                 call MakeSound("war3mapimported\\Hero_AlterSaber_E4")
                                 call DamageSource('A05F')
                                 call dmgphys(c, td, dmg)
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 2.15, 120))
+                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 2.15, 120))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_rraiden-esfx-6.mdl", GetUnitX(td) - 235 * Cos(a), GetUnitY(td) - 235 * Sin(a), a * bj_RADTODEG , 1.25, 0.9, 125))
                             endif
                         endif
@@ -1065,7 +1065,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                         call SetUnitTimeScale(c, 0.85)
                         set r5 = GetUnitFlyHeight(c) / 10
                         set r6 = GetUnitFlyHeight(td) / 10
-                        call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 2.15, GetUnitFlyHeight(td), -90))
+                        call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 2.15, GetUnitFlyHeight(td), -90))
                         set e = EffectSpawn3("war3mapImported\\wos_rraiden-esfx-6.mdl", GetUnitX(td) - 235 * Cos(a), GetUnitY(td) - 235 * Sin(a), a * bj_RADTODEG + 0 , 1.25, 0.9, GetUnitFlyHeight(td), -90)
                         call BlzSetSpecialEffectRoll(e, -90 * bj_DEGTORAD)
                         call DestroyEffect(e)
@@ -1220,7 +1220,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                             if AlterSaberR_Dummy[k2] == null then
                                 set AlterSaberR_Dummy[k2] = UnitSpawn0(Player(k2), DummyR_ID, GetRectCenterX(gg_rct_Caster), GetRectCenterY(gg_rct_Caster), 1, 1, 1, 1)
                             endif
-                            call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), 1, 0.85, 4, 1, -90))
+                            call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c), GetUnitY(c), 1, 0.85, 4, 1, -90))
                          //   call SaveInteger(hs, GetHandleId(c), StringHash("saber w"), 0)
                           //  call SaveInteger(hs, GetHandleId(c), StringHash("saber w cd"), 0)
                             call SaveInteger(hs, GetHandleId(c), SH_SABER_W_TRG, 1)
@@ -1253,7 +1253,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                    // call SaveInteger(hs, GetHandleId(c), StringHash("saber w"), 0)
                    // call SaveInteger(hs, GetHandleId(c), StringHash("saber w cd"), 0)
                     call SaveInteger(hs, GetHandleId(c), SH_SABER_W_TRG, 1)
-                    call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), 1, 1.25, 3, 50, -90))
+                    call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", GetUnitX(c), GetUnitY(c), 1, 1.25, 3, 50, -90))
                     call BlzSetUnitSkin(c, AlterSaber_ID)
                     call FixAura(c)
                     call BlzSetAbilityIcon(AlterSaber_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_Icon.blp")
@@ -1498,16 +1498,16 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                             call GroupRemoveUnit(g, u)
                         endloop
                         set r2 = r2 + move
-                        if r6 >= 0.0 and (r2 < AlterSaberT_Range-375) then
+                        if r6 > 0.03 and (r2 < AlterSaberT_Range-375) then
                             set r6 = 0
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5.mdl", x + r2 * Cos(a), y + r2 * Sin(a), a * bj_RADTODEG, 0.44, scale / 1.15, 120))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5_lite.mdl", x + r2 * Cos(a), y + r2 * Sin(a), a * bj_RADTODEG, 0.44, scale / 1.15, 120))
                             call DecorRemove(c, x + r2 * Cos(a), y + r2 * Sin(a), aoe * 1.4, 100)
                             call VisionTimed(GetOwningPlayer(c), x + r2 * Cos(a), y + r2 * Sin(a), aoe * 2, 2)
-                            call MyRemoveEff(EffectSpawnColor3("war3mapImported\\wos_Efect125.mdl", x + r2 * Cos(a), y + r2 * Sin(a), a * bj_RADTODEG + 180, 1, 2.15, 220, -90, 255, 255, 255, 125), 0.75)
+                            call MyRemoveEff(EffectSpawnColor3("war3mapImported\\wos_Efect125_lite.mdl", x + r2 * Cos(a), y + r2 * Sin(a), a * bj_RADTODEG + 180, 1, 2.15, 220, -90, 255, 255, 255, 125), 0.75)
                         else
                             set r6 = r6 + 0.03
                         endif
-                        if r5 > 0.0 and r < rmax - 0.09 and (r2 < AlterSaberT_Range-375)  then
+                        if r5 > 0.03 and r < rmax - 0.09 and (r2 < AlterSaberT_Range-375)  then
                             set r5 = 0
                             call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_afb (45).mdl", x + (r2 * 1.1) * Cos(a), y + (r2 * 1.1) * Sin(a), a * bj_RADTODEG, 1., 3, 65), 0., 255, 255, 255, 0.66)
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_afb (2080).mdl", x + (r2 * 1.3) * Cos(a), y + (r2 * 1.3) * Sin(a), a * bj_RADTODEG, 0.6, 1.95, 55))
@@ -1575,7 +1575,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
             set k = 0
             loop
                 exitwhen k == 8
-                call ScaleEffDummy2(EffectSpawnColor2("war3mapImported\\wos_Efect125.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1.25, 0.01, k * 450, 2.4, 255, 255, 255, 75), 0.03 * k, 0.24, 0.01, 1.45)
+                call ScaleEffDummy2(EffectSpawnColor2("war3mapImported\\wos_Efect125_lite.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1.25, 0.01, k * 450, 2.4, 255, 255, 255, 75), 0.03 * k, 0.24, 0.01, 1.45)
                 set k = k + 1
             endloop
             set e2 = EffectSpawn("war3mapImported\\wos_LimitIndra-ORA.mdl", GetUnitX(c), GetUnitY(c), 1, 1, 4, 1)

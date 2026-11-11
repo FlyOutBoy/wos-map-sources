@@ -195,6 +195,11 @@ library InoriSpells uses GearSystems
         real InoriE_AoeSearch = 1400
         real InoriE_DmgCap = 250 // same or more value of this damage will add 1 instability stack to inori
         real InoriE_DmgMagResistFromPas = 5 // % of magic resistance from passive
+        // Entering E: from this E level the E-version is ready on entry and keeps its own cooldown;
+        // below it the E-version shares the cooldown with the base ability (Q<->EQ, W<->EW, R<->ER).
+        integer InoriE_ResetQLevel = 1
+        integer InoriE_ResetWLevel = 2
+        integer InoriE_ResetRLevel = 3
 //---------------E2 ability-----------------------------------------------------
         integer InoriE2_ID = 'A06D'
 //---------------R ability-----------------------------------------------------
@@ -210,6 +215,20 @@ library InoriSpells uses GearSystems
         real InoriR_HealAoe = 1000
         real InoriR_HealAoeAdd = 250
         real InoriR_AntiDebuffStartTime = 5.01 // should be divided by 0.03
+        real InoriR_HealTime = 10.00 // song (heal) duration, all levels
+        // Lv. 35: instead of extra heal time the zone stays InoriR_DmgBuffPhase sec after the heal and every
+        // InoriR_DmgBuffPulse sec (re)applies a 2 sec +15% damage dealt buff to allies inside (no heal)
+        integer InoriR_DmgBuffAbi_ID = 'A16D' // Ainf copy cast on each ally (tools/stage_inori_r_dmg_buff.py)
+        integer InoriR_DmgBuff_ID = 'B079' // "Song of Salvation: Resolve", read in DamageCheckModifiers
+        real InoriR_DmgBuffBonus = 15 // % outgoing damage
+        real InoriR_DmgBuffDuration = 2 // = A16D duration
+        real InoriR_DmgBuffPulse = 1 // re-application period
+        real InoriR_DmgBuffPhase = 12 // buff phase after the heal (was +12 sec of heal)
+        private constant real InoriR_ColorFadeTime = 1.00
+        private constant string InoriR_BlueVoid = "war3mapImported\\wos_Void04.mdl"
+        private constant string InoriR_RedVoid = "war3mapImported\\wos_InoriRed_void.mdl"
+        private constant string InoriR_BlueCleanse = "war3mapImported\\wos_FantasyBattle (1644).mdl"
+        private constant string InoriR_RedCleanse = "war3mapImported\\wos_InoriRed_cleanse.mdl"
 //---------------R2 ability-----------------------------------------------------
         integer InoriR2_ID = 'A06C'
         real InoriR2_DamageIntBase = 8 // base number x Int damage for 1 level .dmg per sec
@@ -1138,10 +1157,37 @@ library InoriSpells uses GearSystems
         endif
     endfunction
 
+    // E entry: a separate E-version is ready; a shared one takes the base ability's remaining cooldown.
+    private function InoriE_EnterCd takes unit c, integer eId, real baseLeft, boolean separate returns nothing
+        if separate or baseLeft <= 0 then
+            call BlzEndUnitAbilityCooldown(c, eId)
+        else
+            call BlzStartUnitAbilityCooldown(c, eId, baseLeft)
+        endif
+    endfunction
+
+    // E exit: a separate base ability keeps its own cooldown (remaining at entry minus E time);
+    // a shared one takes the E-version's remaining cooldown.
+    private function InoriE_ExitCd takes unit c, integer baseId, integer eId, real ownLeft, boolean separate returns nothing
+        local real t = ownLeft
+        if not separate then
+            set t = BlzGetUnitAbilityCooldownRemaining(c, eId)
+        endif
+        if t > 0 then
+            call BlzStartUnitAbilityCooldown(c, baseId, t)
+        else
+            call BlzEndUnitAbilityCooldown(c, baseId)
+        endif
+    endfunction
+
     private struct InoriE_KS
         private static integer array m_InoriE
         private static integer MUI_InoriE = -1
         unit c
+        integer lvE // E level at entry (cooldown rules)
+        real cdQ // base cooldowns remaining at entry
+        real cdW
+        real cdR
         real r2
         integer k
         integer k2
@@ -1206,9 +1252,11 @@ library InoriSpells uses GearSystems
                                 call UnitRemoveAbility(c, InoriEE_ID)
                                 call UnitAddAbility(c, InoriEE_ID)
                                 call SetUnitAbilityLevel(c, InoriEE_ID, IMinBJ(5, GetUnitAbilityLevel(c, InoriE_ID)))
+                                // 2026-11-11: once per readiness cycle only. Called every 0.1 s
+                                // (the whole time E was ready) it rebuilt the command card 10x/s:
+                                // FPS drops and stray native cooldown sprites (blue squares).
+                                call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriEE_ID, true)
                             endif
-                            // Reconcile an existing button too: add/remove and T2 can leave it hidden.
-                            call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriEE_ID, true)
                             call InoriE_SetBaseHidden(c, true)
                             if k3 == 0 and LoadInteger(hs, GetHandleId(c), SH_E_ACTIVATED) == 1 then
                                 set k3 = 1
@@ -1260,12 +1308,21 @@ library InoriSpells uses GearSystems
                                     call SetUnitAbilityLevel(c, InoriER_ID, GetUnitAbilityLevel(c, InoriR_ID))
                                   //  call BlzStartUnitAbilityCooldown(c,InoriER_ID,BlzGetUnitAbilityCooldownRemaining(c,InoriR_ID)-5)
                                 endif
+                                set lvE = GetUnitAbilityLevel(c, InoriE_ID)
+                                set cdQ = BlzGetUnitAbilityCooldownRemaining(c, InoriQ_ID)
+                                set cdW = BlzGetUnitAbilityCooldownRemaining(c, InoriW_ID)
+                                set cdR = BlzGetUnitAbilityCooldownRemaining(c, InoriR_ID)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriQ2_ID, true)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriW2_ID, true)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriER_ID, true)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriQ_ID, false)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriW_ID, false)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriR_ID, false)
+                                call InoriE_EnterCd(c, InoriQ2_ID, cdQ, lvE >= InoriE_ResetQLevel)
+                                call InoriE_EnterCd(c, InoriW2_ID, cdW, lvE >= InoriE_ResetWLevel)
+                                if GetUnitAbilityLevel(c, InoriER_ID) > 0 then
+                                    call InoriE_EnterCd(c, InoriER_ID, cdR, lvE >= InoriE_ResetRLevel)
+                                endif
                                 set rmax = InoriE_Duration
                             endif
                         endif
@@ -1280,6 +1337,11 @@ library InoriSpells uses GearSystems
                             endif
                             call WUI_HeroProgress(c, InoriE_ID, "Void Absorption", rmax - r, rmax, true)
                         else
+                            call InoriE_ExitCd(c, InoriQ_ID, InoriQ2_ID, cdQ - r, lvE >= InoriE_ResetQLevel)
+                            call InoriE_ExitCd(c, InoriW_ID, InoriW2_ID, cdW - r, lvE >= InoriE_ResetWLevel)
+                            if GetUnitAbilityLevel(c, InoriR_ID) > 0 and GetUnitAbilityLevel(c, InoriER_ID) > 0 then
+                                call InoriE_ExitCd(c, InoriR_ID, InoriER_ID, cdR - r, lvE >= InoriE_ResetRLevel)
+                            endif
                             set r = 0
                             set k4 = 0
                             set k3 = 0
@@ -1287,8 +1349,6 @@ library InoriSpells uses GearSystems
                                 call IssueImmediateOrder(c, "stop")
                             endif
                             call UnitRemoveAbility(c, InoriEE_ID)
-                            call BlzStartUnitAbilityCooldown(c,InoriQ_ID,BlzGetUnitAbilityCooldownRemaining(c,InoriQ2_ID))
-                            call BlzStartUnitAbilityCooldown(c,InoriW_ID,BlzGetUnitAbilityCooldownRemaining(c,InoriW2_ID))
                             call SetPlayerAbilityAvailable(Player(k2), InoriQ2_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriW2_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriER_ID, false)
@@ -1351,9 +1411,109 @@ library InoriSpells uses GearSystems
             set check3 = -1
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set r = 0
+            set lvE = 0
+            set cdQ = 0
+            set cdW = 0
+            set cdR = 0
             if MUI_InoriE == 0 then
                 call InoriTick10_On(0)
             endif
+        endmethod
+    endstruct
+
+    private struct InoriRSongFx
+        effect casterVoid
+        effect zone
+        effect stars
+        effect pillar
+        effect land
+        effect follow
+        effect body
+        effect rise
+        effect groundVoid
+        real opacity = 1
+        real intro = 1
+
+        static method create takes unit caster, real x, real y, real scale, boolean red returns thistype
+            local thistype this = thistype.allocate()
+            if red then
+                set casterVoid = AddSpecialEffectTarget(InoriR_RedVoid, caster, "origin")
+                set zone = EffectSpawn("war3mapImported\\wos_InoriRed_zone.mdl", x, y, 1, 1, 13*scale, 1)
+                set stars = EffectSpawn("war3mapImported\\wos_InoriRed_farseer.mdl", x, y, 1, 0.2, scale, 1)
+                set pillar = EffectSpawn("war3mapImported\\wos_InoriRed_yeqi1.mdl", x, y, 1, 0.2, scale, 800)
+                set land = EffectSpawn("war3mapImported\\wos_InoriRed_land.mdl", x, y, 1, 1, 2*scale, 1)
+                set follow = EffectSpawn("war3mapImported\\wos_InoriRed_yeqi3.mdl", GetUnitX(caster), GetUnitY(caster), 1, 1, 3*scale, 1)
+                set body = AddSpecialEffectTarget("war3mapImported\\wos_InoriRed_zdgq.mdl", caster, "origin")
+                set rise = AddSpecialEffectTarget("war3mapImported\\wos_InoriRed_rise.mdl", caster, "origin")
+                set groundVoid = EffectSpawn(InoriR_RedVoid, x + 155, y, 1, 1, 7.25*scale, 1)
+                call SetOpacity(0)
+            else
+                set casterVoid = AddSpecialEffectTarget(InoriR_BlueVoid, caster, "origin")
+                set zone = EffectSpawn("war3mapImported\\wos_inori_r.mdl", x, y, 1, 1, 1, 1)
+                set stars = EffectSpawn("war3mapImported\\wos_Hero_FarSeer2.mdl", x, y, 1, 0.2, scale, 1)
+                set pillar = EffectSpawnColor("war3mapImported\\wos_BD_YEQI1.mdl", x, y, 1, 0.2, scale, 800, 255, 255, 255, 145)
+                set land = EffectSpawn("war3mapImported\\wos_LightBlueLand.mdl", x, y, 1, 1, 2*scale, 1)
+                set follow = EffectSpawn("war3mapImported\\wos_BD_YEQI03.mdl", GetUnitX(caster), GetUnitY(caster), 1, 1, 3*scale, 1)
+                set body = AddSpecialEffectTarget("war3mapImported\\wos_zdgq.mdl", caster, "origin")
+                set rise = AddSpecialEffectTarget("war3mapImported\\wos_qicai-lizi-shangsheng2.mdl", caster, "origin")
+                set groundVoid = null
+                call AnimateIntro(0, scale)
+            endif
+            return this
+        endmethod
+
+        method AnimateIntro takes real elapsed, real scale returns nothing
+            set intro = RMinBJ(1, elapsed / 1.5)
+            call BlzSetSpecialEffectScale(zone, 1 + (13*scale - 1)*RMinBJ(1, elapsed))
+            call BlzSetSpecialEffectAlpha(zone, R2I(255*intro))
+            call BlzSetSpecialEffectAlpha(stars, R2I(255*intro))
+        endmethod
+
+        method SetOpacity takes real value returns nothing
+            local integer alpha = R2I(255*value)
+            set opacity = value
+            call BlzSetSpecialEffectAlpha(casterVoid, alpha)
+            call BlzSetSpecialEffectAlpha(zone, alpha)
+            call BlzSetSpecialEffectAlpha(stars, alpha)
+            call BlzSetSpecialEffectAlpha(pillar, R2I(145*value))
+            call BlzSetSpecialEffectAlpha(land, alpha)
+            call BlzSetSpecialEffectAlpha(follow, alpha)
+            call BlzSetSpecialEffectAlpha(body, alpha)
+            call BlzSetSpecialEffectAlpha(rise, alpha)
+            if groundVoid != null then
+                call BlzSetSpecialEffectAlpha(groundVoid, alpha)
+            endif
+        endmethod
+
+        method destroy takes nothing returns nothing
+            if opacity > 0 then
+                call ColorEffDummy3Alpha(zone, 0, 255, 255, 255, R2I(255*opacity*intro), 0.6)
+                call ColorEffDummy3Alpha(stars, 0, 255, 255, 255, R2I(255*opacity*intro), 0.6)
+                call ColorEffDummy3Alpha(pillar, 0, 255, 255, 255, R2I(145*opacity), 0.6)
+                call ColorEffDummy3Alpha(follow, 0, 255, 255, 255, R2I(255*opacity), 0.6)
+            else
+                call DestroyEffect(zone)
+                call DestroyEffect(stars)
+                call DestroyEffect(pillar)
+                call DestroyEffect(follow)
+            endif
+            call DestroyEffect(casterVoid)
+            call DestroyEffect(body)
+            call DestroyEffect(rise)
+            call DestroyEffect(land)
+            if groundVoid != null then
+                call DestroyEffect(groundVoid)
+            endif
+            set casterVoid = null
+            set zone = null
+            set stars = null
+            set pillar = null
+            set land = null
+            set follow = null
+            set body = null
+            set rise = null
+            set groundVoid = null
+            call deallocate()
         endmethod
     endstruct
 
@@ -1380,39 +1540,67 @@ library InoriSpells uses GearSystems
         boolean b
         real r
         effect e
-        effect e2
-        effect e3
-        effect e4
-        effect e5
-        effect e6
-        effect e7
-        effect e8
-        effect e9
+        InoriRSongFx blueFx
+        InoriRSongFx redFx
         real a
         real rmax
+        // Lv. 35 buff phase: (re)applies +InoriR_DmgBuffBonus% damage dealt for InoriR_DmgBuffDuration sec, no heal.
+        static method ApplyDmgBuff takes unit caster, real cx, real cy, real radius returns nothing
+            local group grp = CreateGroup()
+            local player owner = GetOwningPlayer(caster)
+            local unit u
+            call GroupEnumUnitsInRange(grp, cx, cy, radius, NoDecor_Cond)
+            loop
+                set u = FirstOfGroup(grp)
+                exitwhen u == null
+                call GroupRemoveUnit(grp, u)
+                if IsUnitAlly(u, owner) and GetWidgetLife(u) > 0.405 and not IsUnitType(u, UNIT_TYPE_DEAD) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
+                    if GetUnitAbilityLevel(u, InoriR_DmgBuff_ID) == 0 then // flash only on the first application
+                        call DestroyEffect(AddSpecialEffectTarget(InoriR_RedCleanse, u, "chest"))
+                    endif
+                    call BuffUnit01(caster, u, InoriR_DmgBuffAbi_ID, "innerfire", 1)
+                endif
+            endloop
+            call DestroyGroup(grp)
+            set grp = null
+            set owner = null
+        endmethod
         static method Loop_InoriR takes nothing returns nothing
             local integer this
             local integer i = 0
             local real hh
+            local real fade
             loop
                 exitwhen i > MUI_InoriR
                 set this = m_InoriR[i]
                 call WUI_HeroProgress(c, InoriR_ID, "Song of Salvation", rmax - r, rmax, true)
-                if check == 1 then
-                    set b = r < rmax and SpellBoolCaster(c)
-                else
-                   // if check2 == 0 then 
-                   // set b = GetUnitCurrentOrder(c) == OrderId("AImove")
-                   // else
-                    set b = r < rmax and SpellBoolCaster(c)
-                   // endif
-                endif
+                set b = r < rmax and SpellBoolCaster(c) and (check != 0 or SR3(c, x, y) <= aoe)
                 if b then
-                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RMinBJ(rmax, I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0)
                     if check == 0 then
-                        call BlzSetSpecialEffectPosition(e5, GetUnitX(c), GetUnitY(c), GetUnitFlyHeight(c))
-                        if r == InoriR_AntiDebuffStartTime and check2 == 0 then
-                            set e8 = EffectSpawn("war3mapImported\\wos_Void04.mdl", x + 155 * Cos(0), y + 155 * Sin(0), 1, 1, 7.25*scale, 1)
+                        if blueFx != 0 then
+                            call BlzSetSpecialEffectPosition(blueFx.follow, GetUnitX(c), GetUnitY(c), GetUnitFlyHeight(c))
+                            if r <= 1.5 then
+                                call blueFx.AnimateIntro(r, scale)
+                            endif
+                            if r == InoriR_AntiDebuffStartTime then
+                                set blueFx.groundVoid = EffectSpawn(InoriR_BlueVoid, x + 155, y, 1, 1, 7.25*scale, 1)
+                            endif
+                            if rmax > InoriR_HealTime and r >= InoriR_HealTime - InoriR_ColorFadeTime then
+                                if redFx == 0 then
+                                    set redFx = InoriRSongFx.create(c, x, y, scale, true)
+                                endif
+                                set fade = RMinBJ(1, (r - (InoriR_HealTime - InoriR_ColorFadeTime)) / InoriR_ColorFadeTime)
+                                call blueFx.SetOpacity(1 - fade)
+                                call redFx.SetOpacity(fade)
+                                if fade >= 1 then
+                                    call blueFx.destroy()
+                                    set blueFx = 0
+                                endif
+                            endif
+                        endif
+                        if redFx != 0 then
+                            call BlzSetSpecialEffectPosition(redFx.follow, GetUnitX(c), GetUnitY(c), GetUnitFlyHeight(c))
                         endif
                         if r3 > 0.21 then
                             set r3 = 0
@@ -1420,50 +1608,40 @@ library InoriSpells uses GearSystems
                         else
                             set r3 = r3 + 0.03
                         endif
-                        if check2 == 0 then 
-                        if r>rmax  and GetHeroLevel(c)>=35 then 
-                        set r = 99999
-                        set rmax = 12
-                        set check2 = 1     
-                      //  call IssueImmediateOrder(c,"stop")
-                      //  call MyFrame(c,rmax,"BTNHero_Inori_R",false,0)
-                        endif
-                        else
-                        
-                        endif
-                        if SR5(e2,GetUnitX(c),GetUnitY(c))>aoe then 
-                        set r = 99999
-                        endif
-                      //  call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), GetUnitFlyHeight(c))
-                      //  call BlzSetSpecialEffectPosition(e2, GetUnitX(c), GetUnitY(c), 13)
-                      //  call BlzSetSpecialEffectPosition(e3, GetUnitX(c), GetUnitY(c), 55)
-                      //  call BlzSetSpecialEffectPosition(e4, GetUnitX(c), GetUnitY(c), 145)
-                      //  call BlzSetSpecialEffectPosition(e5, GetUnitX(c), GetUnitY(c), 1)
-                       // call BlzSetSpecialEffectPosition(e6, GetUnitX(c), GetUnitY(c), 1)
-                      //  call BlzSetSpecialEffectPosition(e7, GetUnitX(c), GetUnitY(c), 1)
-                      //  call BlzSetSpecialEffectPosition(e8, GetUnitX(c), GetUnitY(c), 1)
-                      //  call BlzSetSpecialEffectPosition(e9, GetUnitX(c), GetUnitY(c), 1)
-                      if    LoadInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR)== 1  then 
-                       call GroupEnumUnitsInRange(g, x, y, aoe, null)
+                        if LoadInteger(hs, GetHandleId(c), SH_INORI_R_CLEAR) == 1 then
+                            call GroupEnumUnitsInRange(g, x, y, aoe, null)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitAlly(u, GetOwningPlayer(c)) then
-                                call DebuffClear(u)
-                                    call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_FantasyBattle (1644).mdx", u, "chest"))
+                                    call DebuffClear(u)
+                                    if r >= InoriR_HealTime and redFx != 0 then
+                                        call DestroyEffect(AddSpecialEffectTarget(InoriR_RedCleanse, u, "chest"))
+                                    else
+                                        call DestroyEffect(AddSpecialEffectTarget(InoriR_BlueCleanse, u, "chest"))
+                                    endif
                                 endif
                                 call GroupRemoveUnit(g, u)
                             endloop
-                            call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,0)
-                      endif
-                        if r2 > 0.94 then
+                            call SaveInteger(hs, GetHandleId(c), SH_INORI_R_CLEAR, 0)
+                        endif
+                        // Lv. 35: after the heal time the zone stays and pulses the damage buff instead of healing
+                        if check2 == 0 and rmax > InoriR_HealTime and r >= InoriR_HealTime then
+                            set check2 = 1
+                            set r2 = 0
+                            call thistype.ApplyDmgBuff(c, x, y, aoe)
+                        endif
+                        if check2 == 1 then
+                            if r2 > InoriR_DmgBuffPulse - 0.04 then
+                                set r2 = 0
+                                call VisionTimed(GetOwningPlayer(c), x, y, aoe + 300, 1.25)
+                                call thistype.ApplyDmgBuff(c, x, y, aoe)
+                            else
+                                set r2 = r2 + 0.03
+                            endif
+                        elseif r < InoriR_HealTime and r2 > 0.94 then
                             set r2 = 0
                             set hh = dmg
-                            if check2 == 1 then 
-                            set hh = dmg * 0.5
-                            set x = GetUnitX(c)
-                            set y = GetUnitY(c)
-                            endif
                             call VisionTimed(GetOwningPlayer(c), x, y, aoe + 300, 1.25)
                             call GroupEnumUnitsInRange(g, x, y, aoe, null)
                             loop
@@ -1525,34 +1703,24 @@ library InoriSpells uses GearSystems
                         endif
                     endif
                 else
-                    call DestroyEffect(e)
                     if check == 0 then
                         // Cooldown is already held by OkarunEggCd during the song (keeps the egg reduction).
                         call StopSound(gg_snd_Hero_Inori_R, false, false)
-                        call DestroyEffect(e6)
-                        call DestroyEffect(e7)
-                        call DestroyEffect(e9)
-                        call ColorEffDummy3(e2, 0, 255, 255, 255, 0.6)
-                        call ColorEffDummy3(e3, 0, 255, 255, 255, 0.6)
-                        call ColorEffDummy3(e4, 0, 255, 255, 255, 0.6)
-                        call ColorEffDummy3(e5, 0, 255, 255, 255, 0.6)
-                        if r >= InoriR_AntiDebuffStartTime or check2 == 1 then
-                            call DestroyEffect(e8)
+                        if blueFx != 0 then
+                            call blueFx.destroy()
+                            set blueFx = 0
+                        endif
+                        if redFx != 0 then
+                            call redFx.destroy()
+                            set redFx = 0
                         endif
                     else
+                        call DestroyEffect(e)
                         call StopSpellUnit(c)
                     endif
                     call DestroyGroup(g)
                     set c = null
                     set e = null
-                    set e2 = null
-                    set e3 = null
-                    set e4 = null
-                    set e5 = null
-                    set e6 = null
-                    set e7 = null
-                    set e8 = null
-                    set e9 = null
                     set g = null
                     set u = null
                     set m_InoriR[i] = m_InoriR[ MUI_InoriR]
@@ -1579,6 +1747,8 @@ library InoriSpells uses GearSystems
             set g = CreateGroup()
             set check2 = 0
             set check = 0
+            set blueFx = 0
+            set redFx = 0
             set a = GAngle2(c, x, y) // Angle Between points
             if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 1 then
                 set rmax = 1.2
@@ -1602,27 +1772,16 @@ library InoriSpells uses GearSystems
                 set aoe = aoe + InoriR_HealAoeAdd
                 endif
                 set scale = aoe/1250
-                set rmax = 9.61
-                if GetHeroLevel(c)>= 35 then 
-                set rmax = rmax + 12
+                set rmax = InoriR_HealTime
+                if GetHeroLevel(c) >= 35 then
+                    set rmax = rmax + InoriR_DmgBuffPhase // the zone stays, pulsing the damage buff (no heal)
                 endif
                 call SetUnitFacing(c, a * bj_RADTODEG)
                 call SetUnitTimeScale(c, 1.25)
                 call StartSound(gg_snd_Hero_Inori_R)
                 call SetUnitTimeScale(c, 2.25)
                 call SetUnitAnimationByIndex(c, 7)
-                set e = AddSpecialEffectTarget("war3mapImported\\wos_Void04.mdl", c, "origin")
-                set e2 = EffectSpawnScale("war3mapImported\\wos_inori_r.mdl", x, y, 1, 1, 1*scale, 1, 1, 1, 13*scale)
-                set e3 = EffectSpawnColor("war3mapImported\\wos_Hero_FarSeer2.mdl", x, y, 1, 0.2, 1*scale, 1, 255, 255, 255, 55)
-                set e4 = EffectSpawnColor("war3mapImported\\wos_BD_YEQI1.mdl", x, y, 1, 0.2, 1*scale, 800, 255, 255, 255, 145)
-                set e9 = EffectSpawn("war3mapImported\\wos_LightBlueLand.mdl", x, y, 1, 1, 2*scale, 1)
-                set e5 = EffectSpawn("war3mapImported\\wos_BD_YEQI03.mdl", GetUnitX(c), GetUnitY(c), 1, 1, 3*scale, 1)
-                set e6 = AddSpecialEffectTarget("war3mapImported\\wos_zdgq.mdl", c, "origin")
-                set e7 = AddSpecialEffectTarget("war3mapImported\\wos_qicai-lizi-shangsheng2.mdl", c, "origin")
-                call BlzSetSpecialEffectAlpha(e2, 0)
-                call BlzSetSpecialEffectAlpha(e3, 0)
-                call ColorEffDummy4(e2, 0, 255, 255, 255, 1.5)
-                call ColorEffDummy4(e3, 0, 255, 255, 255, 1.5)
+                set blueFx = InoriRSongFx.create(c, x, y, scale, false)
             endif
             set r5 = 1.5
             if MUI_InoriR == 0 then

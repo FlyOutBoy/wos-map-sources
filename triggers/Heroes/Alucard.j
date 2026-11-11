@@ -740,7 +740,9 @@ library AlucardSpells uses GearSystems
                         call BlzSetSpecialEffectYaw(e, a)
                         call BlzSetSpecialEffectYaw(e2, a)                        
                         if r6 >= 0.0 then
-                        call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun1.mdl",  GetEffX(e) + 155 * Cos(a),  GetEffY(e) + 155 * Sin(a), a * bj_RADTODEG, 1.15, 0.75, 135,255,125,125,255))
+                        if ModuloInteger(R2I(r / 0.03 + 0.5), 3) == 0 then // Q2 afterimage every 0.09 s; hits still every tick
+                            call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun1.mdl",  GetEffX(e) + 155 * Cos(a),  GetEffY(e) + 155 * Sin(a), a * bj_RADTODEG, 1.15, 0.75, 135,255,125,125,255))
+                        endif
                             set r6 = 0
                             call GroupClear( g )
                             call GroupEnumUnitsInRange( g , GetEffX(e) , GetEffY(e) , aoe , NoDecor_Cond)

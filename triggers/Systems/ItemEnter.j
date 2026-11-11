@@ -107,12 +107,12 @@ local real r = 0
 local integer owner = GetItemUserData(ti)
 local integer p = i+1
 local integer check = 0
-// Scroll of Mastery: permanent +2 Str/Agi/Int, the scroll itself is consumed.
+// Scroll of Mastery: permanent +3 Str/Agi/Int, the scroll itself is consumed.
 // Only the player's own hero: the shop price probe (pricesell) must keep the scroll to read its value.
 if id == 'I04D' and i < 10 and c == Hero[i] then
-    call SetHeroStr(c, GetHeroStr(c, false) + 2, true)
-    call SetHeroAgi(c, GetHeroAgi(c, false) + 2, true)
-    call SetHeroInt(c, GetHeroInt(c, false) + 2, true)
+    call SetHeroStr(c, GetHeroStr(c, false) + 3, true)
+    call SetHeroAgi(c, GetHeroAgi(c, false) + 3, true)
+    call SetHeroInt(c, GetHeroInt(c, false) + 3, true)
     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Items\\AIam\\AIamTarget.mdl", c, "origin"))
     call RemoveItem(ti)
     set c = null

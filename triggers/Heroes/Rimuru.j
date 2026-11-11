@@ -2756,22 +2756,22 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                     call SetUnitTimeScale(c, 1)
                     set x = GetUnitX(c) + 180 * Cos(a)
                     set y = GetUnitY(c) + 180 * Sin(a)
-                    set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
+                    set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2_lite.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
                     call AnimDummyEff(e3, 0.65, 1)
                     call MyRemoveEff(e3, 0.7)
                     set e3 = null
-                    set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
+                    set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2_lite.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
                     call AnimDummyEff(e3, 0.65, 1)
                     call MyRemoveEff(e3, 0.7)
                     set e3 = null
                     call MakeSound("war3mapimported\\Hero_Rimuru3_E2 1")
                 endif
                 if r == r_prepare + 0.21 then
-                    set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
+                    set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2_lite.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
                     call AnimDummyEff(e3, 0.65, 1)
                     call MyRemoveEff(e3, 0.7)
                     set e3 = null
-                    set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
+                    set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2_lite.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
                     call AnimDummyEff(e3, 0.65, 1)
                     call MyRemoveEff(e3, 0.7)
                     set e3 = null

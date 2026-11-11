@@ -31,14 +31,16 @@ SOURCES = [
 
 
 def collect():
-    files = []
+    # Later sources override earlier ones for the same Warcraft import path.
+    files = {}
     for base, folder in SOURCES:
         root = base / folder
         if root.is_dir():
             for path in sorted(root.rglob('*')):
                 if path.is_file() and path.suffix.lower() in ('.blp', '.mdx', '.mdl', '.tga', '.mp3'):
-                    files.append((path, path.relative_to(base).as_posix()))
-    return files
+                    relative = path.relative_to(base).as_posix()
+                    files[relative.casefold()] = (path, relative)
+    return list(files.values())
 
 
 def install(map_dir):

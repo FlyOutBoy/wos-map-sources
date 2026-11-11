@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "0a6e8d01cbb707512da8ca3bbbd2a11a43a3ae80de336751e539f91548e4370b",
+  "source_sha256": "e635854936488a868a072f73bdb06472d656d9f5e05a400a5c8f0a8916de4018",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -734,12 +734,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9631",
-            "_original_value": "TRIGSTR_9631",
+            "value": "TRIGSTR_6710",
+            "_original_value": "TRIGSTR_6710",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85NjMx",
+            "_raw_base64": "VFJJR1NUUl82NzEw",
             "resolved_value": "Takes 30 magic damage per second for 4 sec.",
-            "_original_resolved_value": "take damage every second"
+            "_original_resolved_value": "Takes 30 magic damage per second for 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -20202,7 +20202,12 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "Fire Shield"
+            "value": "TRIGSTR_6740",
+            "_original_value": "TRIGSTR_6740",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82NzQw",
+            "resolved_value": "Fire Shield",
+            "_original_resolved_value": "Fire Shield"
           },
           "sanity_check": {
             "text": "",
@@ -20217,7 +20222,94 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Absorbs damage while this buff lasts."
+            "value": "TRIGSTR_6745",
+            "_original_value": "TRIGSTR_6745",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82NzQ1",
+            "resolved_value": "Absorbs damage while this buff lasts.",
+            "_original_resolved_value": "Absorbs damage while this buff lasts."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX01lcmFNZXJhRXZvbHZlZC5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B079",
+        "hex": "42303739"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "Song of Salvation: Resolve"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "Deals 15% more damage."
           },
           "sanity_check": {
             "text": "",
@@ -20247,7 +20339,7 @@
           "field_name": "Icon / Иконка",
           "type": "string",
           "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp"
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp"
           },
           "sanity_check": {
             "text": "",

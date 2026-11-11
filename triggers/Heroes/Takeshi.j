@@ -2530,7 +2530,7 @@ library TakeshiSpells uses GearSystems
                     call BlzSetSpecialEffectPosition(e3, GetUnitX(c) + 345 * Cos(a), GetUnitY(c) + 345 * Sin(a), BlzGetLocalSpecialEffectZ(e3))
                     call BlzSetSpecialEffectYaw(e2, a)
                     call BlzSetSpecialEffectYaw(e3, a)
-                    if r2 > 0.03 then
+                    if r2 > 0.1 then // GR water dash every 0.12 s (was 0.06)
                         set r2 = 0
                         set rkek = 0.3
                         call EffectSpawn2("war3mapImported\\wos_water dash.mdl", GetUnitX(c) - 165 * Cos(a), GetUnitY(c) - 165 * Sin(a), a * bj_RADTODEG, 1, 2, 0, rkek)

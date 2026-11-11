@@ -543,10 +543,10 @@ library StarrkSpells uses GearSystems
                             else
                                 set r3 = r3 + 0.03
                             endif
-                            if r6 > 0.03 then
+                            if r6 > 0.13 then // Q ground hit every 0.15 s (was 0.06)
                                 set r6 = 0
                                 
-                                call DestroyEffect(EffectSpawn("war3mapimported\\wos_blue--zhendi31_3.mdl", x, y, GetRandomReal(0, 359), 0.85, 2.5, 1))
+                                call DestroyEffect(EffectSpawn("war3mapimported\\wos_blue--zhendi31_3_lite.mdl", x, y, GetRandomReal(0, 359), 0.85, 2.5, 1))
                                 call DecorRemove(c, x + r2 * Cos(a), y + r2 * Sin(a), aoe * StarrkEQ_AoeMultiplier, 50)
                                 call VisionTimed(GetOwningPlayer(c), x + r2 * Cos(a), y + r2 * Sin(a), aoe * StarrkEQ_AoeMultiplier + 400, 2)
                             else

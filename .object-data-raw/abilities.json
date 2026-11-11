@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3a",
-  "source_sha256": "7ae9e64734402a0338796e8f353734483a1416cc0820d9e9d19cf7a8bf17f23e",
+  "source_sha256": "3ed4a7ccecbfb9aa3fea031ec90877c0f510c0bdecbe0eface9e60c95850a0f9",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -37858,7 +37858,7 @@
           "level": 1,
           "data_pointer": 2,
           "data": {
-            "value": 20
+            "value": 19
           },
           "sanity_check": {
             "text": "",
@@ -37875,7 +37875,7 @@
           "level": 1,
           "data_pointer": 3,
           "data": {
-            "value": 20
+            "value": 19
           },
           "sanity_check": {
             "text": "",
@@ -37892,7 +37892,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 20
+            "value": 19
           },
           "sanity_check": {
             "text": "",
@@ -175505,7 +175505,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -175654,7 +175654,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -176416,7 +176416,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -176585,7 +176585,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -184790,8 +184790,8 @@
           "data_pointer": 0,
           "data": {
             "value": 35.0,
-            "_original_value": 40.0,
-            "_raw_hex": "00002042"
+            "_original_value": 35.0,
+            "_raw_hex": "00000C42"
           },
           "sanity_check": {
             "text": "",
@@ -247022,7 +247022,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -247210,7 +247210,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -247933,7 +247933,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -248102,7 +248102,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -248825,7 +248825,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 25.0,
+            "value": 30.0,
             "_original_value": 25.0,
             "_raw_hex": "0000C841"
           },
@@ -249013,7 +249013,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "A09N",
@@ -375728,7 +375728,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -375916,7 +375916,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -377511,8 +377511,8 @@
           "data_pointer": 0,
           "data": {
             "value": 10.0,
-            "_original_value": 8.0,
-            "_raw_hex": "00000041"
+            "_original_value": 10.0,
+            "_raw_hex": "00002041"
           },
           "sanity_check": {
             "text": "",
@@ -441408,7 +441408,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 40
+            "value": 30
           },
           "sanity_check": {
             "text": "",
@@ -448787,7 +448787,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 80
+            "value": 60
           },
           "sanity_check": {
             "text": "",
@@ -448888,7 +448888,7 @@
           "level": 1,
           "data_pointer": 2,
           "data": {
-            "value": 20
+            "value": 19
           },
           "sanity_check": {
             "text": "",
@@ -448905,7 +448905,7 @@
           "level": 1,
           "data_pointer": 3,
           "data": {
-            "value": 20
+            "value": 19
           },
           "sanity_check": {
             "text": "",
@@ -448922,7 +448922,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 20
+            "value": 19
           },
           "sanity_check": {
             "text": "",
@@ -455867,7 +455867,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 40
+            "value": 30
           },
           "sanity_check": {
             "text": "",
@@ -455884,7 +455884,7 @@
           "level": 2,
           "data_pointer": 1,
           "data": {
-            "value": 40
+            "value": 30
           },
           "sanity_check": {
             "text": "",
@@ -455901,7 +455901,7 @@
           "level": 3,
           "data_pointer": 1,
           "data": {
-            "value": 40
+            "value": 30
           },
           "sanity_check": {
             "text": "",
@@ -455918,7 +455918,7 @@
           "level": 4,
           "data_pointer": 1,
           "data": {
-            "value": 40
+            "value": 30
           },
           "sanity_check": {
             "text": "",
@@ -455935,7 +455935,7 @@
           "level": 5,
           "data_pointer": 1,
           "data": {
-            "value": 40
+            "value": 30
           },
           "sanity_check": {
             "text": "",
@@ -455968,7 +455968,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 60
+            "value": 45
           },
           "sanity_check": {
             "text": "",
@@ -455985,7 +455985,7 @@
           "level": 2,
           "data_pointer": 1,
           "data": {
-            "value": 60
+            "value": 45
           },
           "sanity_check": {
             "text": "",
@@ -456002,7 +456002,7 @@
           "level": 3,
           "data_pointer": 1,
           "data": {
-            "value": 60
+            "value": 45
           },
           "sanity_check": {
             "text": "",
@@ -456019,7 +456019,7 @@
           "level": 4,
           "data_pointer": 1,
           "data": {
-            "value": 60
+            "value": 45
           },
           "sanity_check": {
             "text": "",
@@ -456036,7 +456036,7 @@
           "level": 5,
           "data_pointer": 1,
           "data": {
-            "value": 60
+            "value": 45
           },
           "sanity_check": {
             "text": "",
@@ -457446,7 +457446,7 @@
           "level": 1,
           "data_pointer": 3,
           "data": {
-            "value": 20
+            "value": 30
           },
           "sanity_check": {
             "text": "",
@@ -479300,7 +479300,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 45
+            "value": 35
           },
           "sanity_check": {
             "text": "",
@@ -479317,7 +479317,7 @@
           "level": 2,
           "data_pointer": 1,
           "data": {
-            "value": 45
+            "value": 35
           },
           "sanity_check": {
             "text": "",
@@ -479334,7 +479334,7 @@
           "level": 3,
           "data_pointer": 1,
           "data": {
-            "value": 45
+            "value": 35
           },
           "sanity_check": {
             "text": "",
@@ -479351,7 +479351,7 @@
           "level": 4,
           "data_pointer": 1,
           "data": {
-            "value": 45
+            "value": 35
           },
           "sanity_check": {
             "text": "",
@@ -479368,7 +479368,7 @@
           "level": 5,
           "data_pointer": 1,
           "data": {
-            "value": 45
+            "value": 35
           },
           "sanity_check": {
             "text": "",
@@ -485504,7 +485504,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -485673,7 +485673,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -486396,7 +486396,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 15.0,
+            "value": 20.0,
             "_original_value": 15.0,
             "_raw_hex": "00007041"
           },
@@ -486565,7 +486565,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -487288,7 +487288,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -487476,7 +487476,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -488199,7 +488199,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -488368,7 +488368,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -489091,7 +489091,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -489279,7 +489279,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -490002,7 +490002,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -490171,7 +490171,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -490894,7 +490894,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -491082,7 +491082,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -491805,7 +491805,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -491993,7 +491993,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -492716,7 +492716,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -492885,7 +492885,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -493608,7 +493608,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 16.0,
+            "value": 21.0,
             "_original_value": 16.0,
             "_raw_hex": "00008041"
           },
@@ -493777,7 +493777,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -494500,7 +494500,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -494688,7 +494688,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -495411,7 +495411,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -495580,7 +495580,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150
+            "value": 100
           },
           "sanity_check": {
             "text": "",
@@ -496303,7 +496303,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
+            "value": 25.0,
             "_original_value": 20.0,
             "_raw_hex": "0000A041"
           },
@@ -496491,7 +496491,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 175
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -513866,9 +513866,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 0.5,
-            "_original_value": 0.5,
-            "_raw_hex": "0000003F"
+            "value": 0.35
           },
           "sanity_check": {
             "text": "",
@@ -515371,7 +515369,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 5.0
+            "value": 5.0,
+            "_original_value": 5.0,
+            "_raw_hex": "0000A040"
           },
           "sanity_check": {
             "text": "",
@@ -515388,7 +515388,306 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 5.0
+            "value": 5.0,
+            "_original_value": 5.0,
+            "_raw_hex": "0000A040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 99999.0,
+            "_original_value": 99999.0,
+            "_raw_hex": "804FC347"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Inf2",
+            "hex": "496E6632"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Inf1",
+            "hex": "496E6631"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Inf3",
+            "hex": "496E6633"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "areq",
+            "hex": "61726571"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "apri",
+            "hex": "61707269"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arqa",
+            "hex": "61727161"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abuf",
+            "hex": "61627566"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "B078",
+            "_original_value": "B078",
+            "_encoding": "utf-8",
+            "_raw_base64": "QjA3OA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aorf",
+            "hex": "616F7266"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aoro",
+            "hex": "616F726F"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Mera Mera Evolved shield (buff)"
+    },
+    {
+      "old_id": {
+        "text": "Ainf",
+        "hex": "41696E66"
+      },
+      "new_id": {
+        "text": "A16D",
+        "hex": "41313644"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ahdu",
+            "hex": "61686475"
+          },
+          "field_name": "Hero duration / Длительность на героях",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 2.0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "adur",
+            "hex": "61647572"
+          },
+          "field_name": "Duration / Длительность",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 2.0
           },
           "sanity_check": {
             "text": "",
@@ -515566,7 +515865,7 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "B078"
+            "value": "B079"
           },
           "sanity_check": {
             "text": "",
@@ -515608,7 +515907,408 @@
           }
         }
       ],
-      "display_name": "Tekkai (buff)"
+      "display_name": "Mera Mera Evolved shield (buff)"
+    },
+    {
+      "old_id": {
+        "text": "AIlf",
+        "hex": "41496C66"
+      },
+      "new_id": {
+        "text": "A16E",
+        "hex": "41313645"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Ilif",
+            "hex": "496C6966"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 350
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "hp +500"
+    },
+    {
+      "old_id": {
+        "text": "AIlf",
+        "hex": "41496C66"
+      },
+      "new_id": {
+        "text": "A16F",
+        "hex": "41313646"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Ilif",
+            "hex": "496C6966"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 450
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "hp +500"
+    },
+    {
+      "old_id": {
+        "text": "AIx1",
+        "hex": "41497831"
+      },
+      "new_id": {
+        "text": "A170",
+        "hex": "41313730"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Iint",
+            "hex": "49696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 17
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Istr",
+            "hex": "49737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 17
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Iagi",
+            "hex": "49616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 17
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero ALST + 20"
+    },
+    {
+      "old_id": {
+        "text": "AIx1",
+        "hex": "41497831"
+      },
+      "new_id": {
+        "text": "A171",
+        "hex": "41313731"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Iint",
+            "hex": "49696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 35
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Istr",
+            "hex": "49737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 35
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Iagi",
+            "hex": "49616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 35
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero ALST + 20"
+    },
+    {
+      "old_id": {
+        "text": "AIx1",
+        "hex": "41497831"
+      },
+      "new_id": {
+        "text": "A172",
+        "hex": "41313732"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Iint",
+            "hex": "49696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 12
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Istr",
+            "hex": "49737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 12
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Iagi",
+            "hex": "49616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 12
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero ALST + 15"
+    },
+    {
+      "old_id": {
+        "text": "AIx1",
+        "hex": "41497831"
+      },
+      "new_id": {
+        "text": "A173",
+        "hex": "41313733"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Iint",
+            "hex": "49696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 16
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Istr",
+            "hex": "49737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 16
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Iagi",
+            "hex": "49616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 16
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero ALST + 20"
+    },
+    {
+      "old_id": {
+        "text": "AIx1",
+        "hex": "41497831"
+      },
+      "new_id": {
+        "text": "A174",
+        "hex": "41313734"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Iint",
+            "hex": "49696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 13
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Istr",
+            "hex": "49737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 13
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Iagi",
+            "hex": "49616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 13
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero ALST + 20"
     }
   ]
 }

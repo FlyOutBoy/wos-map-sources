@@ -1468,7 +1468,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                 set x2 = x + (aoe - 325.0) * Cos((360.0 / I2R(k3)) * k * bj_DEGTORAD)
                 set y2 = y + (aoe - 325.0) * Sin((360.0 / I2R(k3)) * k * bj_DEGTORAD)
 
-                call MyRemoveEff(EffectSpawn3("war3mapImported\\wos_az_chongci-red%2E.mdl", x2, y2, ((360.0 / I2R(k3)) * k), 2.0, 2.5, 30.0, -270.0), rmax)
+                // 2026-11-11: removed the red aura under every soldier (wos_az_chongci-red, 15 x 7 emitters for the whole T)
                 call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5.mdl", x2, y2, ((360.0 / I2R(k3)) * k), 2.0, 1.5, 150.0, -90.0))
                 set ee[k] = EffectSpawn("war3mapimported\\wos_PatriotSoldier01.mdx", x1, y1, ((360.0 / I2R(k3)) * k) + 180.0, 0.5, 1.1, 0.0)
                 call ColorEffDummy4(ee[k], 0.0, 255, 255, 255, 1.02)

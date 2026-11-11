@@ -465,7 +465,12 @@ set pct = pct + MeraMeraEvolved_MaxHpDamageBonus
 set src = MeraMeraEvolved_ID
 endif
 set dmg = MeraMera_Damage + (GetUnitState(hero,UNIT_STATE_MAX_LIFE)*(pct/100))
-if dmg> MeraMera_MaxDamage then 
+if src == MeraMeraEvolved_ID then
+set dmg = dmg + MeraMeraEvolved_DamageBonus
+if dmg > MeraMera_MaxDamage + MeraMeraEvolved_MaxDamageBonus then
+set dmg = MeraMera_MaxDamage + MeraMeraEvolved_MaxDamageBonus
+endif
+elseif dmg> MeraMera_MaxDamage then 
 set dmg = MeraMera_MaxDamage
 endif
 if MeraMeraDummy[id] == null then 

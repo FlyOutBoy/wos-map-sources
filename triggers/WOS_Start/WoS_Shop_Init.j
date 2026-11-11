@@ -81,7 +81,7 @@ function ShopCatalogue_Define takes nothing returns nothing
     // ---------------- Base --------------------------------------------------------
     call ShopCat(SHOP_TAB_BASE,          'I00C') // Seal +5
     call ShopCat(SHOP_TAB_BASE,          'I00D') // Urahara Hat +2
-    call ShopCat(SHOP_TAB_BASE,          'I04D') // Scroll of Mastery (+2 all stats, round 15+)
+    call ShopCat(SHOP_TAB_BASE,          'I04D') // Scroll of Mastery (+3 all stats, round 15+)
     call ShopCat(SHOP_TAB_BASE,          'I02Z') // Tome of Strength +5
     call ShopCat(SHOP_TAB_BASE,          'I032') // Tome of Agility +5
     call ShopCat(SHOP_TAB_BASE,          'I02U') // Tome of Intelligence +5
@@ -1915,9 +1915,9 @@ endfunction
 
 function ShopDeliverPurchase takes unit u, integer id returns nothing
     if ShopInstantStatPurchase(u, id) then
-        call SetHeroStr(u, GetHeroStr(u, false) + 2, true)
-        call SetHeroAgi(u, GetHeroAgi(u, false) + 2, true)
-        call SetHeroInt(u, GetHeroInt(u, false) + 2, true)
+        call SetHeroStr(u, GetHeroStr(u, false) + 3, true)
+        call SetHeroAgi(u, GetHeroAgi(u, false) + 3, true)
+        call SetHeroInt(u, GetHeroInt(u, false) + 3, true)
         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Items\\AIam\\AIamTarget.mdl", u, "origin"))
     else
         call UnitAddItemById(u, id)

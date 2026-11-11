@@ -1609,6 +1609,14 @@
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp",
     "target_art": ""
   },
+  "B079": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Song of Salvation: Resolve",
+    "extended_tooltip": "Deals 15% more damage.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp",
+    "target_art": ""
+  },
   "B0F0": {
     "name": "Frostnova E - Frozen Shelter",
     "base_id": "Binf",

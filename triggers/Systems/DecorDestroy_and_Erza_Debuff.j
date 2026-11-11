@@ -687,7 +687,7 @@ library AAADest uses GearSystems, EnvironmentRoundRules
             set e = AddSpecialEffectTarget("war3mapImported\\wos_tx_huoyan.mdl", td, "origin")
 
         elseif NewId == 10 then
-            set dmg = GetAttack(c) * Murasame_AttackDamage
+            set dmg = GetAttack(c) * Murasame_AttackDamage * ItemOnHitFactor(c)
             set e = AddSpecialEffectTarget("war3mapImported\\wos_blood impact.mdl", td, "origin")
             set id = 'B03C'
             call SaveInteger(hs, GetHandleId(td), SH_MURASAME_ACTIVE, 1)
@@ -934,12 +934,12 @@ endif
 set d = null
 endfunction
 // Murasame bleed: the first hit bleeds for Murasame_Duration ticks; every further hit
-// adds its tick damage to the next tick and shortens the bleed by one tick.
+// adds Murasame_StackFactor of a tick to the next tick (2026-11-11: no longer shortens the bleed, so fast
+// attackers cannot restart a fresh full bleed every ~2 sec).
 function Murasame_Start takes unit c, unit td returns nothing
 local integer h = GetHandleId(td)
 if LoadInteger(hs, h, SH_MURASAME_ACTIVE) == 1 and LoadReal(hs, h, SH_MURASAME_LEFT) > 0 then
-    call SaveReal(hs, h, SH_MURASAME_BONUS, LoadReal(hs, h, SH_MURASAME_BONUS) + GetAttack(c) * Murasame_AttackDamage)
-    call SaveReal(hs, h, SH_MURASAME_LEFT, RMaxBJ(1, LoadReal(hs, h, SH_MURASAME_LEFT) - 1))
+    call SaveReal(hs, h, SH_MURASAME_BONUS, LoadReal(hs, h, SH_MURASAME_BONUS) + GetAttack(c) * Murasame_AttackDamage * Murasame_StackFactor * ItemOnHitFactor(c))
     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_blood impact.mdl", td, "origin"))
     return
 endif

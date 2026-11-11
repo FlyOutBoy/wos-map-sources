@@ -1412,7 +1412,7 @@ library MahoragaSpells uses GearSystems
                         else
                             set r6 = r6 + 0.03
                         endif
-                        if r2 >= 0.0 then
+                        if r2 > 0.1 then // F every 0.12 s (was every tick)
                             set r2 = 0
                             set r3 = GetRandomReal(1.55, 2.75)
                             set r7 = GetRandomReal(1., 2.1)

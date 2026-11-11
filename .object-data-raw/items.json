@@ -1027,7 +1027,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00Y,A00M",
+            "value": "A00Y,A172,A16E",
             "_original_value": "A00Y,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwWSxBMDBN"
@@ -1294,7 +1294,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A01I,A071,A01Y,A0G8",
+            "value": "A01I,A071,A020,A0G8",
             "_original_value": "A01I,A071,A01Y,A0G8",
             "_encoding": "utf-8",
             "_raw_base64": "QTAxSSxBMDcxLEEwMVksQTBHOA=="
@@ -1476,7 +1476,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -1680,7 +1680,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A01W,A00M,A07Q",
+            "value": "A01W,A172,A07Q,A16E",
             "_original_value": "A01W,A00M,A07Q",
             "_encoding": "utf-8",
             "_raw_base64": "QTAxVyxBMDBNLEEwN1E="
@@ -1862,7 +1862,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A01B,A00M",
+            "value": "A01B,A172,A16E",
             "_original_value": "A01B,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAxQixBMDBN"
@@ -2129,7 +2129,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -2511,7 +2511,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A02I,A00M",
+            "value": "A02I,A00M,A16E",
             "_original_value": "A02I,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAySSxBMDBN"
@@ -2611,7 +2611,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00W",
+            "value": "A00W,A16F",
             "_original_value": "A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwVw=="
@@ -2863,7 +2863,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A02T,A00M",
+            "value": "A02T,A172,A16E",
             "_original_value": "A02T,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAyVCxBMDBN"
@@ -2978,7 +2978,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M,A073",
+            "value": "A00M,A073,A16E",
             "_original_value": "A00M,A073",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTSxBMDcz"
@@ -3148,7 +3148,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A04Y,A0D2,A00M",
+            "value": "A04Y,A0D2,A172,A16E",
             "_original_value": "A04Y,A0D2,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTA0WSxBMEQyLEEwME0="
@@ -3400,7 +3400,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06O,A074,A00M",
+            "value": "A06O,A074,A00M,A16E",
             "_original_value": "A06O,A074,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTA2TyxBMDc0LEEwME0="
@@ -3515,7 +3515,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06P,A00M,A074",
+            "value": "A06P,A00M,A074,A16E",
             "_original_value": "A06P,A00M,A074",
             "_encoding": "utf-8",
             "_raw_base64": "QTA2UCxBMDBNLEEwNzQ="
@@ -3767,7 +3767,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00W",
+            "value": "A00W,A16F",
             "_original_value": "A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwVw=="
@@ -4016,7 +4016,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M,A071",
+            "value": "A00M,A071,A16E",
             "_original_value": "A00M,A071",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTSxBMDcx"
@@ -4526,7 +4526,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A07E,A073,A01Y,A0G8",
+            "value": "A07E,A073,A020,A0G8",
             "_original_value": "A07E,A073,A01Y,A0G8",
             "_encoding": "utf-8",
             "_raw_base64": "QTA3RSxBMDczLEEwMVksQTBHOA=="
@@ -4778,7 +4778,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -4830,7 +4830,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -4912,7 +4912,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A076,A00M",
+            "value": "A076,A00M,A16E",
             "_original_value": "A076,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTA3NixBMDBN"
@@ -5012,7 +5012,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A07O,A00M",
+            "value": "A07O,A00M,A16E",
             "_original_value": "A07O,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTA3TyxBMDBN"
@@ -5079,7 +5079,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09O,A00M",
+            "value": "A09O,A00M,A16E",
             "_original_value": "A09O,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTA5TyxBMDBN"
@@ -5146,7 +5146,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A080,A00M",
+            "value": "A080,A00M,A16E",
             "_original_value": "A080,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTA4MCxBMDBN"
@@ -5280,7 +5280,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09L,A00M,A075",
+            "value": "A09L,A00M,A075,A16E",
             "_original_value": "A09L,A00M,A075",
             "_encoding": "utf-8",
             "_raw_base64": "QTA5TCxBMDBNLEEwNzU="
@@ -5462,7 +5462,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09M,A00M,A075",
+            "value": "A09M,A00M,A075,A16E",
             "_original_value": "A09M,A00M,A075",
             "_encoding": "utf-8",
             "_raw_base64": "QTA5TSxBMDBNLEEwNzU="
@@ -5629,7 +5629,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A07O,A00W",
+            "value": "A07O,A00W,A16F",
             "_original_value": "A07O,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTA3TyxBMDBX"
@@ -5726,7 +5726,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09P,A00M",
+            "value": "A09P,A00M,A16E",
             "_original_value": "A09P,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTA5UCxBMDBN"
@@ -5793,7 +5793,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A081,A00M",
+            "value": "A081,A00M,A16E",
             "_original_value": "A081,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTA4MSxBMDBN"
@@ -6194,7 +6194,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0BY,A0I5",
+            "value": "A0BY,A0I5,A16F",
             "_original_value": "A0BY,A0I5",
             "_encoding": "utf-8",
             "_raw_base64": "QTBCWSxBMEk1"
@@ -6759,7 +6759,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0CX,A07Y",
+            "value": "A0CX,A172,A16E",
             "_original_value": "A0CX,A07Y",
             "_encoding": "utf-8",
             "_raw_base64": "QTBDWCxBMDdZ"
@@ -6859,7 +6859,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0CZ,A0CY,A01Y,A00M",
+            "value": "A0CZ,A0CY,A01Y,A172",
             "_original_value": "A0CZ,A0CY,A01Y,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTBDWixBMENZLEEwMVksQTAwTQ=="
@@ -6926,7 +6926,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0DD,A00M",
+            "value": "A0DD,A00M,A16E",
             "_original_value": "A0DD,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTBERCxBMDBN"
@@ -7026,7 +7026,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -7093,7 +7093,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0E4,A00W",
+            "value": "A0E4,A00W,A16F",
             "_original_value": "A0E4,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTBFNCxBMDBX"
@@ -7175,7 +7175,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -7324,7 +7324,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06T,A04S,A0G8",
+            "value": "A072,A04S,A0G8",
             "_original_value": "A06T,A04S,A0G8",
             "_encoding": "utf-8",
             "_raw_base64": "QTA2VCxBMDRTLEEwRzg="
@@ -7640,7 +7640,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0F5,A072,A00M",
+            "value": "A0F5,A072,A00M,A16E",
             "_original_value": "A0F5,A072,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTBGNSxBMDcyLEEwME0="
@@ -7755,7 +7755,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0GB,A00M",
+            "value": "A0GB,A00M,A16E",
             "_original_value": "A0GB,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTBHQixBMDBN"
@@ -8274,7 +8274,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0FC,A00M",
+            "value": "A0FC,A00M,A16E",
             "_original_value": "A0FC,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTBGQyxBMDBN"
@@ -11047,7 +11047,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00W,A00M",
+            "value": "A171",
             "_original_value": "A00W,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwVyxBMDBN"
@@ -11114,7 +11114,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06R,A07Y,A13F",
+            "value": "A06R,A172,A13F,A16E",
             "_original_value": "A06R,A07Y,A13F",
             "_encoding": "utf-8",
             "_raw_base64": "QTA2UixBMDdZLEExM0Y="
@@ -11196,7 +11196,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0GX,A02H,A07Y,A01Y",
+            "value": "A0GX,A02H,A172,A01Y",
             "_original_value": "A0GX,A02H,A07Y,A01Y",
             "_encoding": "utf-8",
             "_raw_base64": "QTBHWCxBMDJILEEwN1ksQTAxWQ=="
@@ -11293,7 +11293,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0HE,A07Y",
+            "value": "A0HE,A00M,A16E",
             "_original_value": "A0HE,A07Y",
             "_encoding": "utf-8",
             "_raw_base64": "QTBIRSxBMDdZ"
@@ -11375,7 +11375,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0HT,A00M",
+            "value": "A0HT,A174,A16E",
             "_original_value": "A0HT,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTBIVCxBMDBN"
@@ -11460,7 +11460,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0I4,A00M",
+            "value": "A0I4,A174,A16E",
             "_original_value": "A0I4,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTBJNCxBMDBN"
@@ -11612,7 +11612,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0HV,A00M",
+            "value": "A0HV,A172,A16E",
             "_original_value": "A0HV,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTBIVixBMDBN"
@@ -11679,7 +11679,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0HW,A00W",
+            "value": "A0HW,A00W,A16F",
             "_original_value": "A0HW,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTBIVyxBMDBX"
@@ -11761,7 +11761,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0HY,A07Y",
+            "value": "A0HY,A00M,A16E",
             "_original_value": "A0HY,A07Y",
             "_encoding": "utf-8",
             "_raw_base64": "QTBIWSxBMDdZ"
@@ -11846,7 +11846,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A01W,A00M,A07Q",
+            "value": "A01W,A172,A07Q,A16E",
             "_original_value": "A01W,A00M,A07Q",
             "_encoding": "utf-8",
             "_raw_base64": "QTAxVyxBMDBNLEEwN1E="
@@ -11961,7 +11961,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0I1,A00W",
+            "value": "A0I1,A00W,A16F",
             "_original_value": "A0I1,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTBJMSxBMDBX"
@@ -12095,7 +12095,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A102,A100,A00M",
+            "value": "A102,A100,A174,A16E",
             "_original_value": "A102,A100,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTEwMixBMTAwLEEwME0="
@@ -12210,7 +12210,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A102,A101,A00W",
+            "value": "A102,A101,A170,A16F",
             "_original_value": "A102,A101,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTEwMixBMTAxLEEwMFc="
@@ -12325,7 +12325,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A102,A101,A00W",
+            "value": "A102,A101,A170,A16F",
             "_original_value": "A102,A101,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTEwMixBMTAxLEEwMFc="
@@ -12440,7 +12440,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A102,A101,A00W",
+            "value": "A102,A101,A170,A16F",
             "_original_value": "A102,A101,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTEwMixBMTAxLEEwMFc="
@@ -12670,7 +12670,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A10E,A00M,A01Y",
+            "value": "A10E,A172,A01Y",
             "_original_value": "A10E,A00M,A01Y",
             "_encoding": "utf-8",
             "_raw_base64": "QTEwRSxBMDBNLEEwMVk="
@@ -12904,7 +12904,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00W",
+            "value": "A00W,A16F",
             "_original_value": "A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwVw=="
@@ -13056,7 +13056,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A12F,A00W",
+            "value": "A12F,A173,A16F",
             "_original_value": "A12F,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTEyRixBMDBX"
@@ -13141,7 +13141,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A02T,A00W",
+            "value": "A02T,A173,A16F",
             "_original_value": "A02T,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTAyVCxBMDBX"
@@ -13256,7 +13256,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A131,A00U,A074,A01Y",
+            "value": "A131,A00U,A074,A020",
             "_original_value": "A131,A00U,A074,A01Y",
             "_encoding": "utf-8",
             "_raw_base64": "QTEzMSxBMDBVLEEwNzQsQTAxWQ=="
@@ -13486,7 +13486,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A135,A00M",
+            "value": "A135,A172,A16E",
             "_original_value": "A135,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTEzNSxBMDBN"
@@ -13601,7 +13601,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A137,A00M",
+            "value": "A137,A174,A16E",
             "_original_value": "A137,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTEzNyxBMDBN"
@@ -13686,7 +13686,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A138,A072,A00R,A01Y",
+            "value": "A138,A072,A00R,A020",
             "_original_value": "A138,A072,A00R,A01Y",
             "_encoding": "utf-8",
             "_raw_base64": "QTEzOCxBMDcyLEEwMFIsQTAxWQ=="
@@ -13771,7 +13771,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A13A,A00M",
+            "value": "A13A,A172,A16E",
             "_original_value": "A13A,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTEzQSxBMDBN"
@@ -13868,7 +13868,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A13C,A00M",
+            "value": "A13C,A172,A16E",
             "_original_value": "A13C,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTEzQyxBMDBN"
@@ -13983,7 +13983,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A13E,A00M",
+            "value": "A13E,A172,A16E",
             "_original_value": "A13E,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTEzRSxBMDBN"
@@ -14080,7 +14080,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A04Y,A0D2,A00W",
+            "value": "A04Y,A0D2,A173,A16F",
             "_original_value": "A04Y,A0D2,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTA0WSxBMEQyLEEwMFc="
@@ -14147,7 +14147,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A080,A00W",
+            "value": "A080,A00W,A16F",
             "_original_value": "A080,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTA4MCxBMDBX"
@@ -14214,7 +14214,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09P,A00W",
+            "value": "A09P,A00W,A16F",
             "_original_value": "A09P,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTA5UCxBMDBX"
@@ -14281,7 +14281,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A081,A00W",
+            "value": "A081,A00W,A16F",
             "_original_value": "A081,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTA4MSxBMDBX"
@@ -14348,7 +14348,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A140,A04W,A04S,A0G8",
+            "value": "A06T,A04S,A0G8",
             "_original_value": "A140,A04W,A04S,A0G8",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0MCxBMDRXLEEwNFMsQTBHOA=="
@@ -14414,7 +14414,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A140",
+            "value": "_",
             "_original_value": "A140",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0MA=="
@@ -14432,7 +14432,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 1
+            "value": 0
           },
           "sanity_check": {
             "text": "I05E",
@@ -14463,7 +14463,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A142,A00W",
+            "value": "A142,A173,A16F",
             "_original_value": "A142,A00W",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0MixBMDBX"
@@ -14545,7 +14545,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145,A072,A00M",
+            "value": "A145,A072,A00M,A16E",
             "_original_value": "A145,A072,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0NSxBMDcyLEEwME0="
@@ -14660,7 +14660,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A146,A072,A00M",
+            "value": "A146,A072,A00M,A16E",
             "_original_value": "A146,A072,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0NixBMDcyLEEwME0="
@@ -14775,7 +14775,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A147,A072,A00M",
+            "value": "A147,A072,A00M,A16E",
             "_original_value": "A147,A072,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0NyxBMDcyLEEwME0="
@@ -14890,7 +14890,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A148,A072,A00M",
+            "value": "A148,A072,A00M,A16E",
             "_original_value": "A148,A072,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0OCxBMDcyLEEwME0="
@@ -15005,7 +15005,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A149,A072,A00M",
+            "value": "A149,A072,A00M,A16E",
             "_original_value": "A149,A072,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0OSxBMDcyLEEwME0="
@@ -15135,7 +15135,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A14A,A074,A00M",
+            "value": "A14A,A074,A00M,A16E",
             "_original_value": "A14A,A074,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0QSxBMDc0LEEwME0="
@@ -15235,7 +15235,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A14B,A074,A00M",
+            "value": "A14B,A074,A00M,A16E",
             "_original_value": "A14B,A074,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0QixBMDc0LEEwME0="
@@ -15335,7 +15335,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A14C,A074,A00M",
+            "value": "A14C,A074,A00M,A16E",
             "_original_value": "A14C,A074,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0QyxBMDc0LEEwME0="
@@ -15435,7 +15435,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A14D,A074,A00M",
+            "value": "A14D,A074,A00M,A16E",
             "_original_value": "A14D,A074,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0RCxBMDc0LEEwME0="
@@ -15535,7 +15535,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A14E,A075,A00M",
+            "value": "A14E,A075,A00M,A16E",
             "_original_value": "A14E,A075,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0RSxBMDc1LEEwME0="
@@ -15635,7 +15635,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A14F,A075,A00M",
+            "value": "A14F,A075,A00M,A16E",
             "_original_value": "A14F,A075,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE0RixBMDc1LEEwME0="
@@ -15735,7 +15735,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A150,A075,A00M",
+            "value": "A150,A075,A00M,A16E",
             "_original_value": "A150,A075,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE1MCxBMDc1LEEwME0="
@@ -15835,7 +15835,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A151,A075,A00M",
+            "value": "A151,A075,A00M,A16E",
             "_original_value": "A151,A075,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE1MSxBMDc1LEEwME0="
@@ -16035,7 +16035,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -16102,7 +16102,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -16169,7 +16169,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -16236,7 +16236,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -16303,7 +16303,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
+            "value": "A00M,A16E",
             "_original_value": "A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTAwTQ=="
@@ -16370,7 +16370,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A154,A00M,A0CQ",
+            "value": "A154,A172,A0CQ,A16E",
             "_original_value": "A154,A00M,A0CQ",
             "_encoding": "utf-8",
             "_raw_base64": "QTE1NCxBMDBNLEEwQ1E="
@@ -16467,7 +16467,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A161,A00M",
+            "value": "A161,A00M,A16E",
             "_original_value": "A161,A00M",
             "_encoding": "utf-8",
             "_raw_base64": "QTE2MSxBMDBN"
@@ -16549,7 +16549,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A164,A00W,A165",
+            "value": "A164,A170,A165,A16F",
             "_original_value": "A164,A00W,A165",
             "_encoding": "utf-8",
             "_raw_base64": "QTE2NCxBMDBXLEExNjU="
@@ -16634,7 +16634,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A16A,A06T,A07Y",
+            "value": "A16A,A06T,A172",
             "_original_value": "A16A,A06T,A07Y",
             "_encoding": "utf-8",
             "_raw_base64": "QTE2QSxBMDZULEEwN1k="
@@ -16667,7 +16667,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 10000
+            "value": 12000
           },
           "sanity_check": {
             "text": "",

@@ -1682,9 +1682,9 @@ private struct MilimT2KS
                         set beamSegment = beamSegment + 1
                     endloop
 
-                    if beamRingTimer > 0.00 and beamFxMove < MilimT2_BeamRange  then
+                    if beamRingTimer > 0.1 and beamFxMove < MilimT2_BeamRange  then
                         set beamRingTimer = 0.00
-                        set beamRingScale = beamRingScale + 0.005
+                        set beamRingScale = beamRingScale + 0.02 // x4: rings are 4x rarer
                         set beamEffect = EffectSpawn("war3mapImported\\wos_krk (1849)6.mdl", x1+450*Cos(a+90*bj_DEGTORAD), y1+450*Sin(a+90*bj_DEGTORAD), a * bj_RADTODEG+15, 1.75, beamRingScale, 125.00)
                         call MyRemoveEff(beamEffect, beamEffectLife)
                         set beamEffect = EffectSpawn("war3mapImported\\wos_krk (1849)6.mdl", x1+450*Cos(a-90*bj_DEGTORAD), y1+450*Sin(a-90*bj_DEGTORAD), a * bj_RADTODEG-15, 1.75, beamRingScale, 125.00)

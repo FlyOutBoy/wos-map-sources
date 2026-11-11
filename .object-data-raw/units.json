@@ -639,7 +639,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.25,
+            "value": 1.85,
             "_original_value": 2.25,
             "_raw_hex": "00001040"
           },
@@ -2992,7 +2992,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.6500000953674316,
+            "value": 2.5,
             "_original_value": 2.6500000953674316,
             "_raw_hex": "9A992940"
           },
@@ -4466,7 +4466,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0999999046325684,
+            "value": 1.7,
             "_original_value": 2.0999999046325684,
             "_raw_hex": "66660640"
           },
@@ -4752,7 +4752,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.25,
+            "value": 1.85,
             "_original_value": 2.25,
             "_raw_hex": "00001040"
           },
@@ -5250,7 +5250,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.200000047683716,
+            "value": 2.05,
             "_original_value": 2.200000047683716,
             "_raw_hex": "CDCC0C40"
           },
@@ -5329,7 +5329,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.25,
+            "value": 1.8,
             "_original_value": 2.25,
             "_raw_hex": "00001040"
           },
@@ -7552,7 +7552,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.8,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -8046,7 +8046,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.8,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -13683,7 +13683,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.9,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -14085,7 +14085,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.5,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -16002,7 +16002,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.5,
+            "value": 2.1,
             "_original_value": 2.5,
             "_raw_hex": "00002040"
           },
@@ -19335,7 +19335,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.200000047683716,
+            "value": 1.8,
             "_original_value": 2.200000047683716,
             "_raw_hex": "CDCC0C40"
           },
@@ -19476,7 +19476,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 725
+            "value": 600
           },
           "sanity_check": {
             "text": "",
@@ -20133,7 +20133,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 725
+            "value": 600
           },
           "sanity_check": {
             "text": "",
@@ -20582,7 +20582,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.95,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -20661,7 +20661,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.25,
+            "value": 1.9,
             "_original_value": 2.25,
             "_raw_hex": "00001040"
           },
@@ -21544,7 +21544,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.5,
+            "value": 1.8,
             "_original_value": 2.5,
             "_raw_hex": "00002040"
           },
@@ -22140,7 +22140,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.6,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -22426,7 +22426,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.25,
+            "value": 2.15,
             "_original_value": 2.25,
             "_raw_hex": "00001040"
           },
@@ -23883,7 +23883,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.5999999046325684,
+            "value": 2.45,
             "_original_value": 2.5999999046325684,
             "_raw_hex": "66662640"
           },
@@ -24445,7 +24445,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.3499999046325684,
+            "value": 1.95,
             "_original_value": 2.3499999046325684,
             "_raw_hex": "66661640"
           },
@@ -25902,7 +25902,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.4000000953674316,
+            "value": 2.0,
             "_original_value": 2.4000000953674316,
             "_raw_hex": "9A991940"
           },
@@ -27090,7 +27090,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.8,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -28547,7 +28547,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.6500000953674316,
+            "value": 2.4,
             "_original_value": 2.6500000953674316,
             "_raw_hex": "9A992940"
           },
@@ -29622,7 +29622,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.75,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -29992,7 +29992,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.1500000953674316,
+            "value": 1.8,
             "_original_value": 2.1500000953674316,
             "_raw_hex": "9A990940"
           },
@@ -32050,7 +32050,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.4000000953674316,
+            "value": 2.0,
             "_original_value": 2.4000000953674316,
             "_raw_hex": "9A991940"
           },
@@ -33236,7 +33236,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.3499999046325684,
+            "value": 1.95,
             "_original_value": 2.3499999046325684,
             "_raw_hex": "66661640"
           },
@@ -33603,7 +33603,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 725
+            "value": 625
           },
           "sanity_check": {
             "text": "",
@@ -34278,7 +34278,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 725
+            "value": 625
           },
           "sanity_check": {
             "text": "",
@@ -34855,7 +34855,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0999999046325684,
+            "value": 1.85,
             "_original_value": 2.0999999046325684,
             "_raw_hex": "66660640"
           },
@@ -35367,7 +35367,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.899999976158142,
+            "value": 1.85,
             "_original_value": 1.899999976158142,
             "_raw_hex": "3333F33F"
           },
@@ -35446,7 +35446,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0999999046325684,
+            "value": 1.75,
             "_original_value": 2.0999999046325684,
             "_raw_hex": "66660640"
           },
@@ -36629,7 +36629,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.25,
+            "value": 1.85,
             "_original_value": 2.25,
             "_raw_hex": "00001040"
           },
@@ -38168,7 +38168,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.299999952316284,
+            "value": 1.9,
             "_original_value": 2.299999952316284,
             "_raw_hex": "33331340"
           },
@@ -39063,7 +39063,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.899999976158142,
+            "value": 1.75,
             "_original_value": 1.899999976158142,
             "_raw_hex": "3333F33F"
           },
@@ -39545,7 +39545,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.5,
+            "value": 2.1,
             "_original_value": 2.5,
             "_raw_hex": "00002040"
           },
@@ -39738,7 +39738,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.299999952316284,
+            "value": 2.15,
             "_original_value": 2.299999952316284,
             "_raw_hex": "33331340"
           },
@@ -39755,7 +39755,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 23
+            "value": 21
           },
           "sanity_check": {
             "text": "",
@@ -39770,7 +39770,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 20
+            "value": 22
           },
           "sanity_check": {
             "text": "",
@@ -40954,7 +40954,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.6,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -41031,7 +41031,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 725
+            "value": 625
           },
           "sanity_check": {
             "text": "",
@@ -42509,7 +42509,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.85,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -42586,7 +42586,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 725
+            "value": 700
           },
           "sanity_check": {
             "text": "",
@@ -43471,7 +43471,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 3.0,
+            "value": 2.5,
             "_original_value": 3.0,
             "_raw_hex": "00004040"
           },
@@ -43954,7 +43954,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.85,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -44448,7 +44448,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
+            "value": 1.9,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
           },
@@ -45187,7 +45187,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.25,
+            "value": 1.85,
             "_original_value": 2.25,
             "_raw_hex": "00001040"
           },
@@ -46293,7 +46293,7 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.25,
+            "value": 1.85,
             "_original_value": 2.25,
             "_raw_hex": "00001040"
           },
@@ -46370,7 +46370,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 725
+            "value": 700
           },
           "sanity_check": {
             "text": "",

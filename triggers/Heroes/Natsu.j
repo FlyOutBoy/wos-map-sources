@@ -211,7 +211,9 @@ library NatsuSpells uses GearSystems
                                 set scale = scale + 0.21
                                 set move = move + 5
                                 set fly = fly + 9
-                                call EffectSpawn2("war3mapImported\\wos_File00000377.mdl", x, y, a * bj_RADTODEG , 2, scale, fly, 0.275)
+                                if ModuloInteger(R2I(r / 0.03 + 0.5), 4) < 2 then // trail every 0.12 s; the r2 step still ramps speed/scale
+                                    call EffectSpawn2("war3mapImported\\wos_File00000377.mdl", x, y, a * bj_RADTODEG , 2, scale, fly, 0.275)
+                                endif
                             else
                                 set r2 = r2 + 0.03
                             endif
@@ -270,7 +272,9 @@ library NatsuSpells uses GearSystems
                                 set scale = scale + 0.3
                                 set move = move + 5
                                 set fly = fly + 18
-                                call EffectSpawn2("war3mapImported\\wos_File00000377.mdl", x, y, a * bj_RADTODEG , 2, scale, fly, 0.35)
+                                if ModuloInteger(R2I(r / 0.03 + 0.5), 4) < 2 then // trail every 0.12 s; the r2 step still ramps speed/scale
+                                    call EffectSpawn2("war3mapImported\\wos_File00000377.mdl", x, y, a * bj_RADTODEG , 2, scale, fly, 0.35)
+                                endif
                             else
                                 set r2 = r2 + 0.03
                             endif
@@ -1138,7 +1142,7 @@ library NatsuSpells uses GearSystems
                         call MakeSound("war3mapimported\\Hero_Natsu_T4")
                     endif
                     if r == 0.51 or r == 0.57 or r == 0.66 or r == 0.75 then
-                        set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
+                        set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2_lite.mdl", x, y, a * bj_RADTODEG + 180, 2.5, 1, 230, -90)
                         call AnimDummyEff(e3, 0.65, 1)
                         set e3 = null
                     endif
@@ -1817,7 +1821,7 @@ library NatsuSpells uses GearSystems
                         if r == 1.2 + add or r == 1.26 + add or r == 1.32 + add or r == 1.38 + add or r == 1.45 + add then
                             set x = x + 300 * Cos(a)
                             set y = y + 300 * Sin(a)
-                            set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2.mdl", x, y, a * bj_RADTODEG + 180, 1.75, 1, 230, -90)
+                            set e3 = EffectSpawn3("war3mapImported\\wos_firefly-r1e-sfx2_lite.mdl", x, y, a * bj_RADTODEG + 180, 1.75, 1, 230, -90)
                             call AnimDummyEff(e3, 0.65, 1)
                             set e3 = null
                         endif

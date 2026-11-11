@@ -6851,13 +6851,13 @@
     "tooltip level 3": "Song of Salvation [|cffffcc00Level 3|r]",
     "tooltip level 4": "Song of Salvation [|cffffcc00Level 4|r]",
     "tooltip level 5": "Song of Salvation [|cffffcc00Level 5|r]",
-    "extended_tooltip level 1": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius and +12 sec Duration. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 0.60 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 30 sec|n|cff33ccffMana:|r 150",
-    "extended_tooltip level 2": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius and +12 sec Duration. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 0.75 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 28 sec|n|cff33ccffMana:|r 170",
-    "extended_tooltip level 3": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius and +12 sec Duration. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 0.90 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 26 sec|n|cff33ccffMana:|r 190",
-    "extended_tooltip level 4": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius and +12 sec Duration. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 1.05 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 24 sec|n|cff33ccffMana:|r 210",
-    "extended_tooltip level 5": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius and +12 sec Duration. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 1.20 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 22 sec|n|cff33ccffMana:|r 230",
+    "extended_tooltip level 1": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius. After the 10 sec of healing, the zone turns red and remains for 12 sec. Every second, allies inside gain +15% damage dealt for 2 sec. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 0.60 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 30 sec|n|cff33ccffMana:|r 150",
+    "extended_tooltip level 2": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius. After the 10 sec of healing, the zone turns red and remains for 12 sec. Every second, allies inside gain +15% damage dealt for 2 sec. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 0.75 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 28 sec|n|cff33ccffMana:|r 170",
+    "extended_tooltip level 3": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius. After the 10 sec of healing, the zone turns red and remains for 12 sec. Every second, allies inside gain +15% damage dealt for 2 sec. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 0.90 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 26 sec|n|cff33ccffMana:|r 190",
+    "extended_tooltip level 4": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius. After the 10 sec of healing, the zone turns red and remains for 12 sec. Every second, allies inside gain +15% damage dealt for 2 sec. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 1.05 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 24 sec|n|cff33ccffMana:|r 210",
+    "extended_tooltip level 5": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Lv. 35]:|r +250 Radius. After the 10 sec of healing, the zone turns red and remains for 12 sec. Every second, allies inside gain +15% damage dealt for 2 sec. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 1.20 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 22 sec|n|cff33ccffMana:|r 230",
     "research_tooltip": "Song of Salvation",
-    "research_extended_tooltip": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffa500[Lv. 35]:|r +250 Radius and +12 sec Duration. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 0.60/0.75/0.90/1.05/1.20 + 0/0/0/0/0 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 30/28/26/24/22 sec|n|cff33ccffMana:|r 150/170/190/210/230",
+    "research_extended_tooltip": "Inori channels a song that heals allies around her. The ability ends if Inori leaves the area.|n|n|cffffcc00Duration:|r 10 sec.|n|n|cffffa500[Lv. 35]:|r +250 Radius. After the 10 sec of healing, the zone turns red and remains for 12 sec. Every second, allies inside gain +15% damage dealt for 2 sec. Casting abilities clears debuffs from allies in the radius|n|n|cffffcc00Radius:|r 1000|nHeals allies in the area over time for Intelligence x 0.60/0.75/0.90/1.05/1.20 + 0/0/0/0/0 per sec|nCooldown starts after healing ends|n|cffffcc00CD:|r 30/28/26/24/22 sec|n|cff33ccffMana:|r 150/170/190/210/230",
     "hotkey": "R",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp",
     "research_icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp",
@@ -7452,8 +7452,8 @@
   "A06O": {
     "name": "Item Raijins Wrath",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 450.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -7480,8 +7480,8 @@
   "A06P": {
     "name": "Item Shark Trail",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -10981,8 +10981,8 @@
   "A09L": {
     "name": "Item Red Cup",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 375.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -11009,8 +11009,8 @@
   "A09M": {
     "name": "Item Red Flower",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -11036,8 +11036,8 @@
   "A09N": {
     "name": "Item Tusk Barrel",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 25.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 30.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 375.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -17522,8 +17522,8 @@
   "A0F5": {
     "name": "Item Rhitta",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 600.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -22414,8 +22414,8 @@
   "A145": {
     "name": "Item Emberbreaker",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -22441,8 +22441,8 @@
   "A146": {
     "name": "Item Leviathan's Grasp",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 15.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 20.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -22468,8 +22468,8 @@
   "A147": {
     "name": "Item Leviathan's Anchor",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 500.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -22496,8 +22496,8 @@
   "A148": {
     "name": "Item Thunder Verdict",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -22523,8 +22523,8 @@
   "A149": {
     "name": "Item Thunder Bastion",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 475.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -22551,8 +22551,8 @@
   "A14A": {
     "name": "Item Cinder Fang",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -22578,8 +22578,8 @@
   "A14B": {
     "name": "Item Ashen Crossfire",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 400.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -22606,8 +22606,8 @@
   "A14C": {
     "name": "Item Mirror Tide",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 600.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -22634,8 +22634,8 @@
   "A14D": {
     "name": "Item Volt Thread",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -22661,8 +22661,8 @@
   "A14E": {
     "name": "Item Phoenix Seal",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 16.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 21.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -22688,8 +22688,8 @@
   "A14F": {
     "name": "Item Crimson Scripture",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 450.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -22716,8 +22716,8 @@
   "A150": {
     "name": "Item Siren's Tear",
     "base_id": "ANcl",
-    "mana_cost level 1": 150,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 100,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "allowed_targets level 1": "enemies,vulnerable",
     "levels": 1,
@@ -22743,8 +22743,8 @@
   "A151": {
     "name": "Item Constellation Coil",
     "base_id": "ANcl",
-    "mana_cost level 1": 175,
-    "cooldown level 1": 20.0,
+    "mana_cost level 1": 125,
+    "cooldown level 1": 25.0,
     "cast_range level 1": 1600.0,
     "area_of_effect level 1": 250.0,
     "allowed_targets level 1": "invulnerable,vulnerable",
@@ -23509,6 +23509,44 @@
     "buffs level 1": "B078",
     "allowed_targets level 1": "",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp"
+  },
+  "A16D": {
+    "name": "Inori R Lv35 damage (buff)",
+    "base_id": "Ainf",
+    "mana_cost level 1": 0,
+    "cooldown level 1": 0.0,
+    "cast_range level 1": 99999.0,
+    "buffs level 1": "B079",
+    "allowed_targets level 1": "",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp"
+  },
+  "A16E": {
+    "name": "Item HP +350 (stat pass)",
+    "base_id": "AIlf"
+  },
+  "A16F": {
+    "name": "Item HP +450 (stat pass)",
+    "base_id": "AIlf"
+  },
+  "A170": {
+    "name": "Hero ALST + 14 (attack items)",
+    "base_id": "AIx1"
+  },
+  "A171": {
+    "name": "Hero ALST + 35 (Hogyoku, was A00W+A00M)",
+    "base_id": "AIx1"
+  },
+  "A172": {
+    "name": "Hero ALST + 12 (defensive/support items)",
+    "base_id": "AIx1"
+  },
+  "A173": {
+    "name": "Hero ALST + 16 (defensive/support items)",
+    "base_id": "AIx1"
+  },
+  "A174": {
+    "name": "Hero ALST + 13 (attack items)",
+    "base_id": "AIx1"
   },
   "A1F0": {
     "name": "Frostnova E marker - B0F0",

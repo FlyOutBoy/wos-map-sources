@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3h",
-  "source_sha256": "4cf40a394bbdcb919fa380ed6c2289bcce49e86bd42f75316e79998b10f08620",
+  "source_sha256": "c8b100efccc74f0e3bc4f30c502dec3d2ca740e88c68e98657437ab90c7561ac",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -4487,6 +4487,21 @@
       "new_id": {
         "text": "B078",
         "hex": "42303738"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B079",
+        "hex": "42303739"
       },
       "v3_unknown": [
         0

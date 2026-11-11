@@ -405,7 +405,7 @@ library OkarunSpells uses GearSystems
                         if SR2(c, td) > 150 then
                             set a = GAngle(c, td)
                             call MoveUnit(c, move, a)
-                            if r2 > 0.00 then
+                            if r2 > 0.06 then // E every 0.09 s (was every tick)
                                 set r2 = 0
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_0780red.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1.35, 50))
                             else

@@ -786,13 +786,13 @@ library TomiokaSpells uses GearSystems
                         set cy = GetUnitY(c) + r7 * Sin(a)
                     endif
                     if r <= 1.5 then
-                        if r3 > 0.0 then
+                        if r3 > 0.06 then // every 0.09 s (was every tick)
                             set r3 = 0
                             call EffectSpawn2("war3mapImported\\wos_BY_Wood_Effect_YuZhiBoYou_Water_ShuiLongDan_2.mdl", GetEffX(e) - 10 * Cos(a), GetEffY(e) - 10 * Sin(a), 1, 1, 3, BlzGetLocalSpecialEffectZ(e), 0.45)
                         else
                             set r3 = r3 + 0.03
                         endif
-                    else
+                    elseif ModuloInteger(R2I(r / 0.03 + 0.5), 3) == 0 then // after 1.5 s too: every 0.09 s
                         call EffectSpawn2("war3mapImported\\wos_BY_Wood_Effect_YuZhiBoYou_Water_ShuiLongDan_2.mdl", GetEffX(e) - 10 * Cos(a), GetEffY(e) - 10 * Sin(a), 1, 1, 3, BlzGetLocalSpecialEffectZ(e) + 35, 0.45)
                     endif
                     if r > 2. then

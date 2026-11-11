@@ -73,7 +73,8 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real Chogurt_DmgReduct = 7.5
         real ChogurtEvolved_DmgReduct = 12.5
 //----------------------Murasame----------------------------------------------
-        real Murasame_AttackDamage = 0.40
+        real Murasame_AttackDamage = 0.30 // was 0.40
+        real Murasame_StackFactor = 0.5 // a further hit adds this share of a tick to the next tick (was 1.0 and shortened the bleed)
         real Murasame_Duration = 5 // ticks, one per second
 //----------------------ItachiSet----------------------------------------------
         integer ItachiSet_ID = 'I01B'        
@@ -112,6 +113,8 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         // Evolved (objects: tools/stage_mera_mera_evolved.py): +15 str, +15 allstats
         integer MeraMeraEvolved_ID = 'I076'
         integer MeraMeraEvolved_Abi_ID = 'A16A' // active, CD 20 sec (object)
+        real MeraMeraEvolved_DamageBonus = 35 // static on top of MeraMera_Damage (Evolved only)
+        real MeraMeraEvolved_MaxDamageBonus = 50 // Evolved cap 250 -> 300, so the static is not eaten by the cap
         real MeraMeraEvolved_MaxHpDamageBonus = 0.25 // % of max hp added to the aura: 1.15 + 0.25 = 1.4
         real MeraMeraEvolved_ShieldPercent = 10 // shield = % of max hp
         real MeraMeraEvolved_ShieldDuration = 5 // = buff A16C/B078 duration (tools/stage_mera_shield_buff.py)
@@ -134,7 +137,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real FairyTailEmblem_HpRestoreStatic = 350 // of max mana
 //----------------------RedFlower----------------------------------------------
         integer RedFlower_ID = 'A09M'
-        real RedFlower_DamageBase = 6// how much damage dealt x agi
+        real RedFlower_DamageBase = 7// how much damage dealt x agi
         real RedFlower_Time = 1.8 // max travel time
         real RedFlower_Speed = 3000 // traveled for 1 sec     
 //----------------------Avalon----------------------------------------------
@@ -184,7 +187,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real HokageHatEvolved_Time = 4// how long root
 //----------------------Shark_Trail----------------------------------------------
         integer Shark_Trail_ID = 'A06P'
-        real Shark_Trail_DamageBase = 6// how much damage dealt x agi
+        real Shark_Trail_DamageBase = 7// how much damage dealt x agi
         real Shark_Trail_Time = 1.8 // max travel time
         real Shark_Trail_Speed = 2375 // traveled for 1 sec   
 //----------------------Earth_Power----------------------------------------------
@@ -227,7 +230,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real HolyGrail_HpRegen = 10
         real HolyGrail_MpRegen = 4
 //----------------------DarkHoly Grail----------------------------------------------
-        real DarkHolyGrail_HpRegen = 20
+        real DarkHolyGrail_HpRegen = 15
         real DarkHolyGrail_MpRegen = 6
         real DarkHolyGrail_HpRegenReduce = 30 //% of active heal reducing
 //----------------------Angel Blessing----------------------------------------------
@@ -250,11 +253,11 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real ShikiKnifeEvolved_Aoe = 190
 //----------------------Defensive passives----------------------------------------------
         real PhilosopherStone_Lifesteal = 18 // % of final damage dealt restored as HP
-        real BlackClover_StackReduce = 1 // % damage reduction per resist stack (max 6)
+        real BlackClover_StackReduce = 1.5 // % damage reduction per resist stack (max 6)
         real Incursio_HpRegen = 5
         real Incursio_MpRegen = 2.5
         real WitchSin_MagicReduce = 21 // % magic damage reduction for 5 sec after the stun proc
-        real BlueEmperor_PhysReduce = 23 // % physical damage reduction of Emperor's Patience
+        real BlueEmperor_PhysReduce = 27 // % physical damage reduction of Emperor's Patience
         real Jewel_HpRestore = 500 // static heal of the root/silence proc
         real Jewel_HpRestorePercent = 3 // + % of the holder's max HP
 //----------------------Hungry Sin----------------------------------------------
@@ -379,21 +382,22 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
 //----------------------Hashirama Cells----------------------------------------------
         integer HashiramaCells_ID = 'I04A'
         integer HashiramaCells_Abi_ID = 'A10D'
-        integer HashiramaCells_Str_ID = 'A10C' // +20 str while active
-        real HashiramaCells_HpCost = 10 // % of current hp
-        real HashiramaCells_HpRegen = 10 // ItemEnter / ItemLeave
+        integer HashiramaCells_Str_ID = 'A10C' // +30 str while active (was 20)
+        real HashiramaCells_HpCost = 7 // was 10; % of current hp
+        real HashiramaCells_HpRegen = 15 // was 10; ItemEnter / ItemLeave
         real HashiramaCells_Duration = 10
-        real HashiramaCells_AllyHeal = 15 // % of damage taken healed to nearby allied heroes
-        real HashiramaCells_AllyAoe = 700
+        real HashiramaCells_AllyHeal = 25 // was 15; % of damage taken healed to nearby allied heroes
+        real HashiramaCells_AllyAoe = 900 // was 700
 //----------------------Shun Shun Rikka----------------------------------------------
         integer ShunShunRikka_ID = 'I04B'
         integer ShunShunRikka_Buff_ID = 'B03F'
-        real ShunShunRikka_HealAmp = 18 // % more hp regen and healing
+        real ShunShunRikka_HealAmp = 15 // % more hp regen and healing
         real ShunShunRikka_StunReduce = 0.5 // sec
         real ShunShunRikka_CcReduce = 0.5 // sec off silences and roots
 //----------------------Dark Repulser (Lostvayne + Elucidator)----------------------------------------------
         integer DarkRepulser_ID = 'I075'
         integer DarkRepulser_CD_ID = 'A164' // cooldown carrier of the extra hit
+        real RangedOnHit_Factor = 0.75 // Lostvayne / Dark Repulser extra hit and Murasame bleed for ranged attackers
         real DarkRepulser_CD = 0.75 // Lostvayne: 1 sec
 //----------------------Frozen Heart ally aura----------------------------------------------
         integer FrozenHeart_Buff_ID = 'B040'
@@ -437,7 +441,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
 //----------------------Rhitta strength stacks----------------------------------------------
         integer array Rhitta_Str_ID // [1..7] +5 str each
         integer Rhitta_StrMaxStacks = 7
-        real Rhitta_StrDuration = 10
+        real Rhitta_StrDuration = 15
 //----------------------Anime items (2026-10-27 / 10-28)-----------------------------------
     // 2026-10-27 items. Rawcodes: object-data/items-2026-10-27-ids.json (tools/stage_items_2026_10_27.py).
     // Hooks: DmgSys (ItemsAnime_FinalDamage / ItemsAnime_OnAttack), CastAItems (ItemsAnime_Cast),
@@ -525,10 +529,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         integer GonryomaruEvolved_ID = 'I05D'
         real ZanpakutoEvolved_CdReduce = 1 // explosion cooldown -1 sec; the element applies on every 200+ hit
         integer YataMirrorEvolved_ID = 'I05E'
-        integer YataMirrorEvolved_Abi_ID = 'A140'
-        integer YataMirrorEvolved_BuffAbi_ID = 'A141'
-        integer YataMirrorEvolved_Buff_ID = 'B05F'
-        real YataMirrorEvolved_ReflectActive = 75 // % while the active buff lasts (no range limit)
+        real YataMirrorEvolved_Reflect = 25 // passive, with no range limit
         integer PhilosopherEvolved_ID = 'I05F'
         integer PhilosopherEvolved_Abi_ID = 'A142'
         integer PhilosopherEvolved_BuffAbi_ID = 'A143'
@@ -588,24 +589,24 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         // Own damage per cast <= 5x stat per target, including item follow-ups; external bonuses are separate.
         real Emberbreaker_Impact = 4
         real Emberbreaker_Burn = 3 // total over 4 sec
-        real Emberbreaker_Knock = 120 // pushed back over 0.25 sec
-        real Emberbreaker_Retaliate = 1
+        real Emberbreaker_Knock = 200 // pushed back over 0.25 sec
+        real Emberbreaker_Retaliate = 1.5
         real LeviathanGrasp_Impact = 3.25
         real LeviathanGrasp_Squeeze = 1.75 // when the 0.5 sec drag ends
-        real LeviathanGrasp_Pull = 350
-        real LeviathanGrasp_Heal = 30 // % of damage actually dealt; no cap
+        real LeviathanGrasp_Pull = 450
+        real LeviathanGrasp_Heal = 40 // % of damage actually dealt; no cap
         real LeviathanAnchor_Damage = 6.75 // 3 waves
         real LeviathanAnchor_Aoe = 500
-        real LeviathanAnchor_PullSpeed = 240 // per sec towards the centre, 1.5 sec
+        real LeviathanAnchor_PullSpeed = 300 // per sec towards the centre, 1.5 sec
         real ThunderVerdict_Damage = 4.5 // 3 strikes
         real ThunderVerdict_Leash = 500
-        real ThunderVerdict_Bonus = 3
+        real ThunderVerdict_Bonus = 4
         real ThunderBastion_Damage = 5 // 4 pulses
         real ThunderBastion_Aoe = 475
-        real ThunderBastion_Counter = 0.75
+        real ThunderBastion_Counter = 1
         real CinderFang_Impact = 4
         real CinderFang_Ricochet = 2.5
-        real CinderFang_Bonus = 1.5
+        real CinderFang_Bonus = 2.5
         real AshenCrossfire_Damage = 4.5
         real AshenCrossfire_Range = 1800
         real AshenCrossfire_Aoe = 400
@@ -622,17 +623,17 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real MirrorTide_Aoe = 600
         real MirrorTide_WaveAoe = 350
         real MirrorTide_Range = 1600
-        real MirrorTide_Push = 150 // over 0.3 sec, along the wave
-        real MirrorTide_Reflect = 1.5
+        real MirrorTide_Push = 250 // over 0.3 sec, along the wave
+        real MirrorTide_Reflect = 2
         real VoltThread_Damage = 4
-        real VoltThread_Bonus = 2
+        real VoltThread_Bonus = 3
         real VoltThread_LineDamage = 1.25 // x AGI per second
         real VoltThread_TargetDamage = 0.65
         real VoltThread_Duration = 5
         real VoltThread_LineRadius = 300
         real PhoenixSeal_Impact = 3.25
         real PhoenixSeal_Burn = 1.25 // over 2 sec
-        real PhoenixSeal_Bonus = 2
+        real PhoenixSeal_Bonus = 2.5
         real CrimsonScripture_Prepare = 0.6
         real CrimsonScripture_Damage = 4
         real CrimsonScripture_Ground = 4 // six pulses over 1.2 sec
@@ -641,12 +642,12 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real SirenTear_Damage = 5
         real SirenTear_IntCap = 3
         real SirenTear_MaxMpCap = 20 // % of the target's max mana
-        real SirenTear_Return = 75 // % of the drained mana
+        real SirenTear_Return = 100 // % of the drained mana
         real ConstellationCoil_Damage = 4.5 // one hit per enemy along the projectile
         real ConstellationCoil_Range = 1800
         real ConstellationCoil_Width = 250
         real ConstellationCoil_Speed = 1400
-        integer ConstellationCoil_Slow = 25
+        integer ConstellationCoil_Slow = 35
         integer ConstellationCoil_SlowDuration = 2
         real ConstellationCoil_Aoe = 450
         real ConstellationCoil_Spin = 260 // sideways speed of the spiral
@@ -4247,9 +4248,6 @@ endfunction
             call CoffinStart(c)
         elseif id == ReturnByDeath_Abi_ID then
             call ReturnStart(c)
-        elseif id == YataMirrorEvolved_Abi_ID then
-            call BuffUnit01(c, c, YataMirrorEvolved_BuffAbi_ID, "innerfire", 1)
-            call MyRemoveEff(AddSpecialEffectTarget("Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster.mdl", c, "origin"), 4.0)
         elseif id == PhilosopherEvolved_Abi_ID then
             call BuffUnit01(c, c, PhilosopherEvolved_BuffAbi_ID, "innerfire", 1)
             call MyRemoveEff(AddSpecialEffectTarget("Abilities\\Spells\\Undead\\VampiricAura\\VampiricAuraTarget.mdl", c, "origin"), 3.0)

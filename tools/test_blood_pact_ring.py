@@ -235,9 +235,10 @@ class BloodPactRing(unittest.TestCase):
         attacker, owner = vm.unit(owner=0), vm.unit(owner=1)
         hits = []
         vm.g.update(hs={}, I02H_ReflectActive=False, SH_DmgSys_NAOFUMI_SHIELD='naofumi shield',
-                    YataMirrorEvolved_Buff_ID='yata active', YataMirrorEvolved_ReflectActive=75.,
+                    YataMirrorEvolved_ID='I05E', YataMirrorEvolved_Reflect=25.,
                     YataMirror_ReversedDmg=30., IntegerCdKey=lambda *_: False,
-                    dmgmag=lambda *a: hits.append(a))
+                    HasCachedItem=lambda *_: 0, dmgmag=lambda *a: hits.append(a),
+                    dmgphys=lambda *a: hits.append(a))
         vm.add_ability(attacker, 'B005')
         vm.run('I02HReflect', (attacker, owner, 100., 1))
         self.assertFalse(hits)
@@ -249,6 +250,11 @@ class BloodPactRing(unittest.TestCase):
         vm.add_ability(owner, 'B005')
         vm.run('I02HReflect', (attacker, owner, 100., 1))
         self.assertEqual([(owner, attacker, 30.)], hits)
+        vm.g['HasCachedItem'] = lambda unit, item: int(unit is owner and item == 'I05E')
+        for damage_type in (1, 0):
+            hits.clear()
+            vm.run('I02HReflect', (attacker, owner, 100., damage_type))
+            self.assertEqual([(owner, attacker, 25.)], hits)
         self.assertFalse(vm.g['I02H_ReflectActive'])
 
 

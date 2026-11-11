@@ -212,7 +212,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             endif
                         endloop
 
-                        if r2 >= 0.0 then
+                        if r2 > 0.06 then // every 0.09 s (was every tick)
                             set r2 = 0.0
                             call EffectSpawn2("war3mapImported\\wos_BY_Wood_Effect_Order_MuZhiBenYing_Fir_Huo_DiMianss2.mdl", x1, y1, GetRandomReal(0.0, 359.0), 2.0, 1.0, 0.0, 0.15)
                             call VisionTimed(GetOwningPlayer(c), x1, y1, 800.0, 1.0)
@@ -405,7 +405,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             set r6 = r6 + 0.03
                         endif
 
-                        if r2 >= 0.0 then
+                        if r2 > 0.06 then // every 0.09 s (was every tick)
                             set r2 = 0.0
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_0854.mdl", x1, y1, a * bj_RADTODEG, 2.0, 1.0, 0.0))
                             call EffectSpawn2("war3mapImported\\wos_BY_Wood_Effect_Order_MuZhiBenYing_Fir_Huo_DiMianss2.mdl", x1, y1, GetRandomReal(0.0, 359.0), 2.0, 1.0, 0.0, 0.15)
@@ -719,7 +719,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                         endif
                         set a = GAngle(c, td)
                         call MoveUnit(c, move, a)
-                        if r2 >= 0.0 then
+                        if r2 > 0.06 then // every 0.09 s (was every tick)
                             set r2 = 0.0
                             call EffectSpawn2("war3mapImported\\wos_BY_Wood_Effect_Order_MuZhiBenYing_Fir_Huo_DiMianss2.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0.0, 359.0), 2.0, 1.0, 0.0, 0.15)
                             call VisionTimed(GetOwningPlayer(c), x1, y1, 800.0, 1.0)
@@ -952,7 +952,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             set r6 = r6 + 0.03
                         endif
 
-                        if r2 >= 0.0 then
+                        if r2 > 0.1 then // T every 0.12 s (was every tick)
                             set r2 = 0.0
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_firefly-rq-sfx2.mdl", x1, y1, GetRandomReal(0.0, 359.0), GetRandomReal(1.0, 2.0), 2.5, 105.0))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_opdef (652).mdl", x1, y1, GetRandomReal(0.0, 359.0), 2.0, 1.0, 150.0))

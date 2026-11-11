@@ -675,7 +675,7 @@ library HarribelSpells uses GearSystems
                             call SetUnitTimeScale(c, 0.05)
                         endif
                         if r >= 0.1 then
-                            if r2 > 0.24 then
+                            if r2 > 0.49 then // E every 0.30 s (was 0.15)
                                 set r2 = 0
                                 call DecorRemove(c,x,y,450,20)
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_Eff (134).mdl", x, y, GetRandomReal(0, 359), 1, 0.5, 11))
@@ -1275,7 +1275,7 @@ library HarribelSpells uses GearSystems
                         if fly < 200 then
                             set r = 9999
                         endif
-                        if r2 > 0.0 then
+                        if r2 > 0.03 then // T every 0.06 s (was every tick)
                             set r2 = 0
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Eff (134).mdl", x, y, GetRandomReal(0, 359), 0.65, 1, fly))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Eff (134).mdl", x, y, GetRandomReal(0, 359), 0.55, 2, fly))

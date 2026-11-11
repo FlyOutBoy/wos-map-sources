@@ -95,25 +95,25 @@ class Fix6(prior.Fix5):
   self.vm.run('BuyAutoLimited',(hero,tome,1));self.assertEqual(10000,self.gold[0]);self.assertEqual(10,hero['str'])
   g['CurrentRound']=15;self.assertFalse(self.vm.run('ShopRoundLocked',(tome,)))
   self.assertEqual(0,self.vm.run('BuyAutoLimited',(hero,tome,1)))
-  self.assertEqual((12,22,32),(hero['str'],hero['agi'],hero['int']))
+  self.assertEqual((13,23,33),(hero['str'],hero['agi'],hero['int']))
   self.assertEqual(before,hero['inv']);self.assertEqual(5000,self.gold[0]);self.assertFalse(self.adds)
-  self.gold[0]=4999;self.assertEqual(1,self.vm.run('BuyAutoLimited',(hero,tome,1)));self.assertEqual(12,hero['str'])
+  self.gold[0]=4999;self.assertEqual(1,self.vm.run('BuyAutoLimited',(hero,tome,1)));self.assertEqual(13,hero['str'])
  def test_mastery_quickbuy_consumes_goal_once_with_full_inventory(self):
   g,hero,tome=self.stat_purchase();g['QB_Data'][tome,0]=True;g['QB_Data'][tome,1]=5000
   self.goals([tome]);self.tick(3)
-  self.assertEqual(5000,self.gold[0]);self.assertEqual(12,hero['str']);self.assertEqual(0,g['QB_Count'][0])
+  self.assertEqual(5000,self.gold[0]);self.assertEqual(13,hero['str']);self.assertEqual(0,g['QB_Count'][0])
  def test_mastery_manual_buy_at_round_15_full_inventory(self):
   g,hero,tome=self.stat_purchase();g['ItemsCurrentItem_ID'][0]=tome
   g.update(BlzGetTriggerFrame=lambda:77,GetHandleId=lambda o:o['pid']+1 if isinstance(o,dict) else o,
    ShopFrameTable={(77,0):306},SHOP_PAGE_LAST=7,ShopFastAction=lambda p,code,id:code,IsObserverSlot=lambda _:False,
    ShopShowItemDescription=lambda *_:None,CraftItemCheck=lambda *_:None,ReloadItemPage2=lambda *_:None)
   self.vm.run('OnClickItem')
-  self.assertEqual((12,22,32),(hero['str'],hero['agi'],hero['int']))
+  self.assertEqual((13,23,33),(hero['str'],hero['agi'],hero['int']))
   self.assertEqual(5000,self.gold[0]);self.assertEqual([6]*6,hero['inv']);self.assertFalse(self.adds)
  def test_mastery_recommended_buys_once_and_advances(self):
   g,hero,tome=self.stat_purchase();g['ItemsPage0_ID'][0]=tome
   for _ in range(3):self.vm.run('RecommendedAutoBuyTick',(hero,0))
-  self.assertEqual(5000,self.gold[0]);self.assertEqual(12,hero['str'])
+  self.assertEqual(5000,self.gold[0]);self.assertEqual(13,hero['str'])
   self.assertEqual(1,g['AutoBuyRecommendedIndex'][0]);self.assertTrue(g['AutoBuyRecommendedDone'][0])
 class SaveRequest(prior.SaveRequest):pass
 if __name__=='__main__':unittest.main()

@@ -1226,6 +1226,7 @@ function BuffClear takes unit c returns nothing
     call UnitRemoveAbility(c,'B005') // Naofumi Shield
     call UnitRemoveAbility(c,'B00G') // Daruma San Ga Koronda
     call UnitRemoveAbility(c,'B00J') // Song of Salvation
+    call UnitRemoveAbility(c,'B079') // Song of Salvation: Resolve (Inori R Lv. 35 damage buff)
     call UnitRemoveAbility(c,'B00V') // Zero Point Breakthrough
     call UnitRemoveAbility(c,'B00W') // Mantello di Vongola Primo
     call UnitRemoveAbility(c,'B00X') // Utsushi Ame
@@ -3357,7 +3358,7 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
     // Р вЂ™Р В°Р СР С—Р С‘РЎР‚Р С‘Р В·Р С Р С‘ РЎРѓР С•Р С—РЎР‚Р С•РЎвЂљР С‘Р Р†Р В»Р ВµР Р…Р С‘Р Вµ Р С—РЎР‚Р ВµР Т‘Р СР ВµРЎвЂљР В° I00B
     if HasCachedItem(td, 'I00B') > 0 then
         if not test then
-            call HPS(td, td, dmg * 0.10, 5.0)
+            call HPS(td, td, dmg * 0.15, 5.0) // Oken: 15% (was 10%)
         endif
 
         // Для магического урона предметный резист войдёт в общий пул ниже.
@@ -3411,7 +3412,7 @@ endif
 
         // Р С’Р С”РЎвЂљР С‘Р Р†Р В°РЎвЂ Р С‘РЎРЏ Blue Emperor
         if not test /*
-        */ and dmg >= 200.0 /*
+        */ and dmg >= 100.0 /*
         */ and HasCachedItem(td, 'I00X') > 0 /*
         */ and BlzGetUnitAbilityCooldownRemaining(td, 'A04Q') == 0.0 then
 
@@ -3420,7 +3421,7 @@ endif
             call SaveInteger(hs, targetHid, KEY_BLUE_EMPEROR_RES, 1)
             call MyFlush(targetHid, KEY_BLUE_EMPEROR_RES, 0, 4.0)
             call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_sacred guard blue.mdl", td, "chest"), 4.0)
-            call BlzStartUnitAbilityCooldown(td, 'A04Q', 25.0)
+            call BlzStartUnitAbilityCooldown(td, 'A04Q', 20.0) // Emperor's Patience (was 25)
         endif
 
         // Р вЂ”Р В°РЎвЂ°Р С‘РЎвЂљР В° dummy-РЎР‹Р Р…Р С‘РЎвЂљР С•Р Р† Kenjaku
@@ -3742,6 +3743,16 @@ function CoreDrill_GetStacks takes unit c, integer typedmg returns integer
     return 0
 endfunction
 
+// Ranged heroes get on-hit item procs (Lostvayne / Dark Repulser extra hit, Murasame bleed) at RangedOnHit_Factor.
+// Explicit list: melee heroes keep 100% in every form (Asta T, Raiden T and other range-changing forms).
+function ItemOnHitFactor takes unit c returns real
+    local integer id = GetUnitTypeId(c)
+    // Alucard, Alucard morph, Inori, Inori 2, Ainz, Frostnova, Frieren
+    if id == 'H01Z' or id == 'H020' or id == 'H017' or id == 'H018' or id == 'H02E' or id == 'H002' or id == 'H02H' then
+        return RangedOnHit_Factor
+    endif
+    return 1.0
+endfunction
 function DamageCheckModifiers takes unit c, unit td, real dmg, integer typedmg returns real
     local integer sourceId = GetUnitTypeId(c)
     local integer sourceHid = GetHandleId(c)
@@ -3771,6 +3782,12 @@ function DamageCheckModifiers takes unit c, unit td, real dmg, integer typedmg r
     endif
     if GetUnitAbilityLevel(c,BrandishF_Buff_ID)>0 then //LoadInteger(hs, sourceHid, StringHash("brandish g ally")) > 0 then
         set dmg = dmg + (dmg * (BrandishF_DamageOutputIncrease / 100))
+    endif
+    static if LIBRARY_InoriSpells then
+        // Inori R Lv. 35: allies left in the zone after a full song
+        if GetUnitAbilityLevel(c, InoriR_DmgBuff_ID) > 0 then
+            set dmg = dmg * (1.0 + InoriR_DmgBuffBonus / 100.0)
+        endif
     endif
     if GetUnitAbilityLevel(c,BrandishF_Debuff_ID)>0 then//LoadInteger(hs, sourceHid, StringHash("brandish g enemy")) > 0 then
         set dmg = dmg - (dmg * (BrandishF_DamageOutputDecrease / 100))
@@ -3805,8 +3822,8 @@ function DamageCheckModifiers takes unit c, unit td, real dmg, integer typedmg r
             set dmg = dmg * 1.1
         endif
 
-        if HasCachedItem(c, 'I01C') > 0 then
-            set dmg = dmg * 1.1
+        if HasCachedItem(c, 'I01C') > 0 then // Gokon Tekko: +13% physical (was 10)
+            set dmg = dmg * 1.13
         endif
 
         if HasCachedItem(c, RaikageHat_ID ) > 0 then
@@ -3850,8 +3867,8 @@ function DamageCheckModifiers takes unit c, unit td, real dmg, integer typedmg r
     if GetUnitAbilityLevel(c, DemonDwellerSword_Mag_ID) > 0 then
             set dmg = dmg * (1.0 + (DemonDwellerSword_Bonus  / 100.0))
         endif
-        if HasCachedItem(c, 'I01C') > 0 and GetMainStatInt(c) then
-            set dmg = dmg * 1.1
+        if HasCachedItem(c, 'I01C') > 0 and GetMainStatInt(c) then // Gokon Tekko: +13% magic (was 10)
+            set dmg = dmg * 1.13
         endif
         if AinzF_HasMagicDamageBuff (c) then
             set dmg = dmg * 1.08

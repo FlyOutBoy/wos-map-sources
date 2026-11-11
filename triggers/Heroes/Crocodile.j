@@ -3125,11 +3125,11 @@ endmethod
                     endloop
                     if r2>0.06 then 
                     set r2 = 0
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandExplosion.mdl",x+nextSand*Cos(a),y+nextSand*Sin(a),0,2.5,3,115))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandExplosion_lite.mdl",x+nextSand*Cos(a),y+nextSand*Sin(a),0,2.5,3,115))
                     //call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandPoff.mdl",x+nextSand*Cos(a),y+nextSand*Sin(a),0,1,2,1))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandExplosion.mdl",x+nextSand*Cos(a+spread),y+nextSand*Sin(a+spread),0,2.5,3,115))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandExplosion_lite.mdl",x+nextSand*Cos(a+spread),y+nextSand*Sin(a+spread),0,2.5,3,115))
                     //call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandPoff.mdl",x+nextSand*Cos(a+spread),y+nextSand*Sin(a+spread),0,1,2,1))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandExplosion.mdl",x+nextSand*Cos(a-spread),y+nextSand*Sin(a-spread),0,2.5,3,115))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandExplosion_lite.mdl",x+nextSand*Cos(a-spread),y+nextSand*Sin(a-spread),0,2.5,3,115))
                     //call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandPoff.mdl",x+nextSand*Cos(a-spread),y+nextSand*Sin(a-spread),0,1,2,1))
                     else
                     set r2 = r2 + 0.03

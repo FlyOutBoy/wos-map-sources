@@ -335,22 +335,15 @@ set I02H_ReflectActive = true
 if IntegerCdKey(target, SH_ICD_I02H_REFLECT_SFX,0.15) then
 call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_Opdef (571)2.mdx",source,"chest"))
 endif
-if typedmg == 1 then
-// Mirror of Yata Evolved: 75% while its active buff lasts.
-if GetUnitAbilityLevel(target, YataMirrorEvolved_Buff_ID) > 0 then
-set dmg = dmg*(YataMirrorEvolved_ReflectActive/100)
+if HasCachedItem(target, YataMirrorEvolved_ID) > 0 then
+set dmg = dmg*(YataMirrorEvolved_Reflect/100)
 else
 set dmg = dmg*(YataMirror_ReversedDmg/100)
 endif
 call DamageSource('I02H')
+if typedmg == 1 then
 call dmgmag(target,source,dmg)
 else
-if GetUnitAbilityLevel(target, YataMirrorEvolved_Buff_ID) > 0 then
-set dmg = dmg*(YataMirrorEvolved_ReflectActive/100)
-else
-set dmg = dmg*(YataMirror_ReversedDmg/100)
-endif
-call DamageSource('I02H')
 call dmgphys(target,source,dmg)
 endif
 set I02H_ReflectActive = false
@@ -476,13 +469,13 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     if HasCachedItem(c, DarkRepulser_ID) > 0 then
     if GetUnitAbilityLevel(c, DarkRepulser_CD_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(c, DarkRepulser_CD_ID) == 0 then
     call DamageSource(DarkRepulser_ID)
-    call NextDmg(c,td,GetAttack(c),2,0.5)
+    call NextDmg(c,td,GetAttack(c) * ItemOnHitFactor(c),2,0.5)
     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_daoguang_blue_hitsword.mdx",td,"origin"))
     call BlzStartUnitAbilityCooldown(c,DarkRepulser_CD_ID,DarkRepulser_CD)
     endif
     elseif HasCachedItem(c,'I03X') > 0 and GetUnitAbilityLevel(c, 'A0HT') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HT') == 0 then
     call DamageSource('I03X')
-    call NextDmg(c,td,GetAttack(c),2,0.5)
+    call NextDmg(c,td,GetAttack(c) * ItemOnHitFactor(c),2,0.5)
     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_daoguang_blue_hitsword.mdx",td,"origin"))
     call BlzStartUnitAbilityCooldown(c,'A0HT',1)
     endif

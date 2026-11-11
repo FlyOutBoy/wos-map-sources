@@ -409,7 +409,8 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                                 if r4 > 0.00 then
                                     set r4 = 0.0
                                     set move = move + 5.0
-                                    if check2 == 0 then
+                                    if ModuloInteger(R2I(r / 0.03 + 0.5), 4) >= 2 then // Q2 effects every 0.12 s; r4 still ramps the speed
+                                    elseif check2 == 0 then
                                         call MyRemoveEff(EffectSpawn4("war3mapImported\\wos_krk (1849)2.mdx", x, y, a * bj_RADTODEG, 1.0, 1.25, 145.0, -90.0), 0.5)
                                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_bx_leidiandaji.mdx", x, y, GetRandomReal(0.0, 359.0), 1.5, 2.0, 1.0))
                                     else

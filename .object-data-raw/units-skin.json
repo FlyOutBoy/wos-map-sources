@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3u",
-  "source_sha256": "976a13983f2153b6424b0a8501a7a531d18409e5cf1b34939d23749132c50d4a",
+  "source_sha256": "4ca081cf278944c119b27b1ee42303ae019cf0bdb2452b7f1a1a82ea9e353026",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -1262,9 +1262,9 @@
           "field_name": "",
           "type": "real",
           "data": {
-            "value": 4.4,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 4.400000095367432,
+            "_original_value": 4.400000095367432,
+            "_raw_hex": "CDCC8C40"
           },
           "sanity_check": {
             "text": "",
