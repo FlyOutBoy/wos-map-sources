@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3t",
-  "source_sha256": "438e79106985b9399f375e350ebaa49b8b0a64f14a7abc65d71731cbef49f886",
+  "source_sha256": "52b2efbfbb84f39b23d6d800761d0cf4bebd109eb908fa84d14d52ade1b55dbb",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -1969,7 +1969,7 @@
             "_original_value": "TRIGSTR_546",
             "_encoding": "utf-8",
             "_raw_base64": "VFJJR1NUUl81NDY=",
-            "resolved_value": "+5 allstats\n+1 mp regen\nActive: Throws a barrel at the target point. It explodes, dealing 175 + 2x main stat magic damage, and burns enemies for 30 damage per second.\nDuration: 5 sec.\nCooldown: 25 sec.\nShared CD: Fire items. Only one active per element.",
+            "resolved_value": "+5 allstats\n+1 mp regen\nActive: Throws a barrel at the target point. It explodes, dealing 175 + 2x main stat magic damage, and burns enemies for 30 damage per second.\nDuration: 4 sec.\nCooldown: 25 sec.\nShared CD: Fire items. Only one active per element.",
             "_original_resolved_value": "+5 allstats\n+1 mp regen\nActive: Throws a barrel at the target point. It explodes, dealing 175 + 2x main stat magic damage, and burns enemies for 30 damage per second.\nDuration: 5 sec.\nCooldown: 25 sec.\nShared CD: Fire items. Only one active per element."
           },
           "sanity_check": {
@@ -1989,7 +1989,7 @@
             "_original_value": "TRIGSTR_568",
             "_encoding": "utf-8",
             "_raw_base64": "VFJJR1NUUl81Njg=",
-            "resolved_value": "+5 allstats\n+1 mp regen\nActive: Throws a barrel at the target point. It explodes, dealing 175 + 2x main stat magic damage, and burns enemies for 30 damage per second.\nDuration: 5 sec.\nCooldown: 25 sec.\nShared CD: Fire items. Only one active per element.",
+            "resolved_value": "+5 allstats\n+1 mp regen\nActive: Throws a barrel at the target point. It explodes, dealing 175 + 2x main stat magic damage, and burns enemies for 30 damage per second.\nDuration: 4 sec.\nCooldown: 25 sec.\nShared CD: Fire items. Only one active per element.",
             "_original_resolved_value": "+5 allstats\n+1 mp regen\nActive: Throws a barrel at the target point. It explodes, dealing 175 + 2x main stat magic damage, and burns enemies for 30 damage per second.\nDuration: 5 sec.\nCooldown: 25 sec.\nShared CD: Fire items. Only one active per element."
           },
           "sanity_check": {
@@ -6831,12 +6831,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_075",
-            "_original_value": "TRIGSTR_075",
+            "value": "TRIGSTR_292",
+            "_original_value": "TRIGSTR_292",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8wNzU=",
+            "_raw_base64": "VFJJR1NUUl8yOTI=",
             "resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP. After 15 uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within 1500 range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within 1200 range receive 15% more mana regeneration and mana restoration, and slows on them are 15% weaker (45% becomes 30%; a 15% slow is ignored). Slow duration is unchanged. Does not affect slow auras. Slow auras are not weakened.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP. After 15 uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within 1500 range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within 1200 range receive 15% more mana regeneration and mana restoration, and slows on them are 15% weaker (45% becomes 30%; a 15% slow is ignored). Slow duration is unchanged. Slow auras are not weakened.\nCooldown: 4 sec."
+            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP. After 15 uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within 1500 range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within 1200 range receive 15% more mana regeneration and mana restoration, and slows on them are 15% weaker (45% becomes 30%; a 15% slow is ignored). Slow duration is unchanged. Does not affect slow auras. Slow auras are not weakened.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -6869,12 +6869,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_105",
-            "_original_value": "TRIGSTR_105",
+            "value": "TRIGSTR_619",
+            "_original_value": "TRIGSTR_619",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDU=",
+            "_raw_base64": "VFJJR1NUUl82MTk=",
             "resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP. After 15 uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within 1500 range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within 1200 range receive 15% more mana regeneration and mana restoration, and slows on them are 15% weaker (45% becomes 30%; a 15% slow is ignored). Slow duration is unchanged. Does not affect slow auras. Slow auras are not weakened.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP. After 15 uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within 1500 range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within 1200 range receive 15% more mana regeneration and mana restoration, and slows on them are 15% weaker (45% becomes 30%; a 15% slow is ignored). Slow duration is unchanged. Slow auras are not weakened.\nCooldown: 4 sec."
+            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP. After 15 uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within 1500 range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within 1200 range receive 15% more mana regeneration and mana restoration, and slows on them are 15% weaker (45% becomes 30%; a 15% slow is ignored). Slow duration is unchanged. Does not affect slow auras. Slow auras are not weakened.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -10803,12 +10803,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2056",
-            "_original_value": "TRIGSTR_2056",
+            "value": "TRIGSTR_869",
+            "_original_value": "TRIGSTR_869",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMDU2",
-            "resolved_value": "+10 str\n+10 allstats\nPassive: Deals 40 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range.",
-            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Deals 40 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range."
+            "_raw_base64": "VFJJR1NUUl84Njk=",
+            "resolved_value": "+10 str\n+10 allstats\nPassive: Deals 65 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range.",
+            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Deals 65 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range."
           },
           "sanity_check": {
             "text": "",
@@ -10841,12 +10841,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2057",
-            "_original_value": "TRIGSTR_2057",
+            "value": "TRIGSTR_931",
+            "_original_value": "TRIGSTR_931",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMDU3",
-            "resolved_value": "+10 str\n+10 allstats\nPassive: Deals 40 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range.",
-            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Deals 40 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range."
+            "_raw_base64": "VFJJR1NUUl85MzE=",
+            "resolved_value": "+10 str\n+10 allstats\nPassive: Deals 65 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range.",
+            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Deals 65 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range."
           },
           "sanity_check": {
             "text": "",
@@ -11641,7 +11641,7 @@
             "_original_value": "TRIGSTR_8907",
             "_encoding": "utf-8",
             "_raw_base64": "VFJJR1NUUl84OTA3",
-            "resolved_value": "+1500 hp\n+10 physical resistance\nPassive: Accumulates damage taken while ready. After accumulating 2000 damage, spends 105 MP to grant a full damage shield for 2 sec. If mana is insufficient, keeps the accumulated amount until a later hit can trigger it.\nCooldown: 8 sec.",
+            "resolved_value": "+1500 hp\n+10 physical resistance\nPassive: Accumulates damage taken while ready. After accumulating 2000 damage, grants a full damage shield for 2 sec. If mana is insufficient, keeps the accumulated amount until a later hit can trigger it.\nMana cost: 105 MP (to trigger).\nCooldown: 10 sec.",
             "_original_resolved_value": "+1500 hp\n+10 physical resistance\nPassive: Accumulates damage taken while ready. After accumulating 2000 damage, spends 105 MP to grant a full damage shield for 2 sec. If mana is insufficient, keeps the accumulated amount until a later hit can trigger it.\nCooldown: 8 sec."
           },
           "sanity_check": {
@@ -11661,7 +11661,7 @@
             "_original_value": "TRIGSTR_8908",
             "_encoding": "utf-8",
             "_raw_base64": "VFJJR1NUUl84OTA4",
-            "resolved_value": "+1500 hp\n+10 physical resistance\nPassive: Accumulates damage taken while ready. After accumulating 2000 damage, spends 105 MP to grant a full damage shield for 2 sec. If mana is insufficient, keeps the accumulated amount until a later hit can trigger it.\nCooldown: 8 sec.",
+            "resolved_value": "+1500 hp\n+10 physical resistance\nPassive: Accumulates damage taken while ready. After accumulating 2000 damage, grants a full damage shield for 2 sec. If mana is insufficient, keeps the accumulated amount until a later hit can trigger it.\nMana cost: 105 MP (to trigger).\nCooldown: 10 sec.",
             "_original_resolved_value": "+1500 hp\n+10 physical resistance\nPassive: Accumulates damage taken while ready. After accumulating 2000 damage, spends 105 MP to grant a full damage shield for 2 sec. If mana is insufficient, keeps the accumulated amount until a later hit can trigger it.\nCooldown: 8 sec."
           },
           "sanity_check": {
@@ -17355,12 +17355,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_278",
-            "_original_value": "TRIGSTR_278",
+            "value": "TRIGSTR_932",
+            "_original_value": "TRIGSTR_932",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNzg=",
-            "resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.45x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec.",
-            "_original_resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.45x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec."
+            "_raw_base64": "VFJJR1NUUl85MzI=",
+            "resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.40x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec.",
+            "_original_resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.40x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17375,12 +17375,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_290",
-            "_original_value": "TRIGSTR_290",
+            "value": "TRIGSTR_1775",
+            "_original_value": "TRIGSTR_1775",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yOTA=",
-            "resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.45x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec.",
-            "_original_resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.45x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec."
+            "_raw_base64": "VFJJR1NUUl8xNzc1",
+            "resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.40x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec.",
+            "_original_resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.40x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec."
           },
           "sanity_check": {
             "text": "",
@@ -18339,12 +18339,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2053",
-            "_original_value": "TRIGSTR_2053",
+            "value": "TRIGSTR_2454",
+            "_original_value": "TRIGSTR_2454",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMDUz",
+            "_raw_base64": "VFJJR1NUUl8yNDU0",
             "resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Cast range: 1600.\nNot invulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Cast range: 1600 Does not grant invulnerability.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+            "_original_resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Cast range: 1600.\nNot invulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -18377,12 +18377,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2055",
-            "_original_value": "TRIGSTR_2055",
+            "value": "TRIGSTR_2583",
+            "_original_value": "TRIGSTR_2583",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMDU1",
+            "_raw_base64": "VFJJR1NUUl8yNTgz",
             "resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Cast range: 1600.\nNot invulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Cast range: 1600 Does not grant invulnerability.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+            "_original_resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Cast range: 1600.\nNot invulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -18453,12 +18453,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_317",
-            "_original_value": "TRIGSTR_317",
+            "value": "TRIGSTR_2586",
+            "_original_value": "TRIGSTR_2586",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMTc=",
+            "_raw_base64": "VFJJR1NUUl8yNTg2",
             "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Fire items. Only one active per element.",
-            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Cast range: 1600 Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Fire items. Only one active per element."
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Fire items. Only one active per element."
           },
           "sanity_check": {
             "text": "",
@@ -18491,12 +18491,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_318",
-            "_original_value": "TRIGSTR_318",
+            "value": "TRIGSTR_2601",
+            "_original_value": "TRIGSTR_2601",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMTg=",
+            "_raw_base64": "VFJJR1NUUl8yNjAx",
             "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Fire items. Only one active per element.",
-            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Cast range: 1600 Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Fire items. Only one active per element."
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Fire items. Only one active per element."
           },
           "sanity_check": {
             "text": "",
@@ -18567,12 +18567,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_339",
-            "_original_value": "TRIGSTR_339",
+            "value": "TRIGSTR_2613",
+            "_original_value": "TRIGSTR_2613",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMzk=",
+            "_raw_base64": "VFJJR1NUUl8yNjEz",
             "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Water items. Only one active per element.",
-            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Cast range: 1600 Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Water items. Only one active per element."
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Water items. Only one active per element."
           },
           "sanity_check": {
             "text": "",
@@ -18605,12 +18605,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_340",
-            "_original_value": "TRIGSTR_340",
+            "value": "TRIGSTR_4015",
+            "_original_value": "TRIGSTR_4015",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNDA=",
+            "_raw_base64": "VFJJR1NUUl80MDE1",
             "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Water items. Only one active per element.",
-            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Cast range: 1600 Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Water items. Only one active per element."
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Water items. Only one active per element."
           },
           "sanity_check": {
             "text": "",
@@ -18681,12 +18681,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1868",
-            "_original_value": "TRIGSTR_1868",
+            "value": "TRIGSTR_4115",
+            "_original_value": "TRIGSTR_4115",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xODY4",
+            "_raw_base64": "VFJJR1NUUl80MTE1",
             "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Lightning items. Only one active per element.",
-            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Cast range: 1600 Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Lightning items. Only one active per element."
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Lightning items. Only one active per element."
           },
           "sanity_check": {
             "text": "",
@@ -18719,12 +18719,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1869",
-            "_original_value": "TRIGSTR_1869",
+            "value": "TRIGSTR_4203",
+            "_original_value": "TRIGSTR_4203",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xODY5",
+            "_raw_base64": "VFJJR1NUUl80MjAz",
             "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Lightning items. Only one active per element.",
-            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Cast range: 1600 Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Lightning items. Only one active per element."
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Cast range: 1600.\nInvulnerable while dashing. Each enemy struck reduces the cooldown by 1 sec.\nOnly one elemental Kusanagi can be carried; buying another element in the shop swaps it for free. Shares its cooldown with every Kusanagi.\nCooldown: 15 sec.\nShared CD: Lightning items. Only one active per element."
           },
           "sanity_check": {
             "text": "",
@@ -20025,12 +20025,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2629",
-            "_original_value": "TRIGSTR_2629",
+            "value": "TRIGSTR_4223",
+            "_original_value": "TRIGSTR_4223",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjI5",
-            "resolved_value": "+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl80MjIz",
+            "resolved_value": "+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -20063,12 +20063,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2630",
-            "_original_value": "TRIGSTR_2630",
+            "value": "TRIGSTR_4224",
+            "_original_value": "TRIGSTR_4224",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjMw",
-            "resolved_value": "+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl80MjI0",
+            "resolved_value": "+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -20289,12 +20289,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2645",
-            "_original_value": "TRIGSTR_2645",
+            "value": "TRIGSTR_4242",
+            "_original_value": "TRIGSTR_4242",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjQ1",
-            "resolved_value": "+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 180 sec; resets at the end of each round.",
-            "_original_resolved_value": "+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 180 sec; resets at the end of each round."
+            "_raw_base64": "VFJJR1NUUl80MjQy",
+            "resolved_value": "+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 70 sec; resets at the end of each round.",
+            "_original_resolved_value": "+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 70 sec; resets at the end of each round."
           },
           "sanity_check": {
             "text": "",
@@ -20309,12 +20309,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2646",
-            "_original_value": "TRIGSTR_2646",
+            "value": "TRIGSTR_4243",
+            "_original_value": "TRIGSTR_4243",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjQ2",
-            "resolved_value": "+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 180 sec; resets at the end of each round.",
-            "_original_resolved_value": "+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 180 sec; resets at the end of each round."
+            "_raw_base64": "VFJJR1NUUl80MjQz",
+            "resolved_value": "+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 70 sec; resets at the end of each round.",
+            "_original_resolved_value": "+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 70 sec; resets at the end of each round."
           },
           "sanity_check": {
             "text": "",
@@ -24091,6 +24091,110 @@
         }
       ],
       "display_name": "Dark Repulser"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I076",
+        "hex": "49303736"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_4250",
+            "_original_value": "TRIGSTR_4250",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MjUw",
+            "resolved_value": "Mera Mera no Mi Evolved",
+            "_original_resolved_value": "Mera Mera no Mi Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_4251",
+            "_original_value": "TRIGSTR_4251",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MjUx",
+            "resolved_value": "Mera Mera no Mi Evolved",
+            "_original_resolved_value": "Mera Mera no Mi Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "+15 str\n+15 allstats\nPassive: Deals 65 + 1.4% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range.\nActive: Grants a fire shield that absorbs damage equal to 10% of max HP for 5 sec.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX01lcmFNZXJhRXZvbHZlZC5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+15 str\n+15 allstats\nPassive: Deals 65 + 1.4% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range.\nActive: Grants a fire shield that absorbs damage equal to 10% of max HP for 5 sec.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Mera Mera no Mi Evolved"
     }
   ]
 }

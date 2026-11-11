@@ -15,5 +15,10 @@
   "SF": "A12A",
   "SG": "A12B",
   "F_BuffSpell": "A166",
-  "F_Buff": "B075"
+  "F_Buff": "B075",
+  "W_BuffSpell": "A167",
+  "W_Buff": "B076",
+  "W_DebuffSpell": "A168",
+  "W_Debuff": "B077",
+  "W2": "A169"
 }

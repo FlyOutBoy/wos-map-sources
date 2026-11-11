@@ -1334,11 +1334,15 @@ endfunction
     endfunction
     // After a hero's spell the owner keeps only that hero selected (summons, clicked
     // targets and other units leave the selection). Untouched when already sole.
+    // Only with the AUTO SELECT HERO setting on (WUI_AutoSelectHero, default off).
     function GearSelectOnlyHero takes unit c returns nothing
         local integer pid = GetPlayerId(GetOwningPlayer(c))
         local unit u
         local boolean other = false
-        if pid >= 10 or Hero[pid] != c or c == null then
+        if pid < 0 or pid >= 10 or Hero[pid] != c or c == null then
+            return
+        endif
+        if not WUI_AutoSelectHero[pid] then
             return
         endif
         if GetLocalPlayer() == Player(pid) then

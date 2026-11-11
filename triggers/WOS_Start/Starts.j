@@ -456,8 +456,15 @@ endfunction
 function MeraMeraNoMi takes unit hero returns nothing
 local unit target = null
 local player owner = null
-local real dmg = MeraMera_Damage + (GetUnitState(hero,UNIT_STATE_MAX_LIFE)*(MeraMera_MaxHpDamage/100))
+local real pct = MeraMera_MaxHpDamage
+local real dmg = 0
+local integer src = 'I02G'
 local integer id = GetPlayerId(GetOwningPlayer(hero))
+if HasCachedItem(hero, MeraMeraEvolved_ID) > 0 then // Evolved: +0.2% max hp
+set pct = pct + MeraMeraEvolved_MaxHpDamageBonus
+set src = MeraMeraEvolved_ID
+endif
+set dmg = MeraMera_Damage + (GetUnitState(hero,UNIT_STATE_MAX_LIFE)*(pct/100))
 if dmg> MeraMera_MaxDamage then 
 set dmg = MeraMera_MaxDamage
 endif
@@ -481,7 +488,7 @@ set target = FirstOfGroup(MeraMeraEnumGroup)
 exitwhen target == null
 call GroupRemoveUnit(MeraMeraEnumGroup,target)
 if IsUnitEnemy(target,owner) and GetWidgetLife(target) > 0.405 and not IsUnitType(target,UNIT_TYPE_DEAD) and GetUnitAbilityLevel(target,'Avul') == 0 and GetUnitAbilityLevel(target,'B02T')<1 then
-call DamageSource('I02G')
+call DamageSource(src)
 call dmgmag(hero,target,dmg)
 call SetUnitFacing(MeraMeraDummy[id], GAngle(MeraMeraDummy[id], target) * bj_RADTODEG)
 call IssueTargetOrder(MeraMeraDummy[id], "curse", target)        
@@ -528,7 +535,7 @@ function Regen takes nothing returns nothing
                     call UnitAddAbility(u, 'Avul')
                 endif
                 else
-       if HasCachedItem(u,'I02G') > 0 then
+       if HasCachedItem(u,'I02G') > 0 or HasCachedItem(u,MeraMeraEvolved_ID) > 0 then
         call MeraMeraNoMi(u)
        endif
           if AinzF_HasHpRegenBuff(u) then

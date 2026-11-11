@@ -797,6 +797,7 @@ private function AHUI_ConfigureHeroAbilities takes unit whichHero returns nothin
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_E, MahoragaE_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_E, MahoragaE2_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_E, MahoragaE3_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_E, MahoragaGE2_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_R, MahoragaR_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, MahoragaT_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_F, MahoragaF_ID)

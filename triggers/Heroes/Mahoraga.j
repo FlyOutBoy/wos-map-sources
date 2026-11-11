@@ -114,6 +114,7 @@ library MahoragaSpells uses GearSystems
         real MahoragaE_DamageAgiStep = 1 // additional number x Agi damage for each next level
         real MahoragaE_DamageAoe = 675
         real MahoragaE_Range = 1100 // how long from start caster pos you can move
+        real MahoragaE_ClickRangeBonus = 150 // click (cast) range = MahoragaE_Range + this; object A0CH cast range 1250
 //---------------E2 ability-----------------------------------------------------
         integer MahoragaE2_ID = 'A0CI'
         integer MahoragaE2_Buff_ID = 'B01O'
@@ -126,6 +127,9 @@ library MahoragaSpells uses GearSystems
         real MahoragaE3_DamageAgiBase = 6 // base number x Agi damage for 1 level
         real MahoragaE3_DamageAddForBuildings = 20 // %
         real MahoragaE3_Range = 1400 // how long from start target pos you can move
+//---------------GE2 ability (objects: tools/stage_mahoraga_ge2.py)--------------
+        integer MahoragaGE2_ID = 'A16B' // E3 follow-up unlocked by a G hit; CD 10 sec (object)
+        real MahoragaGE2_Window = 3 // sec: E is replaced by GE2 after G hits
 //---------------R ability-----------------------------------------------------
         integer MahoragaR_ID = 'A0CK'
         real MahoragaR_HealAgiBase = 4 // base number x Agi damage for 1 level
@@ -1233,10 +1237,18 @@ library MahoragaSpells uses GearSystems
                         endif
                     endif
                 else
-                    call StopSpellUnit2(c)
+                    call StopSpellUnit(c) // removes Avul
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     if check == 1 then
+                        // GE2: E becomes the leap-with-target follow-up (same logic as E3) for a short window
+                        if SpellBool(td) then
+                            call SaveUnitHandle(hs, GetHandleId(c), SH_W_TARGET, td)
+                            call SaveInteger(hs, GetHandleId(c), SH_HEIGHT_TD, 0)
+                            call SwapAbility(c, MahoragaGE2_Window, MahoragaGE2_ID, MahoragaE_ID)
+                            call SetUnitAbilityLevel(c, MahoragaGE2_ID, 1)
+                            call MyFrame(c, MahoragaGE2_Window, "BTNHero_Mahoraga_WE", false, 2)
+                        endif
                         call MUE(c, 350, 0.15, a)
                         call DamageSource('A0CL')
                         call dmgphys(c, td, dmg)
@@ -1279,7 +1291,7 @@ library MahoragaSpells uses GearSystems
             set check = 0
             set rmax = 2
             set move = 90
-            call StartSpellUnit2(c)
+            call StartSpellUnit(c) // G: invulnerable (Avul) during the dash
             call SetUnitAnimationByIndex(c, 8)
             call SetUnitTimeScale(c, 1.3)
             set a = GAngle(c, td)

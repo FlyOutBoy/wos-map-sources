@@ -1118,6 +1118,9 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     elseif id == MahoragaE3_ID then // Barragan T2 Ability
     set check = 1
     call MahoragaE3_Start(c)
+    elseif id == MahoragaGE2_ID then // Mahoraga GE2: E3 follow-up after a G hit
+    set check = 1
+    call MahoragaE3_Start(c)
     elseif id == MahoragaR_ID then // Barragan T2 Ability
     set check = 1
     call MahoragaR_Start(c)
@@ -1504,6 +1507,10 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call AltairQ_Start(c,x,y)
     elseif id == AltairW_ID then
     if AltairW_Start(c,td) then
+    set check = 1
+    endif
+    elseif id == AltairW2_ID then
+    if AltairW2_Start(c) then
     set check = 1
     endif
     elseif id == AltairE_ID then

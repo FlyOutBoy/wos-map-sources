@@ -1684,7 +1684,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                         call AnimDummyEff(impactEffect, 0.40, 10.0)
                         call ColorEffDummy3(impactEffect, 0.50, 255, 255, 255, 0.10)
                         set impactEffect = null
-                        call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_HakkeStartWhite.mdx", x, y, GetRandomReal(0.0, 359.0), 1.40, 2.75 * scale, 0.0, 255, 255, 125, 255))
+                        call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_HakkeStartWhite.mdx", x, y, GetRandomReal(0.0, 359.0), 1.40, 2.75 * scale, 0.0, 255, 255, 125, 76)) // flash 30% alpha (was 127, -40%)
                         call DestroyEffect(EffectSpawnScale("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_3yellowlightclear.mdl", x, y, GetRandomReal(0.0, 359.0), 0.65, 1.0, 1.0, 0.30, 0.01, 2.80 * scale))
                         call GroupClear(g)
                         call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)

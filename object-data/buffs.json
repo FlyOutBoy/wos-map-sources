@@ -54,7 +54,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Fire Stack",
-    "extended_tooltip": "take damage every second",
+    "extended_tooltip": "Takes 30 magic damage per second for 4 sec.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNElem_fire.blp",
     "target_art": "war3mapImported\\wos_BY_Wood_Effect_Order_MuZhiBenYing_Fir_Huo_DiMianss2",
     "race": "nightelf",
@@ -1599,6 +1599,14 @@
     "tooltip": "Heaven Severed",
     "extended_tooltip": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp",
+    "target_art": ""
+  },
+  "B078": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Fire Shield",
+    "extended_tooltip": "Absorbs damage while this buff lasts.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp",
     "target_art": ""
   },
   "B0F0": {

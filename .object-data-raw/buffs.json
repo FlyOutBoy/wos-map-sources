@@ -4478,6 +4478,21 @@
       ],
       "modifications": [],
       "display_name": "Heaven Severed"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B078",
+        "hex": "42303738"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
     }
   ]
 }

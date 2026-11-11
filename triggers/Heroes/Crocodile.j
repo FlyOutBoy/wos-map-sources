@@ -100,6 +100,8 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileW_ComboStunEarly = 0.7 // before that level
         real CrocodileW_ComboPullSpeedEarly = 1800.0 // cap of the combo pull before that level (~430 range)
         integer CrocodileW_ComboFullLevel = 25
+        integer CrocodileW_ComboDamageQLevel = 5 // Q+W combo damage only from Q level 5 (stun/pull always)
+        real CrocodileW_ComboPullRangeFactor = 0.75 // combo pull reaches 25% less than before
         integer CrocodileW_ManaBurnHits = 4
         integer CrocodileW_Animation = 10
 
@@ -1137,8 +1139,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 exitwhen u == null
                 call GroupRemoveUnit(g,u)
                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
-                    call DamageSource('A0I8')
-                    call Crocodile_SpellDamage(c,u,GetHeroAgi(c,true)*CrocodileW_ComboDamageAgi,manaKey)
+                    if GetUnitAbilityLevel(c, CrocodileQ_ID) >= CrocodileW_ComboDamageQLevel then
+                        call DamageSource('A0I8')
+                        call Crocodile_SpellDamage(c,u,GetHeroAgi(c,true)*CrocodileW_ComboDamageAgi,manaKey)
+                    endif
                     call Crocodile_ApplySharedMark(c,u)
                     call GroupAddUnit(pullGroup,u)
                     if GetHeroLevel(c) >= CrocodileW_ComboFullLevel then
@@ -1231,9 +1235,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                                 set depth = RMaxBJ(0.0,1.0-distance/RMaxBJ(1.0,radius))
                                 set pullSpeed = CrocodileW_PullSpeed*(CrocodileW_EdgePullMultiplier+(1.0-CrocodileW_EdgePullMultiplier)*depth)
                                 if comboPullTime > 0.0 and GetHeroLevel(c) >= CrocodileW_ComboFullLevel then
-                                    set pullSpeed = RMaxBJ(pullSpeed,distance/RMaxBJ(CrocodilePeriod,comboPullTime))
+                                    // full level: up to 75% of the pit radius over the 0.24 s combo pull
+                                    set pullSpeed = RMaxBJ(pullSpeed,RMinBJ(radius*CrocodileW_ComboPullRangeFactor/0.24,distance/RMaxBJ(CrocodilePeriod,comboPullTime)))
                                 elseif comboPullTime > 0.0 then
-                                    set pullSpeed = RMaxBJ(pullSpeed,RMinBJ(CrocodileW_ComboPullSpeedEarly,distance/RMaxBJ(CrocodilePeriod,comboPullTime)))
+                                    set pullSpeed = RMaxBJ(pullSpeed,RMinBJ(CrocodileW_ComboPullSpeedEarly*CrocodileW_ComboPullRangeFactor,distance/RMaxBJ(CrocodilePeriod,comboPullTime)))
                                 endif
                                 call MoveUnit(u,RMinBJ(pullSpeed*CrocodilePeriod,distance),Atan2(y-GetUnitY(u),x-GetUnitX(u)))
                             endif

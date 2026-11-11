@@ -52,7 +52,7 @@ class InvertedSpear(unittest.TestCase):
   tail=body[body.index('    set dmg = InoriE_ApplyAuraResistance'):]
   vm,_,c,u=self.fixture('function Tail takes unit c, unit td, real dmgbase, real dmg, integer typedmg, boolean test returns real\nlocal real value\nlocal real shieldTriggerDmg = 100\nlocal player targetOwner = null\n'+tail)
   vm.g.update(LIBRARY_FrostnovaSpells=True,FrostnovaE_ResistBuffID='frost',FrostnovaE_Resist=.5,
-   HeroChannelDamageFactor=lambda _:1.,InoriE_ApplyAuraResistance=lambda u,d,t:d,ApplyGearSystemFullShields=lambda c,u,d,*_:max(0.,d-20.))
+   HeroChannelDamageFactor=lambda _:1.,InoriE_ApplyAuraResistance=lambda u,d,t:d,ApplyGearSystemFullShields=lambda c,u,d,*_:max(0.,d-20.),MeraShield_Absorb=lambda u,d:d)
   vm.run('InvertedSpear_Start',(c,u))
   for kind in (0,1,2):self.assertAlmostEqual(40.,vm.run('Tail',(c,u,100.,20.,kind,False)))
   vm.elapsed=9.;self.assertEqual(0.,vm.run('Tail',(c,u,100.,20.,1,False)))

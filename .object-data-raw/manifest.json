@@ -5,12 +5,12 @@
     {
       "json": "units.json",
       "binary": "war3map.w3u",
-      "sha256": "0de48bb6a78fb5116c23cc60daf339987e4e03a043fb6e6aca5ba7625393a5e1"
+      "sha256": "a8ca438ee32c1cd57d36fe84d18649e2b214f9e37db035d8b16ef51c4730ae3e"
     },
     {
       "json": "items.json",
       "binary": "war3map.w3t",
-      "sha256": "7597c913e6b414fb60c03c90f72207db2cc8584e8daaed2035246fcc04e31fc9"
+      "sha256": "48bbbf77f8607e22b23732598939c5c4c18336c3269c5d9d77fa675bc43d9f8b"
     },
     {
       "json": "destructables.json",
@@ -25,12 +25,12 @@
     {
       "json": "abilities.json",
       "binary": "war3map.w3a",
-      "sha256": "87a1fb7fd339102abd7556d4b9891da82e073040b8455f1d3842b51b602ed73c"
+      "sha256": "a1158b2567d7f49025f421be4d3b07d1d87c1ec8d3901dc45aaa55b91cd6f627"
     },
     {
       "json": "buffs.json",
       "binary": "war3map.w3h",
-      "sha256": "4cf40a394bbdcb919fa380ed6c2289bcce49e86bd42f75316e79998b10f08620"
+      "sha256": "c8b100efccc74f0e3bc4f30c502dec3d2ca740e88c68e98657437ab90c7561ac"
     },
     {
       "json": "upgrades.json",
@@ -40,12 +40,12 @@
     {
       "json": "units-skin.json",
       "binary": "war3mapSkin.w3u",
-      "sha256": "2d7d60cac9705909d829d465ae61a900bc4171a821275d8a545f68ec6cf51390"
+      "sha256": "4ca081cf278944c119b27b1ee42303ae019cf0bdb2452b7f1a1a82ea9e353026"
     },
     {
       "json": "items-skin.json",
       "binary": "war3mapSkin.w3t",
-      "sha256": "70348327a73701ad68db41b88c0f67d61492f91b85c36ac8eede338c12fcb581"
+      "sha256": "c3ffb23fec915d03a9ff7bf8cea8274ed76ab07e8fcfa850625c321ed4768608"
     },
     {
       "json": "destructables-skin.json",
@@ -60,12 +60,12 @@
     {
       "json": "abilities-skin.json",
       "binary": "war3mapSkin.w3a",
-      "sha256": "143625b0ed58f501d60946fef350259cacaef4158d9807de45574fde113f01cc"
+      "sha256": "eaf254709f2b90f6391667c3bc29eb58c65a1eb63cf280da2edfce41b1ad810d"
     },
     {
       "json": "buffs-skin.json",
       "binary": "war3mapSkin.w3h",
-      "sha256": "c5b5d6a2e8de4a0c693b718c64213b92a8d46e2419d235d537906b618f374d7d"
+      "sha256": "4a761d035350ae0f358bbe80c655b525bcac62b077bd0bd819cf4ef7d1c46109"
     },
     {
       "json": "upgrades-skin.json",

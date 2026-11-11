@@ -118,6 +118,7 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_STRENGTH,      ThunderBastion_ID) // Thunder Bastion (lightning, AOE)
     call ShopCat(SHOP_TAB_STRENGTH,      BloodPactRing_ID) // Blood Pact Ring
     call ShopCat(SHOP_TAB_STRENGTH,      'I02G') // Mera Mera no Mi
+    call ShopCat(SHOP_TAB_STRENGTH,      MeraMeraEvolved_ID) // Mera Mera no Mi Evolved
     call ShopCat(SHOP_TAB_STRENGTH,      'I01K') // Frozen Heart
     call ShopCat(SHOP_TAB_STRENGTH,      'I02J') // Guts Armor
     call ShopCat(SHOP_TAB_STRENGTH,      'I02H') // Mirror of Yata
@@ -2087,7 +2088,7 @@ function CheckBanItems takes integer id, unit c returns boolean
     if (id == ArmamentHaki_ID and IsItemInInventory(c, ArmamentHakiEvolved_ID) > 0) or (id == 'I00Z' and IsItemInInventory(c, NaofumiShieldEvolved_ID) > 0) /*
     */ or (id == 'I012' and IsItemInInventory(c, FairyTailEvolved_ID) > 0) or (id == 'I02H' and IsItemInInventory(c, YataMirrorEvolved_ID) > 0) /*
     */ or (id == 'I040' and IsItemInInventory(c, PhilosopherEvolved_ID) > 0) or (id == BloodPactRing_ID and IsItemInInventory(c, BloodPactRingEvolved_ID) > 0) /*
-    */ or (id == 'I03X' and IsItemInInventory(c, DarkRepulser_ID) > 0) then
+    */ or (id == 'I03X' and IsItemInInventory(c, DarkRepulser_ID) > 0) or (id == 'I02G' and IsItemInInventory(c, MeraMeraEvolved_ID) > 0) then
         return true
     endif
     // One zanpakuto: a base and another type's Evolved never go together; base -> own Evolved upgrades.
@@ -2205,6 +2206,7 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft(YataMirrorEvolved_ID, "I01J I02H")
     call RegisterCraft(PhilosopherEvolved_ID, "I01J I040")
     call RegisterCraft(BloodPactRingEvolved_ID, "I01J I06D")
+    call RegisterCraft(MeraMeraEvolved_ID, "I01J I02G")
     call RegisterCraft('I00B', "I00I I02K")
     call RegisterCraft('I024', "I03J I03C") // Seal +15 + Tome of Agility +25
     call RegisterCraft('I00J', "I036")

@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "c5b5d6a2e8de4a0c693b718c64213b92a8d46e2419d235d537906b618f374d7d",
+  "source_sha256": "0a6e8d01cbb707512da8ca3bbbd2a11a43a3ae80de336751e539f91548e4370b",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -738,7 +738,7 @@
             "_original_value": "TRIGSTR_9631",
             "_encoding": "utf-8",
             "_raw_base64": "VFJJR1NUUl85NjMx",
-            "resolved_value": "take damage every second",
+            "resolved_value": "Takes 30 magic damage per second for 4 sec.",
             "_original_resolved_value": "take damage every second"
           },
           "sanity_check": {
@@ -3574,10 +3574,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6772",
-            "_original_value": "TRIGSTR_6772",
+            "value": "TRIGSTR_6013",
+            "_original_value": "TRIGSTR_6013",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82Nzcy",
+            "_raw_base64": "VFJJR1NUUl82MDEz",
             "resolved_value": "6",
             "_original_resolved_value": "6"
           },
@@ -6438,10 +6438,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4012",
-            "_original_value": "TRIGSTR_4012",
+            "value": "TRIGSTR_6772",
+            "_original_value": "TRIGSTR_6772",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MDEy",
+            "_raw_base64": "VFJJR1NUUl82Nzcy",
             "resolved_value": "6",
             "_original_resolved_value": "6"
           },
@@ -20180,6 +20180,82 @@
         }
       ],
       "display_name": "Heaven Severed"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B078",
+        "hex": "42303738"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "Fire Shield"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "Absorbs damage while this buff lasts."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMeraEvolved.blp"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
     }
   ]
 }

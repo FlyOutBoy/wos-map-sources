@@ -111,7 +111,7 @@ function ARules_GetCastRange takes unit hero, integer abilId, ability ab, intege
     elseif abilId == LaxusQ2_ID then
         return LaxusQ_Range2
     elseif abilId == MahoragaE_ID then
-        return MahoragaE_Range
+        return MahoragaE_Range + MahoragaE_ClickRangeBonus
     elseif abilId == MahoragaE3_ID then
         return MahoragaE3_Range
     elseif abilId == TsunaE_ID then

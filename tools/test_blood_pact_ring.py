@@ -201,7 +201,7 @@ class BloodPactRing(unittest.TestCase):
 
     def test_kirito_quick_two_and_strong_four_hits_keep_their_total_damage(self):
         text = re.sub(r'//[^\n]*', '', source('Heroes/Kirito.j'))
-        for strong, count, expected_times in ((False, 2, [.05, .20]), (True, 4, [.05, .30, .55, .80])):
+        for strong, count, expected_times in ((True, 4, [.05, .15, .25, .35]),):  # quick hits are instant now (no loop)
             with self.subTest(strong=strong):
                 start = text.index('    private struct KiritoSpells_R')
                 end = text.index('    endstruct', start) + len('    endstruct')

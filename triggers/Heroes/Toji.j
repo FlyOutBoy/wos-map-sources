@@ -817,6 +817,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             set state = 1
                             set r = 0.0                                             
                             call MakeSound("war3mapimported\\Hero_Toji_W 2")
+                            // Armament Haki / debuff immunity is checked in BuffUnit01 (0 = blocked, chain ends)
                             set chainDuration = BuffUnit01(c, td, TojiW_AbiDebuff_ID, "curse", GetUnitAbilityLevel(c, TojiW_ID))
                             call DamageSource('A0H1')
                             call dmgphys(c, td, TojiAbilityDamage(c, td, dmg))

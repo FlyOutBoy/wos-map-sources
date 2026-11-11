@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3u",
-  "source_sha256": "2d7d60cac9705909d829d465ae61a900bc4171a821275d8a545f68ec6cf51390",
+  "source_sha256": "976a13983f2153b6424b0a8501a7a531d18409e5cf1b34939d23749132c50d4a",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -1188,10 +1188,10 @@
           "field_name": "Model / Модель",
           "type": "string",
           "data": {
-            "value": "war3mapimported\\wos_file00001323.mdl",
-            "_original_value": "war3mapimported\\wos_file00001323.mdl",
+            "value": "war3mapImported\\wos_shield_bar.mdl",
+            "_original_value": "war3mapImported\\wos_shield_bar.mdl",
             "_encoding": "utf-8",
-            "_raw_base64": "d2FyM21hcGltcG9ydGVkXHdvc19maWxlMDAwMDEzMjMubWRs"
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19zaGllbGRfYmFyLm1kbA=="
           },
           "sanity_check": {
             "text": "",
@@ -1206,12 +1206,12 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_364",
-            "_original_value": "TRIGSTR_364",
+            "value": "TRIGSTR_6670",
+            "_original_value": "TRIGSTR_6670",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNjQ=",
-            "resolved_value": "Dummy Decor Explosion Barrel",
-            "_original_resolved_value": "Dummy Decor Explosion Barrel"
+            "_raw_base64": "VFJJR1NUUl82Njcw",
+            "resolved_value": "Dummy Shield Bar",
+            "_original_resolved_value": "Dummy Shield Bar"
           },
           "sanity_check": {
             "text": "",
@@ -1253,9 +1253,26 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "usca",
+            "hex": "75736361"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 4.4,
+            "_original_value": 4.0,
+            "_raw_hex": "00008040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
-      "display_name": "Dummy Decor Explosion Barrel"
+      "display_name": "Dummy Shield Bar"
     },
     {
       "old_id": {
@@ -26026,6 +26043,217 @@
         }
       ],
       "display_name": "Frostnova"
+    },
+    {
+      "old_id": {
+        "text": "hpea",
+        "hex": "68706561"
+      },
+      "new_id": {
+        "text": "h00A",
+        "hex": "68303041"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "uabs",
+            "hex": "75616273"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uerd",
+            "hex": "75657264"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umxp",
+            "hex": "756D7870"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umxr",
+            "hex": "756D7872"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umdl",
+            "hex": "756D646C"
+          },
+          "field_name": "Model / Модель",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_shield_bar.mdx",
+            "_original_value": "war3mapImported\\wos_shield_bar.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19zaGllbGRfYmFyLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usca",
+            "hex": "75736361"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 2.5,
+            "_original_value": 2.5,
+            "_raw_hex": "00002040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_291",
+            "_original_value": "TRIGSTR_291",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yOTE=",
+            "resolved_value": "Shield Bar Dummy",
+            "_original_resolved_value": "Shield Bar Dummy"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uico",
+            "hex": "7569636F"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNMonsterLure.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNMonsterLure.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5Nb25zdGVyTHVyZS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usnd",
+            "hex": "75736E64"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ushu",
+            "hex": "75736875"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uble",
+            "hex": "75626C65"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Shield Bar Dummy"
     }
   ]
 }

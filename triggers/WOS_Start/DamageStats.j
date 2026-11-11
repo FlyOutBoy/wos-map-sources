@@ -1005,7 +1005,7 @@ private function DS_SourceIcon takes integer sourceId returns string
     if sourceId == 'I02C' then
         return "ReplaceableTextures\\CommandButtons\\BTNItem_TsuchikageHutEvolve.blp"
     endif
-    if sourceId == 'I02G' then
+    if sourceId == 'I02G' or sourceId == 'I076' then // Mera Mera / Evolved
         return "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMera.blp"
     endif
     if sourceId == 'I02H' then

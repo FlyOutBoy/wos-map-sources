@@ -83,7 +83,7 @@ class HeroRanges(unittest.TestCase):
         cases={'AstaQ_ID':2125,'AstaQ2_ID':2055,'AstaW_ID':1700,'DarkShikiQ_ID':1550,
             'FrierenQ_ID':1600,'KiritoQ_ID':1520,'MilimE_ID':1600,'OkarunQ_ID':1200,
             'PatriotQ_ID':1600,'PatriotR_ID':1500,'RimuruQ_ID':2000,'TakeshiQ_ID':1500,
-            'TojiW_ID':1400,'TojiE_ID':800,'TsunaE_ID':2160,'MahoragaE_ID':1100,
+            'TojiW_ID':1400,'TojiE_ID':800,'TsunaE_ID':2160,'MahoragaE_ID':1250,
             'MahoragaE3_ID':1400,'LaxusQ2_ID':1800,'RimuruE_ID':1700,'RimuruE4_ID':1800}
         for name,expected in cases.items():
             with self.subTest(ability=name):self.assertEqual(self.radius(name,5),expected)

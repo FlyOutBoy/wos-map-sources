@@ -17,15 +17,20 @@ def mana_regen_per_int():
     return float(re.search(r'\breal int_mpregen\s*=\s*([\d.]+)', source)[1])
 
 
-def patch_misc(data, value):
+def agi_move_bonus():
+    source = (ROOT/'triggers/Systems/Systems1.j').read_text(encoding='utf-8-sig')
+    return float(re.search(r'\breal agi_ms\s*=\s*([\d.]+)', source)[1])
+
+
+def patch_misc(data, value, field='IntRegenBonus'):
     text = data.decode('utf-8-sig')
     section = re.search(r'(?ms)^\[Misc\][ \t]*\r?\n.*?(?=^\[|\Z)', text)
     if not section:
         raise ValueError('Native gameplay constants have no [Misc] section')
-    body, count = re.subn(r'(?m)^(IntRegenBonus=)[^\r\n]*',
+    body, count = re.subn(r'(?m)^(' + field + r'=)[^\r\n]*',
                           lambda m: m[1]+format(value, '.9g'), section[0])
     if count != 1:
-        raise ValueError('Expected exactly one Misc.IntRegenBonus field')
+        raise ValueError('Expected exactly one Misc.' + field + ' field')
     out = text[:section.start()]+body+text[section.end():]
     return (b'\xef\xbb\xbf' if data.startswith(b'\xef\xbb\xbf') else b'')+out.encode()
 
@@ -33,7 +38,7 @@ def patch_misc(data, value):
 def install(map_dir):
     path = map_dir/'war3mapMisc.txt'
     before = path.read_bytes()
-    after = patch_misc(before, mana_regen_per_int())
+    after = patch_misc(patch_misc(before, mana_regen_per_int()), agi_move_bonus(), 'AgiMoveBonus')
     if before == after:
         print('Native gameplay constants already match JASS')
         return
@@ -41,7 +46,7 @@ def install(map_dir):
     backup.mkdir(parents=True)
     shutil.copy2(path, backup/path.name)
     path.write_bytes(after)
-    print(f'Native IntRegenBonus={mana_regen_per_int():g}; backup: {backup}')
+    print(f'Native IntRegenBonus={mana_regen_per_int():g}, AgiMoveBonus={agi_move_bonus():g}; backup: {backup}')
 
 
 if __name__ == '__main__':

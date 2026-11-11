@@ -36,6 +36,7 @@ globals
     private boolean array UNITSTAT_AutoSelect
     private timer UNITSTAT_AutoSelectTimer = null
     private integer UNITSTAT_AutoSelectUsers = 0
+    private integer array UNITSTAT_CamLockId // local only: handle id of the unit the camera is locked to
     private integer UNITSTAT_GoldHudRevision = -1
     private boolean UNITSTAT_GoldFolded = false
     private framehandle UNITSTAT_EngineDamage = null
@@ -81,7 +82,7 @@ globals
     private constant real UNITSTAT_HP_PER_STR = 35.0
     private constant real UNITSTAT_MP_PER_INT = 10.0
     // = war3mapMisc AgiMoveBonus
-    private constant real UNITSTAT_MS_PER_AGI = 0.6
+    private constant real UNITSTAT_MS_PER_AGI = 0.72
 endglobals
 
 private function UNITSTAT_RemovePick takes integer pid, integer node, integer previous returns nothing
@@ -585,6 +586,11 @@ private function UNITSTAT_AutoSelectTick takes nothing returns nothing
         exitwhen pid >= 10
         if GetLocalPlayer() == Player(pid) and UNITSTAT_AutoSelect[pid] and WUI_AutoSelectHero[pid] and Hero[pid] != null and GetUnitTypeId(Hero[pid]) != 0 and GetOwningPlayer(Hero[pid]) == Player(pid) and not IsUnitHidden(Hero[pid]) and not IsUnitType(Hero[pid], UNIT_TYPE_DEAD) and GetWidgetLife(Hero[pid]) > 0.405 then
             call GearSelectOnlyHero(Hero[pid])
+            // keep the camera centered on the hero (local camera, no sync)
+            if UNITSTAT_CamLockId[pid] != GetHandleId(Hero[pid]) then
+                set UNITSTAT_CamLockId[pid] = GetHandleId(Hero[pid])
+                call SetCameraTargetController(Hero[pid], 0, 0, false)
+            endif
         endif
         set pid = pid + 1
     endloop
@@ -607,6 +613,11 @@ private function UNITSTAT_SetAutoSelect takes integer pid, boolean enabled retur
             call TimerStart(UNITSTAT_AutoSelectTimer, 0.25, true, function UNITSTAT_AutoSelectTick)
         endif
     else
+        // release the camera lock (Starts.j restores the player's camera distance)
+        if GetLocalPlayer() == Player(pid) and UNITSTAT_CamLockId[pid] != 0 then
+            set UNITSTAT_CamLockId[pid] = 0
+            call ResetToGameCamera(0)
+        endif
         set UNITSTAT_AutoSelectUsers = UNITSTAT_AutoSelectUsers - 1
         if UNITSTAT_AutoSelectUsers == 0 then
             call PauseTimer(UNITSTAT_AutoSelectTimer)
@@ -1060,7 +1071,7 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     static if LIBRARY_WOSTestMinimalRuntime then
         call BlzFrameSetVisible(UNITSTAT_AutoSelectToggle, false)
     endif
-    call WUI_Tooltip(UNITSTAT_AutoSelectToggle, "|cffd5b876AUTO SELECT HERO|r|nWhen enabled, selects your living hero every 0.25 sec. Click again to turn off.")
+    call WUI_Tooltip(UNITSTAT_AutoSelectToggle, "|cffd5b876AUTO SELECT HERO|r|nWhen enabled, selects your living hero every 0.25 sec and keeps the camera centered on it. Click again to turn off.")
     call WUI_SetToggleState(UNITSTAT_AutoSelectToggle, UNITSTAT_AutoSelect[GetPlayerId(GetLocalPlayer())])
     set voiceClick = CreateTrigger()
     call BlzTriggerRegisterFrameEvent(voiceClick, UNITSTAT_AutoSelectToggle, FRAMEEVENT_CONTROL_CLICK)

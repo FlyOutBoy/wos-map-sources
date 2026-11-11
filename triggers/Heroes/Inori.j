@@ -2224,6 +2224,17 @@ library InoriSpells uses GearSystems
                 set i = i + 1
             endloop
         endmethod
+        public static method IsActive takes unit u returns boolean
+            local integer i = 0
+            loop
+                exitwhen i > MUI_InoriT2
+                if thistype(m_InoriT2[i]).c == u then
+                    return true
+                endif
+                set i = i + 1
+            endloop
+            return false
+        endmethod
         public static method InoriT2_Start takes unit NewC returns nothing
             local thistype this = thistype.create( )
             set MUI_InoriT2 = MUI_InoriT2 + 1
@@ -2239,6 +2250,8 @@ library InoriSpells uses GearSystems
             set r2 = 10
             set check2 = 0
             set rmax = InoriT2_Duration
+            // T3 (A06E) is also Eternity in T form and sets the cancel flag there; clear any stale flag
+            call SaveInteger(hs, GetHandleId(c), SH_CANCEL_T, 0)
             set dmg = InoriT2_DamageIntBase * GetHeroInt(c, true)
             set g = CreateGroup()
             call VisionTimed(GetOwningPlayer(c), x, y, 2400, 9)
@@ -2670,7 +2683,9 @@ endfunction
        call InoriT2_KS.InoriT2_Start( c )
     endfunction
     function InoriT3_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), SH_CANCEL_T, 1)
+        if InoriT2_KS.IsActive(c) then // cancel only an active T2 form (Eternity cast must not leave the flag)
+            call SaveInteger(hs, GetHandleId(c), SH_CANCEL_T, 1)
+        endif
     endfunction
 
     // Scripted crystal shots (visual only; the hidden native missile deals the damage).

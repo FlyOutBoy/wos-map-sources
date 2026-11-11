@@ -61,6 +61,7 @@ library KiritoSpells uses GearSystems
         // Hashed once at map load (was StringHash(...) on every call).
         private integer SH_ALREADY_MARKED_KIRITO = StringHash("already marked kirito")
         private integer SH_ASTA_E = StringHash("asta e")
+        private integer SH_KIRITO_R_BLINK = StringHash("kirito r blink") // R blink-to-target cooldown
         private integer SH_E = StringHash("e")
         private integer SH_E_COUNT = StringHash("e count")
         private integer SH_E_END = StringHash("e end")
@@ -123,10 +124,16 @@ library KiritoSpells uses GearSystems
         real KiritoR_DamageAgiStep = 0.4 // additional number x Agi damage for each next level each strike
         real KiritoR_Damage2AgiBase = 3 // base number x Agi damage for each strike
         real KiritoR_Damage2AgiStep = 0.3 // additional number x Agi damage for each next level each strike
-        integer KiritoR_QuickHits = 2
+        integer KiritoR_QuickHits = 2 // legacy: quick damage = 2 halves per attack -> now one instant hit of the same total
+        integer KiritoR_QuickAttacks = 10 // attacks with an instant R hit before the final (paused, invulnerable) strike
+        real KiritoR_QuickHitDamageFactor = 0.3 // 10 hits x 0.3 = same total as the old 3 attacks x 1
+        integer KiritoR_VoiceEvery = 2 // one voice line every N R hits (order R1, R2, R6, R7, R11+R5 as before)
+        real KiritoR_PokeAgi = 0.4 // extra poke on every R attack: 0.4 x Agi physical
+        real KiritoR_BlinkCD = 1.0 // R attack blinks Kirito to the target at most once per sec
+        real KiritoR_BlinkDistance = 110 // stands this far from the target after the blink
         integer KiritoR_StrongHits = 4
-        real KiritoR_QuickHitInterval = 0.15
-        real KiritoR_StrongHitInterval = 0.25
+        real KiritoR_QuickHitInterval = 0.10 // 2 hits: 0.05, 0.15
+        real KiritoR_StrongHitInterval = 0.10 // 4 hits: 0.05..0.35 (all within 0.45 s)
         real KiritoR_DamageDealtBonusFinal = 0 // additional amout of damage that trigger final strike in %, example kirito attack enemy cause 500 dmg, with 70% it additionaly deal 375 damage for final strike
         real KiritoR_StunDuration = 0.1 // from 0.1 to 3 sec
         real KiritoR_DurationBase = 10 // in seconds
@@ -963,7 +970,7 @@ library KiritoSpells uses GearSystems
                     call DebugUnit2(td)
                     call DebugUnit2(c)
                     call PosUnit(c, GetUnitX(td) - 160 * Cos(a), GetUnitY(td) - 160 * Sin(a))
-                    if r >= 0.05 + I2R(check) * KiritoR_StrongHitInterval then
+                    if r + 0.001 >= 0.15 + I2R(check) * KiritoR_StrongHitInterval then // epsilon: float sums
                         set check = check + 1
                         if GetRandomInt(1,2) == 2 then 
             call SetUnitAnimationByIndex(c, 14)
@@ -995,7 +1002,9 @@ library KiritoSpells uses GearSystems
                                 endif
                                 call DamageSource('A0D7')
                                 call dmgphysattack(c, u, dmg)
-                                call StunUnit(c, u, KiritoR_StunDuration)
+                                if check == 1 then
+                                    call StunUnit(c, u, KiritoR_StunDuration) // first hit only
+                                endif
                                 if u == td then
                                   //  call UnitAddAbility(td, 'Avul')
                                 endif
@@ -1014,7 +1023,7 @@ library KiritoSpells uses GearSystems
             call SaveInteger(hs,GetHandleId(c),SH_R_ST,0)
             
             call SaveInteger(hs,GetHandleId(c),SH_ASTA_E,0)
-                    call StopSpellUnit2(c)
+                    call StopSpellUnit(c) // removes pause + Avul
                     call StopSpellUnit2(td)
                     call DestroyGroup(g)
                     set g = null
@@ -1045,15 +1054,15 @@ library KiritoSpells uses GearSystems
             set aoe = KiritoR_DamageAoe
             set dmg = NewDmg / I2R(KiritoR_StrongHits)
             set check = 0
-            call StartSpellUnit2(c)
+            call StartSpellUnit(c) // final strike: Kirito paused + invulnerable
             
             call SaveInteger(hs,GetHandleId(c),SH_ASTA_E,1)
-            call StartSpellUnit2(td)
+            call StartSpellUnit2(td) // target paused
             call SaveInteger(hs,GetHandleId(c),SH_R_ST,1)
             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_R_ATK_COUNT,20)
             set rmax = 0.8
             call SetUnitAnimationByIndex(c, 14)
-            call SetUnitTimeScale( c , 1)
+            call SetUnitTimeScale( c , 2)
             call MakeSound("war3mapImported\\Hero_Kirito_R12")
             if MUI_KiritoR2 == 0 then
                 call KiritoTick05_On(1)
@@ -1076,7 +1085,7 @@ library KiritoSpells uses GearSystems
                     set a = GAngle(c, td)
                     call DebugUnit2(c)
                     call PosUnit(c, GetUnitX(td) - 160 * Cos(a), GetUnitY(td) - 160 * Sin(a))
-                    if r >= 0.05 + I2R(check) * KiritoR_QuickHitInterval then
+                    if r + 0.001 >= 0.05 + I2R(check) * KiritoR_QuickHitInterval then // epsilon: float sums
                         set r2 = 0
                         set check = check +1
        set atk = k3
@@ -1108,7 +1117,9 @@ library KiritoSpells uses GearSystems
             call MakeSound("war3mapImported\\Hero_Kirito_R1")
         endif
         call SetUnitAnimation(c,"attack")
-        call StunUnit(c, td, KiritoR_StunDuration)
+        if check == 1 then
+            call StunUnit(c, td, KiritoR_StunDuration) // first hit only
+        endif
         call DamageSource('A0D7')
         call dmgphysattack(c, td, dmg)
         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
@@ -1129,7 +1140,7 @@ library KiritoSpells uses GearSystems
                     endif
                   
                 else
-                    call StopSpellUnit2(c)
+                    // no pause (was StopSpellUnit2)
                     
             call SaveInteger(hs,GetHandleId(c),SH_ASTA_E,0)
                    // call UnitAddAbility(c,'Abun')
@@ -1148,31 +1159,50 @@ library KiritoSpells uses GearSystems
             endloop
         endmethod
 
+        // One instant hit per attack while R is active (no pause, no tick); stun only on the first R hit.
         public static method KiritoR3_Start takes unit NewC, unit NewTd, real NewDmg returns nothing
-            local thistype this = thistype.create( )
-             local integer atk
-            set MUI_KiritoR3 = MUI_KiritoR3 + 1
-            set m_KiritoR3[ MUI_KiritoR3] = this
-            set c = NewC
-            set td = NewTd
-            set r = 0
-            set r2 = 10
-            set r3 = 10
-            set aoe = KiritoR_DamageAoe
-            set dmg = NewDmg 
-            set dmg = dmg / I2R(KiritoR_QuickHits) 
-            
-            call SaveInteger(hs,GetHandleId(c),SH_ASTA_E,1)
-            set k3 = LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_R_ATK_COUNT)
-            call StartSpellUnit2(c)
-            set check = 0
-            set rmax = 2
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_R_ATK_COUNT, k3+5)
-            call SetUnitAnimationByIndex(c, 14)
-            call SetUnitTimeScale( c , 0.75)
-            if MUI_KiritoR3 == 0 then
-                call KiritoTick05_On(2)
+            local integer atk = LoadInteger(hs, GetHandleId(GetOwningPlayer(NewC)), SH_R_ATK_COUNT)
+            local real hx = GetUnitX(NewTd)
+            local real hy = GetUnitY(NewTd)
+            local real ha = GAngle(NewC, NewTd)
+            local real random = GetRandomReal(0, 359)
+            local effect fx
+            local integer voice
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(NewC)), SH_R_ATK_COUNT, atk + 1)
+            if SR2(NewC, NewTd) > KiritoR_BlinkDistance + 40 and IntegerCdKey(NewC, SH_KIRITO_R_BLINK, KiritoR_BlinkCD) then
+                call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", GetUnitX(NewC), GetUnitY(NewC), 0, 2, 1.5, 0))
+                call PosUnit(NewC, hx - KiritoR_BlinkDistance * Cos(ha), hy - KiritoR_BlinkDistance * Sin(ha))
+                call BlzSetUnitFacingEx(NewC, ha * bj_RADTODEG)
             endif
+            if atk == 0 then
+            endif
+                call StunUnit(NewC, NewTd, KiritoR_StunDuration) // first R hit only
+            // voice: same order as the old 3-attack sequence, spread one line per KiritoR_VoiceEvery hits
+            if ModuloInteger(atk, KiritoR_VoiceEvery) == 0 then
+                set voice = atk / KiritoR_VoiceEvery
+                if voice == 0 then
+                    call MakeSound("war3mapImported\\Hero_Kirito_R1")
+                elseif voice == 1 then
+                    call MakeSound("war3mapImported\\Hero_Kirito_R2")
+                elseif voice == 2 then
+                    call MakeSound("war3mapImported\\Hero_Kirito_R6")
+                elseif voice == 3 then
+                    call MakeSound("war3mapImported\\Hero_Kirito_R7")
+                elseif voice == 4 then
+                    call MakeSound("war3mapImported\\Hero_Kirito_R11")
+                    call MakeSound("war3mapImported\\Hero_Kirito_R5")
+                endif
+            endif
+            call DamageSource('A0D7')
+            call dmgphysattack(NewC, NewTd, NewDmg + KiritoR_PokeAgi * GetHeroAgi(NewC, true))
+            call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", NewTd, "chest"))
+            call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", NewTd, "chest"))
+            set fx = EffectSpawn("war3mapImported\\wos_zhanji-blue.mdl", hx, hy, random, 0.75, 1, 115)
+            call BlzSetSpecialEffectRoll(fx, -15 * bj_DEGTORAD)
+            call DestroyEffect(fx)
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun0.mdl", hx, hy, ha * bj_RADTODEG, 0.5, 3, 50))
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_dajiqiquan4.mdx", hx, hy, GetRandomReal(0, 359), 1.4, 3, 3))
+            set fx = null
         endmethod
 
     endstruct
@@ -1675,11 +1705,11 @@ endfunction
         local integer atk = LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_R_ATK_COUNT)
         if LoadInteger(hs, GetHandleId(c), SH_R_ST) == 0 then
         if atk < 20 then 
-        if atk >=12 then //final atk
+        if atk >= KiritoR_QuickAttacks then //final atk
             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_R_ATK_COUNT,20)
             call KiritoSpells_R.KiritoR2_Start(c, td, dmg2)
             elseif atk< 12 then 
-            call KiritoSpells_R.KiritoR3_Start(c, td, dmg)
+            call KiritoSpells_R.KiritoR3_Start(c, td, dmg * KiritoR_QuickHitDamageFactor)
             endif
             endif
             endif

@@ -81,9 +81,10 @@ ICONS = {
     'GonryomaruEvolved': ('gonryomaru_btn.png', FULL, None),
     'MirrorYataEvolved': ('mirror_yata_btn.png', FULL, None),
     'PhilosopherStoneEvolved': ('philosopher_stone_btn.png', FULL, None),
+    'MeraMeraEvolved': ('mera_mera_btn.png', FULL, None),
 }
 # Evolved tier: the gold frame of the existing Evolved icons over the Button Manager border.
-GOLD = {'BloodPactRingEvolved', 'ArmamentHakiEvolved', 'NaofumiShieldEvolved', 'FairyTailEvolved', 'RyujinJakkaEvolved', 'NejibanaEvolved', 'GonryomaruEvolved', 'MirrorYataEvolved', 'PhilosopherStoneEvolved'}
+GOLD = {'BloodPactRingEvolved', 'ArmamentHakiEvolved', 'NaofumiShieldEvolved', 'FairyTailEvolved', 'RyujinJakkaEvolved', 'NejibanaEvolved', 'GonryomaruEvolved', 'MirrorYataEvolved', 'PhilosopherStoneEvolved', 'MeraMeraEvolved'}
 SOURCES = {  # where the frames come from (fandom wikis)
     'kusanagi_sword.png': 'naruto.fandom.com File:Kusanagi_no_Tsurugi.PNG',
     'hashirama_cells.png': "naruto.fandom.com File:Hashirama's_Cells.png",
@@ -101,6 +102,7 @@ SOURCES = {  # where the frames come from (fandom wikis)
     'gonryomaru_btn.png': 'existing BTNItem_Gonryomaru (Evolved copy)',
     'mirror_yata_btn.png': 'existing BTNItem_MirrorYata (Evolved copy)',
     'philosopher_stone_btn.png': 'existing BTNItem_PhilosopherStone (Evolved copy)',
+    'mera_mera_btn.png': 'existing BTNItem_MeraMera (Evolved copy)',
 }
 SOURCES['elem_str_fire_target_emberbreaker.png'] = 'user art 2026-10-28: STR_Fire_Target_Emberbreaker.png'
 SOURCES['elem_str_fire_aoe_rhitta.png'] = 'user art 2026-10-28: STR_Fire_AOE_Rhitta.png'

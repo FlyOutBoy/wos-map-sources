@@ -858,14 +858,14 @@ if IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), SH_NA
         if (level < 9 or level > 11) and (GetUnitAbilityLevel(u, ErzaWape_ID) > 0 or GetUnitAbilityLevel(u, ErzaOverload_ID) > 0 or GetUnitAbilityLevel(u, ErzaElectrized_ID) > 0) then
             set cancel = 1
         endif
-        // Zanka no Tachi: Fire always burns 7 sec; the first one already deals 70 per sec.
+        // Zanka no Tachi: Fire always burns 6 sec (4 + Extend 2); the first one already deals 70 per sec.
         if level == 1 and skip == 0 and GetUnitAbilityLevel(u, ErzaFire_ID) == 0 and HasCachedItem(c, ZankaNoTachi_ID) > 0 then
             set fireDur = ErzaFire_Duration + ZankaNoTachi_Extend
         endif
         // Zanka no Tachi: Fire on a burning enemy strengthens the burn.
         if level == 1 and skip == 0 and GetUnitAbilityLevel(u, ErzaFire_ID) > 0 and HasCachedItem(c, ZankaNoTachi_ID) > 0 then
             call ErzaDebuffs.FireStack(u, ZankaNoTachi_Stack)
-            // ...the burn restarts at its full 7 sec (it never adds up).
+            // ...the burn restarts at its full 6 sec (it never adds up).
             set fireDur = ErzaFire_Duration + ZankaNoTachi_Extend
             // one burn per target: no extra effect per re-application
         endif
@@ -898,7 +898,7 @@ if IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), SH_NA
             call ErzaDebuffs.ErzaPas_Start(c, u, level, damageSource)
         endif
         if cancel == 0 then
-            // Fire lasts 5 sec (Zanka no Tachi extends it); set on the caster dummy before the curse.
+            // Fire lasts ErzaFire_Duration = 4 sec (Zanka no Tachi extends it); set on the caster dummy before the curse.
             if level == 1 then
                 call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_HERO, 0, fireDur)
                 call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_NORMAL, 0, fireDur)

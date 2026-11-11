@@ -73,7 +73,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real Chogurt_DmgReduct = 7.5
         real ChogurtEvolved_DmgReduct = 12.5
 //----------------------Murasame----------------------------------------------
-        real Murasame_AttackDamage = 0.45
+        real Murasame_AttackDamage = 0.40
         real Murasame_Duration = 5 // ticks, one per second
 //----------------------ItachiSet----------------------------------------------
         integer ItachiSet_ID = 'I01B'        
@@ -105,10 +105,25 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         real RedCup_GrowTime = 0.35 // wave grows from tiny to full scale (frozen animation) before moving
 //----------------------MeraMera no mi----------------------------------------------
         real MeraMera_Aoe = 850       
-        real MeraMera_Damage = 40     
-        real MeraMera_MaxDamage = 250   
+        real MeraMera_Damage = 65
+        real MeraMera_MaxDamage = 250
         real MeraMera_MaxHpDamage = 1.15//% of max owner hp
         unit array MeraMeraDummy
+        // Evolved (objects: tools/stage_mera_mera_evolved.py): +15 str, +15 allstats
+        integer MeraMeraEvolved_ID = 'I076'
+        integer MeraMeraEvolved_Abi_ID = 'A16A' // active, CD 20 sec (object)
+        real MeraMeraEvolved_MaxHpDamageBonus = 0.25 // % of max hp added to the aura: 1.15 + 0.25 = 1.4
+        real MeraMeraEvolved_ShieldPercent = 10 // shield = % of max hp
+        real MeraMeraEvolved_ShieldDuration = 5 // = buff A16C/B078 duration (tools/stage_mera_shield_buff.py)
+        integer MeraMeraEvolved_BuffAbi_ID = 'A16C' // Ainf copy cast on the owner
+        integer MeraMeraEvolved_Buff_ID = 'B078' // the shield works only while this buff is on the unit
+        string MeraMeraEvolved_ShieldModel = "Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster.mdl"
+        string MeraMeraEvolved_CastModel = "Abilities\\Spells\\Other\\Incinerate\\FireLordDeathExplode.mdl"
+        // Overhead bar: locust fly dummy (tools/stage_shield_bar_unit.py) with the ProgressCastingBar model
+        // (tools/build_shield_bar_asset.py); animation index 0..99 = "Birth 1".."Birth 100" = fill percent.
+        integer MeraMeraEvolved_BarUnit_ID = 'h006' // Dummy Shield Bar (scale 4 in the object)
+        real MeraMeraEvolved_BarHeight = 480 // added to the hero's own fly height (above the HP/MP bars)
+        real MeraMeraEvolved_BarFacing = 270 // model spans its local Y axis
 //----------------------Yata Mirror----------------------------------------------
         real YataMirror_Range = 1000       
         real YataMirror_ReversedDmg = 30// %
@@ -145,7 +160,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
 //----------------------Susanoo Shield----------------------------------------------
         integer SusanooShield_Item_ID = 'I02N'
         integer SusanooShield_TresholdDamage = 2000// how much damage dealt x mainstat added to active dmg items
-        real SusanooShield_CD = 8// how much damage dealt x mainstat added to active dmg items
+        real SusanooShield_CD = 10// how much damage dealt x mainstat added to active dmg items
         real SusanooShield_Manacost = 105// how much damage dealt x mainstat added to active dmg items
 //----------------------Funny_Barrel----------------------------------------------
         integer Rhitta_ID = 'A0F5'
@@ -473,7 +488,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         integer WillOfD_BuffAbi_ID = 'A139'
         integer WillOfD_Buff_ID = 'B05B'
         real WillOfD_Duration = 3 // game time: does not grow while the hero is paused
-        real WillOfD_CD = 180
+        real WillOfD_CD = 70
         integer SH_WILL_OF_D_END = StringHash("will of d end")
 
         integer Kairoseki_ID = 'I057'
@@ -885,7 +900,7 @@ library ItemsSpells initializer ItemsAnime_Init uses GearSystems
         if itemId == 'I01V' then
             return TuskBarrel_Range
         endif
-        if itemId == 'I02G' then
+        if itemId == 'I02G' or itemId == MeraMeraEvolved_ID then
             return MeraMera_Aoe
         endif
         if itemId == 'I02H' then
@@ -5879,6 +5894,119 @@ endfunction
         set c = null
     endfunction
 
+    // ------------------------------------------------ Mera Mera Evolved shield
+    // Amount lives in hs (SH_MERA_SHIELD / SH_MERA_SHIELD_MAX); DamageBlock absorbs it (MeraShield_Absorb).
+    // Bar: locust dummy unit with the ProgressCastingBar model (frame = percent), hidden by fog natively,
+    // made transparent locally (SetUnitVertexColor) while the hero is invisible to that player - no local handles.
+    // One shared 0.03 s timer runs only while a shield exists.
+    globals
+        unit array MeraShieldUnit
+        real array MeraShieldTime
+        effect array MeraShieldFx
+        unit array MeraShieldBar
+        integer array MeraShieldPct
+        timer MeraShieldTimer = null
+        integer MeraShieldActive = 0
+    endglobals
+
+    private function MeraShield_Place takes integer pid, real cur, real max returns nothing
+        local unit u = MeraShieldUnit[pid]
+        local integer pct = 0
+        if max > 0 then
+            set pct = R2I(RMinBJ(1.0, RMaxBJ(0.0, cur / max)) * 100 + 0.5)
+        endif
+        call SetUnitX(MeraShieldBar[pid], GetUnitX(u))
+        call SetUnitY(MeraShieldBar[pid], GetUnitY(u))
+        if pct != MeraShieldPct[pid] then
+            set MeraShieldPct[pid] = pct
+            call SetUnitAnimationByIndex(MeraShieldBar[pid], IMaxBJ(0, IMinBJ(99, pct - 1)))
+        endif
+        call SetUnitFlyHeight(MeraShieldBar[pid], GetUnitFlyHeight(u) + MeraMeraEvolved_BarHeight, 0)
+        // local presentation only: transparent while the hero is invisible to this player (no handles)
+        if IsUnitVisible(u, GetLocalPlayer()) then
+            call SetUnitVertexColor(MeraShieldBar[pid], 255, 255, 255, 255)
+        else
+            call SetUnitVertexColor(MeraShieldBar[pid], 255, 255, 255, 0)
+        endif
+        set u = null
+    endfunction
+
+    private function MeraShield_End takes integer pid returns nothing
+        if MeraShieldUnit[pid] != null then
+            call SaveReal(hs, GetHandleId(MeraShieldUnit[pid]), SH_MERA_SHIELD, 0)
+            call UnitRemoveAbility(MeraShieldUnit[pid], MeraMeraEvolved_Buff_ID)
+        endif
+        if MeraShieldFx[pid] != null then
+            call DestroyEffect(MeraShieldFx[pid])
+            set MeraShieldFx[pid] = null
+        endif
+        if MeraShieldBar[pid] != null then
+            call RemoveUnit(MeraShieldBar[pid])
+            set MeraShieldBar[pid] = null
+        endif
+        set MeraShieldUnit[pid] = null
+        set MeraShieldActive = MeraShieldActive - 1
+        if MeraShieldActive <= 0 then
+            set MeraShieldActive = 0
+            call PauseTimer(MeraShieldTimer)
+        endif
+    endfunction
+
+    private function MeraShield_Tick takes nothing returns nothing
+        local integer pid = 0
+        local unit u
+        local real cur
+        loop
+            exitwhen pid >= bj_MAX_PLAYER_SLOTS
+            set u = MeraShieldUnit[pid]
+            if u != null then
+                set MeraShieldTime[pid] = MeraShieldTime[pid] - 0.03
+                set cur = LoadReal(hs, GetHandleId(u), SH_MERA_SHIELD)
+                if MeraShieldTime[pid] <= 0 or cur <= 0 or GetWidgetLife(u) <= 0.405 or IsUnitType(u, UNIT_TYPE_DEAD) or (MeraShieldTime[pid] < MeraMeraEvolved_ShieldDuration - 0.3 and GetUnitAbilityLevel(u, MeraMeraEvolved_Buff_ID) == 0) then
+                    call MeraShield_End(pid)
+                else
+                    call MeraShield_Place(pid, cur, LoadReal(hs, GetHandleId(u), SH_MERA_SHIELD_MAX))
+                endif
+            endif
+            set pid = pid + 1
+        endloop
+        set u = null
+    endfunction
+
+    function MeraShield_Start takes unit c returns nothing
+        local integer pid = GetPlayerId(GetOwningPlayer(c))
+        local integer hid = GetHandleId(c)
+        local real amount = GetUnitState(c, UNIT_STATE_MAX_LIFE) * MeraMeraEvolved_ShieldPercent / 100.0
+        if MeraShieldUnit[pid] != null and MeraShieldUnit[pid] != c then
+            call MeraShield_End(pid)
+        endif
+        // recast refreshes: keeps the bigger amount, restarts the duration
+        set amount = RMaxBJ(amount, LoadReal(hs, hid, SH_MERA_SHIELD))
+        call SaveReal(hs, hid, SH_MERA_SHIELD, amount)
+        call SaveReal(hs, hid, SH_MERA_SHIELD_MAX, amount)
+        set MeraShieldTime[pid] = MeraMeraEvolved_ShieldDuration
+        call BuffUnit01(c, c, MeraMeraEvolved_BuffAbi_ID, "innerfire", 1)
+        call DestroyEffect(AddSpecialEffectTarget(MeraMeraEvolved_CastModel, c, "origin"))
+        if MeraShieldUnit[pid] == null then
+            set MeraShieldUnit[pid] = c
+            set MeraShieldFx[pid] = AddSpecialEffectTarget(MeraMeraEvolved_ShieldModel, c, "origin")
+            call BlzSetSpecialEffectColor(MeraShieldFx[pid], 255, 110, 30)
+            set MeraShieldBar[pid] = CreateUnit(GetOwningPlayer(c), MeraMeraEvolved_BarUnit_ID, GetUnitX(c), GetUnitY(c), MeraMeraEvolved_BarFacing)
+            call UnitAddAbility(MeraShieldBar[pid], 'Arav')
+            call UnitRemoveAbility(MeraShieldBar[pid], 'Arav')
+            call SetUnitFlyHeight(MeraShieldBar[pid], GetUnitFlyHeight(c) + MeraMeraEvolved_BarHeight, 0)
+            set MeraShieldPct[pid] = -1
+            set MeraShieldActive = MeraShieldActive + 1
+            if MeraShieldTimer == null then
+                set MeraShieldTimer = CreateTimer()
+            endif
+            if MeraShieldActive == 1 then
+                call TimerStart(MeraShieldTimer, 0.03, true, function MeraShield_Tick)
+            endif
+        endif
+        call MeraShield_Place(pid, amount, amount)
+    endfunction
+
     // ---------------------------------------------------------------- casts
     function ItemsElements_Cast takes unit c, unit td, real x, real y, integer id returns nothing
         local ItemsElementsFx fx
@@ -5886,6 +6014,10 @@ endfunction
         local real cost
         local real a
         local real d
+        if id == MeraMeraEvolved_Abi_ID then
+            call MeraShield_Start(c)
+            return
+        endif
         if id == BloodPactRingEvolved_Abi_ID then
             call GearManaFloorStart(c, BloodPactRingEvolved_Duration, BloodPactRingEvolved_ManaFloor / 100.0)
             call MyRemoveEff(AddSpecialEffectTarget("Abilities\\Spells\\Items\\AIma\\AImaTarget.mdl", c, "origin"), BloodPactRingEvolved_Duration)

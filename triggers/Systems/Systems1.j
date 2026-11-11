@@ -36,6 +36,9 @@ globals
     boolexpr TransformCloneFilterExpr = null
     unit TransformFilterHero = null
     integer TransformFilterHeroId = 0
+    // Mera Mera Evolved shield (Items.j MeraShield_Start): remaining / max absorb amount on the hero handle
+    integer SH_MERA_SHIELD = StringHash("mera shield")
+    integer SH_MERA_SHIELD_MAX = StringHash("mera shield max")
 endglobals
 
 globals
@@ -63,7 +66,7 @@ endglobals
         real str_hpregen = 0.2
         real int_mpregen = 0.15    
         real agi_as = 0.007 
-        real agi_ms = 0.6 // war3mapMisc AgiMoveBonus
+        real agi_ms = 0.72 // war3mapMisc AgiMoveBonus (0.6 +20%); synced by tools/install_gameplay_constants.py
         real agi_def = 0.1
         real armor_resist = 0
 
@@ -1111,7 +1114,150 @@ call UnitRemoveAbility(c,'B01W')*/
                     call UnitRemoveAbility(c,'B00H')
                     call UnitRemoveAbility(c,'B009')
                     call UnitRemoveAbility(c,'B007')
+                    // purely visual debuffs (no script state checks)
+                    call UnitRemoveAbility(c,'B011') // Bankai Target
+                    call UnitRemoveAbility(c,'B012') // Water Slow
+                    call UnitRemoveAbility(c,'B019') // Aging
+                    call UnitRemoveAbility(c,'B01A') // Aging
+                    call UnitRemoveAbility(c,'B01B') // Aging
+                    call UnitRemoveAbility(c,'B01C') // Aging
+                    call UnitRemoveAbility(c,'B038') // Sesshou Sakura
+                    call UnitRemoveAbility(c,'B041') // Ashisogi Jizo
+                    // script-linked debuffs (not cleared: Cinder Fang B06C, Heaven Severed B074)
+                    call UnitRemoveAbility(c,'B01S') // Hell Blaze 1-7
+                    call UnitRemoveAbility(c,'B01T')
+                    call UnitRemoveAbility(c,'B01U')
+                    call UnitRemoveAbility(c,'B01V')
+                    call UnitRemoveAbility(c,'B01W')
+                    call UnitRemoveAbility(c,'B02E')
+                    call UnitRemoveAbility(c,'B02F')
+                    call UnitRemoveAbility(c,'B02B') // Command T Enemy
+                    call UnitRemoveAbility(c,'B02H') // Ainz T
+                    call UnitRemoveAbility(c,'B02T') // Mera Mera no Mi
+                    call UnitRemoveAbility(c,'B03D') // Sand Mark
+                    call UnitRemoveAbility(c,'B058') // Sukuna's Curse
+                    call UnitRemoveAbility(c,'B059') // Five Elements Seal: Mana
+                    call UnitRemoveAbility(c,'B061') // Five Elements Seal: Lock
+                    call UnitRemoveAbility(c,'B05C') // Kairoseki
+                    call UnitRemoveAbility(c,'B042') // Frostnova F 1-5
+                    call UnitRemoveAbility(c,'B045')
+                    call UnitRemoveAbility(c,'B046')
+                    call UnitRemoveAbility(c,'B047')
+                    call UnitRemoveAbility(c,'B048')
+                    call UnitRemoveAbility(c,'B043') // Frostnova TF 1-5
+                    call UnitRemoveAbility(c,'B049')
+                    call UnitRemoveAbility(c,'B04A')
+                    call UnitRemoveAbility(c,'B04B')
+                    call UnitRemoveAbility(c,'B04C')
+                    call UnitRemoveAbility(c,'B069') // elemental marks
+                    call UnitRemoveAbility(c,'B06A')
+                    call UnitRemoveAbility(c,'B06D')
+                    call UnitRemoveAbility(c,'B06E')
+                    call UnitRemoveAbility(c,'B06F')
+                    call UnitRemoveAbility(c,'B070')
+                    call UnitRemoveAbility(c,'B071')
+                    call UnitRemoveAbility(c,'B072')
+                    call UnitRemoveAbility(c,'B073')
                     call UnitRemoveBuffsEx(c,false,true,true,true,true,true,true)
+endfunction
+// Снятие ПОЗИТИВНЫХ баффов (усиления/щиты/блоки) — пара к DebuffClear.
+// Нативный UnitRemoveBuffs(c,true,false) не годится: почти все баффы карты на базе BHds и снимаются вместе с дебаффами.
+// Не трогаем: B05D Ice Coffin (пауза+неуязвимость держатся без баффа), служебные метки без описания.
+function BuffClear takes unit c returns nothing
+    // Скорость / статы / резисты
+    call UnitRemoveAbility(c,'B000') // Speed Increase
+    call UnitRemoveAbility(c,'B001') // Witch Sin
+    call UnitRemoveAbility(c,'B00C') // Nakagami Verdict +40% маг. рез.
+    call UnitRemoveAbility(c,'B00L') // Turbo Speed
+    call UnitRemoveAbility(c,'B00M') // Black Clover 1..6
+    call UnitRemoveAbility(c,'B00N')
+    call UnitRemoveAbility(c,'B00O')
+    call UnitRemoveAbility(c,'B00P')
+    call UnitRemoveAbility(c,'B00Q')
+    call UnitRemoveAbility(c,'B00U')
+    call UnitRemoveAbility(c,'B00Z') // Aggregate Art: Jiunoka
+    call UnitRemoveAbility(c,'B01R') // Wrath Sin
+    call UnitRemoveAbility(c,'B01X') // Sarkaz Sorcery
+    call UnitRemoveAbility(c,'B01Y')
+    call UnitRemoveAbility(c,'B021')
+    call UnitRemoveAbility(c,'B022')
+    call UnitRemoveAbility(c,'B023')
+    call UnitRemoveAbility(c,'B024')
+    call UnitRemoveAbility(c,'B02A') // Command T Ally
+    call UnitRemoveAbility(c,'B02C') // Command T Expansion
+    call UnitRemoveAbility(c,'B02J') // Ainz: Fly .. Greater Full Potential
+    call UnitRemoveAbility(c,'B02K')
+    call UnitRemoveAbility(c,'B02L')
+    call UnitRemoveAbility(c,'B02M')
+    call UnitRemoveAbility(c,'B02N')
+    call UnitRemoveAbility(c,'B02O')
+    call UnitRemoveAbility(c,'B02Q') // Chogurt / Chogurt Evolved
+    call UnitRemoveAbility(c,'B02Y')
+    call UnitRemoveAbility(c,'B05E')
+    call UnitRemoveAbility(c,'B036') // Toji Quick Move
+    call UnitRemoveAbility(c,'B039') // Demon-Dweller Sword
+    call UnitRemoveAbility(c,'B03A')
+    call UnitRemoveAbility(c,'B03E') // Sand Speed
+    call UnitRemoveAbility(c,'B03F') // Shun Shun Rikka
+    call UnitRemoveAbility(c,'B040') // Frozen Heart Blessing
+    call UnitRemoveAbility(c,'B04D') // Core Drill: Physical 1..5
+    call UnitRemoveAbility(c,'B04E')
+    call UnitRemoveAbility(c,'B04F')
+    call UnitRemoveAbility(c,'B050')
+    call UnitRemoveAbility(c,'B051')
+    call UnitRemoveAbility(c,'B052') // Core Drill: Magic 1..5
+    call UnitRemoveAbility(c,'B053')
+    call UnitRemoveAbility(c,'B054')
+    call UnitRemoveAbility(c,'B055')
+    call UnitRemoveAbility(c,'B056')
+    call UnitRemoveAbility(c,'B060') // Philosopher's Stone
+    call UnitRemoveAbility(c,'B018') // Harribel Sacrifice
+    // Ауры
+    call UnitRemoveAbility(c,'B00I') // Void Aura
+    call UnitRemoveAbility(c,'B064')
+    call UnitRemoveAbility(c,'B065')
+    call UnitRemoveAbility(c,'B066')
+    call UnitRemoveAbility(c,'B067')
+    call UnitRemoveAbility(c,'B068')
+    call UnitRemoveAbility(c,'B013') // Holy Grail
+    call UnitRemoveAbility(c,'B01P') // Dark Holy Grail
+    // Щиты / блоки / иммунитеты / контрудары
+    call UnitRemoveAbility(c,'B004') // Knight of Ruin
+    call UnitRemoveAbility(c,'B005') // Naofumi Shield
+    call UnitRemoveAbility(c,'B00G') // Daruma San Ga Koronda
+    call UnitRemoveAbility(c,'B00J') // Song of Salvation
+    call UnitRemoveAbility(c,'B00V') // Zero Point Breakthrough
+    call UnitRemoveAbility(c,'B00W') // Mantello di Vongola Primo
+    call UnitRemoveAbility(c,'B00X') // Utsushi Ame
+    call UnitRemoveAbility(c,'B010') // Samidare
+    call UnitRemoveAbility(c,'B014') // Great Sage Control
+    call UnitRemoveAbility(c,'B015') // Raphael Control
+    call UnitRemoveAbility(c,'B016') // Uriel Protect
+    call UnitRemoveAbility(c,'B01O') // Divine Rush
+    call UnitRemoveAbility(c,'B01Z') // Shield Up
+    call UnitRemoveAbility(c,'B020')
+    call UnitRemoveAbility(c,'B025') // Wound Reduction 1..5
+    call UnitRemoveAbility(c,'B026')
+    call UnitRemoveAbility(c,'B027')
+    call UnitRemoveAbility(c,'B028')
+    call UnitRemoveAbility(c,'B029')
+    call UnitRemoveAbility(c,'B02D') // Guts Armor
+    call UnitRemoveAbility(c,'B02G') // Susanoo Shield
+    call UnitRemoveAbility(c,'B02I') // Body of Effulgent Beryl
+    call UnitRemoveAbility(c,'B02P') // Undead Knight Protect
+    call UnitRemoveAbility(c,'B02V') // Simple / Barrier / Greater Barrier
+    call UnitRemoveAbility(c,'B02W')
+    call UnitRemoveAbility(c,'B02X')
+    call UnitRemoveAbility(c,'B057') // Armament Haki
+    call UnitRemoveAbility(c,'B078') // Mera Mera Evolved fire shield
+    call UnitRemoveAbility(c,'B05A') // Tekkai
+    call UnitRemoveAbility(c,'B05B') // Will of D.
+    call SaveReal(hs, GetHandleId(c), SH_WILL_OF_D_END, 0.0) // защита Will of D. держится и в hashtable
+    call UnitRemoveAbility(c,'B05F') // Mirror of Yata
+    call UnitRemoveAbility(c,'B063') // Return by Death (снятие отменяет возврат)
+    call UnitRemoveAbility(c,'B06B') // Thunder Bastion (стихийная активка на себя)
+    call UnitRemoveAbility(c,'B0F0') // Frostnova E - Frozen Shelter
+    call UnitRemoveAbility(c,'B0F3') // Song Shield
 endfunction
 function MouseOff takes player p returns nothing
 local integer i = GetPlayerId(p)
@@ -1677,57 +1823,60 @@ set ItemsPage0_ID[i2+3] = 0
 set ItemsPage0_ID[i2+4] = 0
 set ItemsPage0_ID[i2+5] = 0
 
-if id == Toji_ID  then
-    
-    set ItemsPage0_ID[i2+0] = 'I00E' // tusk barrel    
-    set ItemsPage0_ID[i2+1] = 'I01I' // incursio
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I00B' // Oken
-    set ItemsPage0_ID[i2+4] = 'I024' // prison realm
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
+if id == Toji_ID then
+    set ItemsPage0_ID[i2+0] = 'I00E' // Incursio
+    set ItemsPage0_ID[i2+1] = 'I024' // Prison Realm (Active)
+    set ItemsPage0_ID[i2+2] = 'I01M' // Nichirin Sword Whip
+    set ItemsPage0_ID[i2+3] = 'I04C' // Ashisogi Jizo
+    set ItemsPage0_ID[i2+4] = 'I042' // Shiki Knife Evolved
+    set ItemsPage0_ID[i2+5] = 'I019' // Earth Power
 endif
 if id == Natsu_ID  then
     
     set ItemsPage0_ID[i2+0] = 'I01V' // tusk barrel    
     set ItemsPage0_ID[i2+1] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
+    set ItemsPage0_ID[i2+2] = 'I043' // Cup of Tea Evolved
     set ItemsPage0_ID[i2+3] = 'I00B' // Oken
     set ItemsPage0_ID[i2+4] = 'I024' // prison realm
     set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
 endif
 if id == Patriot_ID then
-    
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set    
-    set ItemsPage0_ID[i2+1] = 'I024' // urahara set
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I00T' // Oken
-    set ItemsPage0_ID[i2+4] = 'I01Q' // ryujin jakka
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I024' // Prison Realm (Active)
+    set ItemsPage0_ID[i2+2] = 'I01M' // Nichirin Sword Whip
+    set ItemsPage0_ID[i2+3] = 'I00T' // Raikage Hat
+    set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
+    set ItemsPage0_ID[i2+5] = 'I019' // Earth Power
 endif
-if id == Laxus_ID  then
-   
-    
-    set ItemsPage0_ID[i2+0] = 'I02G' // urahara set   
-    set ItemsPage0_ID[i2+1] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+2] = 'I02J' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I02L' // cup of tea
-    set ItemsPage0_ID[i2+4] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
+if id == Laxus_ID then
+    set ItemsPage0_ID[i2+0] = 'I01K' // Frozen Heart
+    set ItemsPage0_ID[i2+1] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+2] = 'I02J' // Guts Armor
+    set ItemsPage0_ID[i2+3] = 'I02L' // Rhitta
+    set ItemsPage0_ID[i2+4] = 'I043' // Cup of Tea Evolved
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
 endif
-if id == Alucard_ID or id == Asta_ID then
-    
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set    
-    set ItemsPage0_ID[i2+1] = 'I00T' // raikage set
-    set ItemsPage0_ID[i2+2] = 'I01I' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I01M' // Oken
-    set ItemsPage0_ID[i2+4] = 'I01Q' // ryujin jakka
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
+if id == Alucard_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00T' // Raikage Hat
+    set ItemsPage0_ID[i2+2] = 'I019' // Earth Power
+    set ItemsPage0_ID[i2+3] = 'I01M' // Nichirin Sword Whip
+    set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
+if id == Asta_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00T' // Raikage Hat
+    set ItemsPage0_ID[i2+2] = 'I05B' // Ryujin Jakka Evolved
+    set ItemsPage0_ID[i2+3] = 'I01M' // Nichirin Sword Whip
+    set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
 endif
 if id == Mahoraga_ID then
     
     set ItemsPage0_ID[i2+0] = 'I00O' // urahara set    
     set ItemsPage0_ID[i2+1] = 'I00T' // raikage set
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
+    set ItemsPage0_ID[i2+2] = 'I043' // Cup of Tea Evolved
     set ItemsPage0_ID[i2+3] = 'I00B' // Oken
     set ItemsPage0_ID[i2+4] = 'I00Y' // ryujin jakka
     set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
@@ -1737,29 +1886,27 @@ if id == DarkShiki_ID then
     
     set ItemsPage0_ID[i2+0] = 'I00O' // urahara set    
     set ItemsPage0_ID[i2+1] = 'I00T' // raikage set
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
+    set ItemsPage0_ID[i2+2] = 'I043' // Cup of Tea Evolved
     set ItemsPage0_ID[i2+3] = 'I010' // Oken
     set ItemsPage0_ID[i2+4] = 'I024' // ryujin jakka
     set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
 endif 
 if id == Neuvillette_ID then
-       
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I01P' // Oken
-    set ItemsPage0_ID[i2+2] = 'I00H' // ryujin jakka
-    set ItemsPage0_ID[i2+3] = 'I01L' // kazekage hat
-    set ItemsPage0_ID[i2+4] = 'I011' // okarun egg
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I01P' // Sogyo no Kotowari
+    set ItemsPage0_ID[i2+2] = 'I023' // Quincy Cross
+    set ItemsPage0_ID[i2+3] = 'I04E' // Core Drill
+    set ItemsPage0_ID[i2+4] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
 if id == Barragan_ID then
-       
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I00H' // Oken
-    set ItemsPage0_ID[i2+2] = 'I023' // ryujin jakka
-    set ItemsPage0_ID[i2+3] = 'I01L' // kazekage hat
-    set ItemsPage0_ID[i2+4] = 'I011' // okarun egg
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00H' // Black Heart
+    set ItemsPage0_ID[i2+2] = 'I023' // Quincy Cross
+    set ItemsPage0_ID[i2+3] = 'I01L' // True Zangetsu
+    set ItemsPage0_ID[i2+4] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+5] = 'I04E' // Core Drill
+endif
 if id == Rimuru_ID then
         
   set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
@@ -1787,55 +1934,66 @@ if id == Kenjaku_ID then
     set ItemsPage0_ID[i2+4] = 'I00Y' // kazekage hat
     set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
 endif 
-if id == Okarun_ID or id == Brandish_ID then
-       
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I00H' // nichirin
-    set ItemsPage0_ID[i2+2] = 'I01M' // nichirin
-    set ItemsPage0_ID[i2+3] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+4] = 'I011' // okarun egg
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
-if id == Inori_ID or id == Frieren_ID then
-        
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I00H' // kazekage hat
-    set ItemsPage0_ID[i2+2] = 'I01B' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I011' // okarun egg
-    set ItemsPage0_ID[i2+4] = 'I01L' // kazekage hat
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+if id == Okarun_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00H' // Black Heart
+    set ItemsPage0_ID[i2+2] = 'I00Y' // Angel's Blessing
+    set ItemsPage0_ID[i2+3] = 'I019' // Earth Power
+    set ItemsPage0_ID[i2+4] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
+if id == Brandish_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00H' // Black Heart
+    set ItemsPage0_ID[i2+2] = 'I02B' // Dark Holy Grail
+    set ItemsPage0_ID[i2+3] = 'I04B' // Shun Shun Rikka
+    set ItemsPage0_ID[i2+4] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
+if id == Inori_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+2] = 'I02B' // Dark Holy Grail
+    set ItemsPage0_ID[i2+3] = 'I04B' // Shun Shun Rikka
+    set ItemsPage0_ID[i2+4] = 'I00B' // Oken
+    set ItemsPage0_ID[i2+5] = 'I00Y' // Angel's Blessing
+endif
+if id == Frieren_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00W' // Kurikara
+    set ItemsPage0_ID[i2+2] = 'I01B' // Itachi Set
+    set ItemsPage0_ID[i2+3] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+4] = 'I01L' // True Zangetsu
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
 if id == AlterSaber_ID then
-        
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I02C' // fairy emblem
-    set ItemsPage0_ID[i2+2] = 'I00T' // raikage hat
-    set ItemsPage0_ID[i2+3] = 'I01I' // cup of tea  
-    set ItemsPage0_ID[i2+4] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I03Y' // Murasame
+    set ItemsPage0_ID[i2+2] = 'I055' // Samehada
+    set ItemsPage0_ID[i2+3] = 'I03X' // Demon Sword Lostvayne
+    set ItemsPage0_ID[i2+4] = 'I051' // Naofumi Shield Evolved
+    set ItemsPage0_ID[i2+5] = 'I049' // Chidori Kusanagi
+endif
 if id == Kirito_ID then
-        
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I02C' // fairy emblem
-    set ItemsPage0_ID[i2+2] = 'I00T' // raikage hat
-    set ItemsPage0_ID[i2+3] = 'I01I' // cup of tea  
-    set ItemsPage0_ID[i2+4] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I03Y' // Murasame
+    set ItemsPage0_ID[i2+2] = 'I075' // Dark Repulser
+    set ItemsPage0_ID[i2+3] = 'I051' // Naofumi Shield Evolved
+    set ItemsPage0_ID[i2+4] = 'I049' // Chidori Kusanagi
+    set ItemsPage0_ID[i2+5] = 'I042' // Shiki Knife Evolved
+endif
 if id == Takeshi_ID then
-       
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I012' // fairy emblem
-    set ItemsPage0_ID[i2+2] = 'I00T' // raikage hat
-    set ItemsPage0_ID[i2+3] = 'I01I' // cup of tea  
-    set ItemsPage0_ID[i2+4] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I05A' // Fairy Tail Emblem Evolved
+    set ItemsPage0_ID[i2+2] = 'I00T' // Raikage Hat
+    set ItemsPage0_ID[i2+3] = 'I024' // Prison Realm (Active)
+    set ItemsPage0_ID[i2+4] = 'I043' // Cup of Tea Evolved
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
 if id == Tsuna_ID then
     set ItemsPage0_ID[i2+0] = 'I00O' // urahara set    
     set ItemsPage0_ID[i2+1] = 'I01I' // cup of tea  
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
+    set ItemsPage0_ID[i2+2] = 'I043' // Cup of Tea Evolved
     set ItemsPage0_ID[i2+3] = 'I01L' // true zangetsu
     set ItemsPage0_ID[i2+4] = 'I00W' // true zangetsu
     set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
@@ -1849,66 +2007,76 @@ if id == Raiden_ID or id == Starrk_ID then
     set ItemsPage0_ID[i2+4] = 'I00W' // kurikara
     set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
 endif 
-if id == BazzB_ID or id == Bambietta_ID then
-        
-    set ItemsPage0_ID[i2+0] = 'I00E' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I012' // true zangetsu
-    set ItemsPage0_ID[i2+2] = 'I01I' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I01L' // black clover
-    set ItemsPage0_ID[i2+4] = 'I00W' // kurikara
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+if id == BazzB_ID then
+    set ItemsPage0_ID[i2+0] = 'I00E' // Incursio
+    set ItemsPage0_ID[i2+1] = 'I05A' // Fairy Tail Emblem Evolved
+    set ItemsPage0_ID[i2+2] = 'I01I' // Sword of Dracule Mihawk
+    set ItemsPage0_ID[i2+3] = 'I01L' // True Zangetsu
+    set ItemsPage0_ID[i2+4] = 'I06E' // Zanka no Tachi
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
+if id == Bambietta_ID then
+    set ItemsPage0_ID[i2+0] = 'I00E' // Incursio
+    set ItemsPage0_ID[i2+1] = 'I05A' // Fairy Tail Emblem Evolved
+    set ItemsPage0_ID[i2+2] = 'I01I' // Sword of Dracule Mihawk
+    set ItemsPage0_ID[i2+3] = 'I01L' // True Zangetsu
+    set ItemsPage0_ID[i2+4] = 'I042' // Shiki Knife Evolved
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
 if id == Harribel_ID then
-        
-    set ItemsPage0_ID[i2+0] = 'I02B' // d gr
-    set ItemsPage0_ID[i2+1] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+2] = 'I01L' // true zangetsu
-    set ItemsPage0_ID[i2+3] = 'I01B' // cup of tea
-    set ItemsPage0_ID[i2+4] = 'I01P' // cup of tea
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+    set ItemsPage0_ID[i2+0] = 'I02B' // Dark Holy Grail
+    set ItemsPage0_ID[i2+1] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+2] = 'I01W' // Lust Sin Evolved
+    set ItemsPage0_ID[i2+3] = 'I043' // Cup of Tea Evolved
+    set ItemsPage0_ID[i2+4] = 'I01P' // Sogyo no Kotowari
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
 
-if id == Gojo_ID or id == Ainz_ID then
-       
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I00H' // kazekage hat
-    set ItemsPage0_ID[i2+2] = 'I01B' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I011' // okarun egg
-    set ItemsPage0_ID[i2+4] = 'I01L' // kazekage hat
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif 
+if id == Gojo_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00H' // Black Heart
+    set ItemsPage0_ID[i2+2] = 'I073' // Blood Pact Ring Evolved
+    set ItemsPage0_ID[i2+3] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+4] = 'I01N' // Hiraishin
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
+if id == Ainz_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00H' // Black Heart
+    set ItemsPage0_ID[i2+2] = 'I01B' // Itachi Set
+    set ItemsPage0_ID[i2+3] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+4] = 'I01L' // True Zangetsu
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
 if id == Erza_ID then
-      
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I02G' // witch sin
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I01M' // Oken
-    set ItemsPage0_ID[i2+4] = 'I019' // earth hand
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I01I' // Sword of Dracule Mihawk
+    set ItemsPage0_ID[i2+2] = 'I010' // Pochita
+    set ItemsPage0_ID[i2+3] = 'I01M' // Nichirin Sword Whip
+    set ItemsPage0_ID[i2+4] = 'I019' // Earth Power
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
 endif
 if id == Tomioka_ID then
-   
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I01I' // witch sin
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I00B' // Oken
-    set ItemsPage0_ID[i2+4] = 'I019' // earth hand
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I01I' // Sword of Dracule Mihawk
+    set ItemsPage0_ID[i2+2] = 'I043' // Cup of Tea Evolved
+    set ItemsPage0_ID[i2+3] = 'I03Y' // Murasame
+    set ItemsPage0_ID[i2+4] = 'I019' // Earth Power
+    set ItemsPage0_ID[i2+5] = 'I024' // Prison Realm (Active)
 endif
 if id == Akainu_ID then
-       
-    set ItemsPage0_ID[i2+0] = 'I02B' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I00L' // witch sin
-    set ItemsPage0_ID[i2+2] = 'I00M' // cup of tea
-    set ItemsPage0_ID[i2+3] = 'I00Y' // angel blessing
-    set ItemsPage0_ID[i2+4] = 'I019' // kurikara
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
+    set ItemsPage0_ID[i2+0] = 'I02B' // Dark Holy Grail
+    set ItemsPage0_ID[i2+1] = 'I010' // Pochita
+    set ItemsPage0_ID[i2+2] = 'I043' // Cup of Tea Evolved
+    set ItemsPage0_ID[i2+3] = 'I00Y' // Angel's Blessing
+    set ItemsPage0_ID[i2+4] = 'I019' // Earth Power
+    set ItemsPage0_ID[i2+5] = 'I00O' // Urahara Set
 endif
 // HERO TRANSFER: Milim / RecommenedItems
 if id == Milim_ID then
     set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
     set ItemsPage0_ID[i2+1] = 'I024' // Prison Realm (Active)
-    set ItemsPage0_ID[i2+2] = 'I00M' // Cup of Tea
+    set ItemsPage0_ID[i2+2] = 'I043' // Cup of Tea Evolved
     set ItemsPage0_ID[i2+3] = 'I00T' // Raikage Hat
     set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
     set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
@@ -1917,20 +2085,19 @@ endif
 if id == Crocodile_ID then
     set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
     set ItemsPage0_ID[i2+1] = 'I024' // Prison Realm (Active)
-    set ItemsPage0_ID[i2+2] = 'I00M' // Cup of Tea
-    set ItemsPage0_ID[i2+3] = 'I00T' // Raikage Hat
-    set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
+    set ItemsPage0_ID[i2+2] = 'I043' // Cup of Tea Evolved
+    set ItemsPage0_ID[i2+3] = 'I019' // Earth Power
+    set ItemsPage0_ID[i2+4] = 'I04E' // Core Drill
     set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
 endif
 // HERO TRANSFER: Frostnova / RecommenedItems
 if id == Frostnova_ID then
-
-    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
-    set ItemsPage0_ID[i2+1] = 'I00H' // Oken
-    set ItemsPage0_ID[i2+2] = 'I023' // ryujin jakka
-    set ItemsPage0_ID[i2+3] = 'I01L' // kazekage hat
-    set ItemsPage0_ID[i2+4] = 'I011' // okarun egg
-    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I00H' // Black Heart
+    set ItemsPage0_ID[i2+2] = 'I023' // Quincy Cross
+    set ItemsPage0_ID[i2+3] = 'I01B' // Itachi Set
+    set ItemsPage0_ID[i2+4] = 'I011' // Okarun Egg
+    set ItemsPage0_ID[i2+5] = 'I00Y' // Angel's Blessing
 endif
 set ItemsFrameCurrentPage_ID[i] = 0
 set ItemsCraftPlayerDebug_ID[i] = -1
@@ -2312,9 +2479,17 @@ endfunction
 
 
      function BuffUnit01 takes unit c, unit u, integer id,string s, integer level returns real
-        local integer i = GetPlayerId(GetOwningPlayer(u))
-        local unit d = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+        local integer i
+        local unit d
         local real duration
+        // Enemy debuff: Armament Haki / debuff immunity blocks it (returns 0 duration)
+        if c != null and c != u and IsUnitEnemy(u, GetOwningPlayer(c)) then
+            if DebuffImmune_Start(u, 1) == 0 then
+                return 0.0
+            endif
+        endif
+        set i = GetPlayerId(GetOwningPlayer(u))
+        set d = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(d, id)
             call SetUnitAbilityLevel(d, id, level)
             if IsUnitType(u, UNIT_TYPE_HERO) then
@@ -2931,6 +3106,21 @@ function InvertedSpear_IgnoreResistance takes real baseAmount, real resistedAmou
     return resistedAmount
 endfunction
 
+// Mera Mera Evolved: amount shield absorbs final damage after resistances and full shields.
+function MeraShield_Absorb takes unit td, real dmg returns real
+    local integer hid = GetHandleId(td)
+    local real s = LoadReal(hs, hid, SH_MERA_SHIELD)
+    if s <= 0 then
+        return dmg
+    endif
+    if dmg < s then
+        call SaveReal(hs, hid, SH_MERA_SHIELD, s - dmg)
+        return 0.0
+    endif
+    call SaveReal(hs, hid, SH_MERA_SHIELD, 0)
+    return dmg - s
+endfunction
+
 function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean test returns real
     local real dmgbase = dmg
     // Копия защищена от вложенных событий урона, которые могут изменить global.
@@ -3470,6 +3660,9 @@ endif
     endif
 
     set dmg = ApplyGearSystemFullShields(c, td, dmg, shieldTriggerDmg, typedmg, test)
+    if not test and dmg > 0 then
+        set dmg = MeraShield_Absorb(td, dmg)
+    endif
 
     set targetOwner = null
 

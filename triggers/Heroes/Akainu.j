@@ -67,7 +67,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
 
 //---------------T ability (Ryusei Kazan - Meteor Volcano)---------------------
         integer AkainuT_ID = 'A06Z'
-        integer AkainuT_Fists = 36
+        integer AkainuT_Fists = 32 // was 36
         integer AkainuT_AimedFists = 5
         real AkainuT_FistPeriod = 0.12 // was 0.15 (-20%)
         real AkainuT_DamageAgiBase = 1.4
@@ -1001,7 +1001,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
             set aoe = AkainuT_DamageAoePunch
             set dmg = GetHeroAgi(c, true) * AkainuT_DamageAgiBase
             set rmax = 0.39
-            set e = EffectSpawn("war3mapImported\\wos_OP (114).mdl", x, y, a * bj_RADTODEG, 1, 0.50, 1)
+            set e = EffectSpawn("war3mapImported\\wos_OP (114).mdl", x, y, a * bj_RADTODEG, 1, 0.375, 1) // fist scale was 0.50
 
             if MUI_AkainuT2 == 0 then
                 call AkainuTimer03Acquire()
@@ -1062,13 +1062,13 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                     if r > 1.32 and r < 1.80 then
                         if r3 > 0.09 then
                             set r3 = 0.00
-                            set e3 = EffectSpawn3("war3mapImported\\wos_OP (114).mdl", (GetUnitX(c) + 300.00 * Cos(a)) + 85.00 * Cos(a + 60.00 * bj_DEGTORAD), (GetUnitY(c) + 300.00 * Sin(a)) + 85.00 * Sin(a + 60.00 * bj_DEGTORAD), a * bj_RADTODEG + 180.00, 1, 0.25, 800.00, -205.00)
+                            set e3 = EffectSpawn3("war3mapImported\\wos_OP (114).mdl", (GetUnitX(c) + 300.00 * Cos(a)) + 85.00 * Cos(a + 60.00 * bj_DEGTORAD), (GetUnitY(c) + 300.00 * Sin(a)) + 85.00 * Sin(a + 60.00 * bj_DEGTORAD), a * bj_RADTODEG + 180.00, 1, 0.19, 800.00, -205.00)
                             call EMUE(e3, 900.00, 0.12, a)
                             call EHeightSet(e3, 0.12, 1800.00)
                             call MyRemoveEff(e3, 0.45)
                             set e3 = null
 
-                            set e3 = EffectSpawn3("war3mapImported\\wos_OP (114).mdl", (GetUnitX(c) + 300.00 * Cos(a)) + 85.00 * Cos(a - 60.00 * bj_DEGTORAD), (GetUnitY(c) + 300.00 * Sin(a)) + 85.00 * Sin(a - 60.00 * bj_DEGTORAD), a * bj_RADTODEG + 180.00, 1, 0.25, 800.00, -205.00)
+                            set e3 = EffectSpawn3("war3mapImported\\wos_OP (114).mdl", (GetUnitX(c) + 300.00 * Cos(a)) + 85.00 * Cos(a - 60.00 * bj_DEGTORAD), (GetUnitY(c) + 300.00 * Sin(a)) + 85.00 * Sin(a - 60.00 * bj_DEGTORAD), a * bj_RADTODEG + 180.00, 1, 0.19, 800.00, -205.00)
                             call EMUE(e3, 900.00, 0.12, a)
                             call EHeightSet(e3, 0.12, 1800.00)
                             call MyRemoveEff(e3, 0.45)

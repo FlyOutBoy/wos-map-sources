@@ -3243,6 +3243,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         set y = GetUnitY(c)
                         set e2 = EffectSpawnScale("war3mapImported\\wos_bluebeamfromair.mdl", x, y, 1, 1.4, 1, 0, 1.02, 1, 3.4)
                         set e3 = EffectSpawnScale("war3mapImported\\wos_bluebeamfromair.mdl", x, y, 1, 1.4, 1, 0, 1.02, 1, 5.4)
+                        call BlzSetSpecialEffectAlpha(e2, 76) // light beams 30% alpha (was 127, -40%)
+                        call BlzSetSpecialEffectAlpha(e3, 76)
                         call BlzSetSpecialEffectTimeScale(e, 0.75)
                         call MakeSound("war3mapimported\\Hero_Ainz_G3")
                     elseif count == 0 or r2 >= AinzG_DamagePeriod then

@@ -409,6 +409,7 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     local boolean eventIsAttack = BlzGetEventIsAttack()
     local integer appliedInteger
     local real dmg_base = dmg
+    local real yataRaw = 0 // damage before the target's resistances/shields (Yata Mirror reflect)
     local real quincyShare = 0.0
     local real stoneHealFactor = 1.0
     local real hpblock1
@@ -681,6 +682,7 @@ endif
     // Обычные резисты применяются к части урона, прошедшей ранние щиты.
     // Полные щиты внутри DamageBlock вызывают LustSin непосредственно.
     set DamageShieldPierceTriggerDamage = penetrationTrigger
+    set yataRaw = dmg
     set dmg = DamageBlock(c, td, dmg, typedmg, false)
     static if LIBRARY_FrostnovaSpells then
         if GetUnitAbilityLevel(td, FrostnovaE_ResistBuffID) > 0 then
@@ -1036,8 +1038,8 @@ endif
     if damageSourceId == RimuruR3_ID and dmg > 0 and isEnemy and not IsUnitIllusion(c) then // rimuru R3 lifesteal
         call SetHpCurrent(c, dmg * (RimuruR3_Lifesteal / 100))
     endif
-    if not I02H_ReflectActive and dmg > 1.0 and c != null and c != td and ((HasCachedItem(td,'I02H') > 0 and SR2(c,td) < YataMirror_Range) or HasCachedItem(td,YataMirrorEvolved_ID) > 0) then
-call I02HReflect(c,td,dmg,typedmg)
+    if not I02H_ReflectActive and yataRaw > 1.0 and c != null and c != td and ((HasCachedItem(td,'I02H') > 0 and SR2(c,td) < YataMirror_Range) or HasCachedItem(td,YataMirrorEvolved_ID) > 0) then
+call I02HReflect(c,td,yataRaw,typedmg)
 endif
     static if LIBRARY_DamageStats then
         static if DAMAGE_STATS_ENABLED then

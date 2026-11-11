@@ -23,14 +23,14 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
     // Справа от строк, где используются глобалы настроек, в комментарии написаны их значения.
     //
     // AltairTable (своя хеш-таблица) на герое: 0 AltairHero, 2 AltairR (запас копий), 3 AltairT, 4 AltairF,
-    //   5 AltairSE, 6 AltairSR, 7 AltairST; на любом юните: 1 AltairWBlock, 8 номер залпа R, который его уже задел.
+    //   5 AltairSE, 6 AltairSR, 7 AltairST, 9 AltairWAura; на любом юните: 1 AltairWBlock, 8 номер залпа R, который его уже задел.
     // Тип урона (typedmg, как в DmgSys): 0 атака, 1 магический, 2 физический, остальное — чистый.
     // =====================================================================================================
     globals
         // ==================== ТИК ГЕРОЯ (как у Tomioka) ====================
         // Номера k: 0 AltairSword, 1 AltairQBullet, 2 AltairQ, 3 AltairW, 4 AltairWBlock, 5 AltairE, 6 AltairRVolley,
         //           7 AltairRCopy, 8 AltairR, 9 AltairT, 10 AltairF, 11 AltairFReflect, 12 AltairSQ, 13 AltairSE,
-        //           14 AltairSR, 15 AltairSTSword, 16 AltairST, 17 AltairHero, 18 AltairVoice.
+        //           14 AltairSR, 15 AltairSTSword, 16 AltairST, 17 AltairHero, 18 AltairVoice, 19 AltairWAura, 20 AltairSW.
         private timer AltairTick_Timer = CreateTimer()
         private boolean array AltairTick_Active
         private integer AltairTick_Users = 0
@@ -81,6 +81,27 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         real AltairW_DamageIntStep = 0.4
         real AltairW_DamageStatic = 50.0
         real AltairW_DamageStaticStep = 25.0
+        // После прибытия W (к союзнику или врагу) на AltairW2_Window секунд кнопка W меняется на W2 — барьер.
+        // W2: Altair AltairW_AuraTime секунд на паузе под щитом (KEY_SHIELD, как Laxus T — надпись Shield в статах),
+        //     барьер вокруг неё бьёт врагов и выталкивает их к краю (на краю урон продолжается).
+        integer AltairW2_ID = 'A169' // вторая кнопка W (без цели), создаёт tools/stage_altair_rework.py
+        real AltairW2_Window = 4.0 // сколько секунд после прибытия W можно нажать W2
+        integer AltairW_BuffSpell_ID = 'A167' // даммик (Bloodlust без бонусов): бафф B076 на Altair на 1.5 с (барьер W2)
+        integer AltairW_Buff_ID = 'B076'
+        integer AltairW_DebuffSpell_ID = 'A168' // даммик (Slow без замедления): дебафф B077 на враге, 5 ур. = 3..7 с
+        integer AltairW_Debuff_ID = 'B077' // пока висит — новые баффы и щиты врага стираются каждые AltairW_ErasePeriod
+        real AltairW_AuraScale = 2.2 // размер модели барьера (было 1.0 — барьер выглядел в 2.2 раза меньше)
+        real AltairW_AuraHeight = 0.0
+        real AltairW_AuraTime = 1.5 // барьер: пауза + щит (блок всего урона) + урон/отталкивание
+        real AltairW_AuraAoe = 350.0 // радиус барьера вокруг Altair
+        real AltairW_AuraEdge = 40.0 // врагов выталкивает до AltairW_AuraAoe - AltairW_AuraEdge (остаются внутри радиуса урона)
+        real AltairW_AuraPushSpeed = 900.0 // скорость выталкивания к краю
+        real AltairW_AuraPeriod = 0.25 // импульс урона: 1.5 / 0.25 = 6 импульсов
+        real AltairW_AuraDamageIntBase = 1.5 // урон за весь барьер: Int x (1.5 + 0.3/ур.) + 75 + 25/ур. маг.
+        real AltairW_AuraDamageIntStep = 0.3
+        real AltairW_AuraDamageStatic = 75.0
+        real AltairW_AuraDamageStaticStep = 25.0
+        real AltairW_ErasePeriod = 1.0
 
         // ==================== E: Outline Origin (Holopsicon) ====================
         integer AltairE_ID = 'A120'
@@ -88,8 +109,13 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         real AltairE_CooldownReduction = 5.0 // секунд снимается со всех КД всех юнитов в круге
         real AltairE_DamageIntBase = 1.5 // урон врагам: Int x (1.5 + 0.4/ур.) маг.
         real AltairE_DamageIntStep = 0.4
-        real AltairE_StringTime = 0.3 // на этой секунде выстрел ауры (сфера e живёт до него)
-        real AltairE_SphereScale = 1.3
+        real AltairE_AnimSpeed = 1.6 // скорость анимации каста (было 1.25)
+        real AltairE_DomeTime = 0.15 // на этой секунде появляется купол (было 0.24)
+        real AltairE_StartTime = 0.27 // на этой секунде ОДИН импульс: урон, -КД, воскрешение декора (было 0.42)
+        real AltairE_UnpauseTime = 0.42 // на этой секунде Altair снова управляема (раньше — только в конце)
+        real AltairE_EndTime = 0.6 // death-анимация купола и конец (было 1.02)
+        real AltairE_SphereScale = 1
+        real AltairE_SphereHeight = 60.0 // купол приподнят над землёй
         real AltairE_BlockerRadius = 400.0 // юниты в этом радиусе от декора убираются на миг, чтобы декор воскрес
         // Сломанный декор, найденный в круге E (заполняет AltairE.AltairE_CollectDeadDecor).
         private destructable array AltairEDead
@@ -198,7 +224,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         integer AltairT_ID = 'A122'
         real AltairT_Aoe = 300.0 // радиус, из которого портал затягивает при открытии
         real AltairT_Decor = 50.0 // урон по декору в секунду вокруг открытого портала
-        real AltairT_EnterRadius = 140.0 // подошёл к открытому порталу ближе — входит
+        real AltairT_EnterRadius = 220.0 // подошёл к открытому порталу ближе — входит (было 140)
         integer AltairT_MaxMembers = 4
         real AltairT_Duration = 20.0
         real AltairT_DurationLevel35 = 5.0 // с 35 уровня +5 с (итого 25)
@@ -206,8 +232,10 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         real AltairT_PullTime = 0.36 // сколько жертвы тянутся к порталу перед телепортом
         real AltairT_PullStep = 30.0 // на сколько тянутся за тик
         real AltairT_RealmSpread = 380.0 // разброс точек появления в реалме вокруг центра
-        real AltairT_PortalScale = 3.2
-        real AltairT_PortalHeight = 230.0
+        real AltairT_PortalScale = 9.6 // портал на арене: x3 от прежних 3.2
+        real AltairT_PortalHeight = 690.0 // центр вертикального диска (было 230 при 3.2)
+        real AltairT_GateScale = 1.92 // зеркальные врата внутри реалма остались прежними (3.2 x 0.6)
+        real AltairT_GateHeight = 230.0
         // Иной мир: правый нижний угол арены TEST, обнесён непроходимой границей (строится в AltairT_BuildRealm).
         real AltairT_RealmMinX = 1920.0
         real AltairT_RealmMinY = -3392.0
@@ -245,32 +273,29 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         // ==================== SW: Sword Storm ====================
         integer AltairSW_ID = 'A126'
         integer AltairSW_Cost = 6
-        integer AltairSW_Swords = 9
-        real AltairSW_Cone = 40.0 // градусы между крайними мечами
+        integer AltairSW_Swords = 8 // мечей разом, одним залпом
+        real AltairSW_Cone = 80.0 // градусы между крайними мечами (±40 от направления)
         real AltairSW_Range = 1000.0
         real AltairSW_Speed = 1800.0
         real AltairSW_Width = 110.0
         real AltairSW_Decor = 20.0
-        real AltairSW_DamageIntBase = 1.2 // урон: Int x (1.2 + 0.3/ур.) + атака x 0.8 (как атака)
-        real AltairSW_DamageIntStep = 0.3
-        real AltairSW_DamageAtk = 0.8
+        real AltairSW_DamageInt = 0.9 // урон КАЖДОГО меча: Int x 0.9 (как атака); мечи бьют независимо
+        real AltairSW_Pause = 0.3 // пауза кастера при залпе
 
         // ==================== SE: Spinning Swords ====================
         integer AltairSE_ID = 'A127'
-        integer AltairSE_Cost = 2 // цена 2, каждый рекаст в окне +2, максимум 6
+        integer AltairSE_Cost = 2 // цена 2, каждое пересоздание кольца +2, максимум 6
         integer AltairSE_CostStep = 2
         integer AltairSE_CostMax = 6
-        real AltairSE_RecastWindow = 4.0 // окно, в котором рекаст дороже и сильнее
-        real AltairSE_Duration = 1.5
+        integer AltairSE_MaxStacks = 6 // стаки = число нажатий, на кнопке «1/6», «2/6»...
+        real AltairSE_Duration = 3.0 // кольцо живёт 3 с; пересоздание сбрасывает отсчёт в 0
         real AltairSE_Period = 0.25 // урон каждые N секунд
         real AltairSE_Aoe = 300.0
         real AltairSE_Decor = 30.0
-        real AltairSE_Radius = 190.0 // радиус кольца мечей
-        real AltairSE_Height = 60.0
-        real AltairSE_SpinSpeed = 12.0 // рад/с
-        integer AltairSE_Blades = 8 // мечей: 8 / 12 / 16 по рекасту
-        integer AltairSE_BladesStep = 4
-        real AltairSE_PowerStep = 0.5 // сила: x1 / x1.5 / x2 по рекасту
+        real AltairSE_Radius = 260.0 // радиус кольца мечей (модель jundaoluopan_02: 857 при scale 1)
+        real AltairSE_Height = 40.0
+        real AltairSE_SpinStep = 0.3 // скорость анимации кольца: 1 + 0.3 за стак (x2.5 на 6 стаках)
+        real AltairSE_PowerStep = 0.2 // сила: x1 + 0.2 за стак (x2 на 6 стаках)
         real AltairSE_DamageIntBase = 0.3 // урон за удар: Int x (0.3 + 0.05/ур.) + атака x 0.15
         real AltairSE_DamageIntStep = 0.05
         real AltairSE_DamageAtk = 0.15
@@ -278,18 +303,18 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         // ==================== SR: Shield of Swords ====================
         integer AltairSR_ID = 'A128'
         integer AltairSR_Cost = 8
-        real AltairSR_Duration = 3.0 // 3 + 0.5/ур.
-        real AltairSR_DurationStep = 0.5
-        real AltairSR_Arc = 120.0 // градусы закрытой дуги, по центру направление каста
-        integer AltairSR_RingBlades = 16
-        integer AltairSR_WallBlades = 6
-        real AltairSR_Radius = 170.0
-        real AltairSR_WallRadius = 120.0
-        real AltairSR_SpinSpeed = 6.0
+        real AltairSR_Duration = 2.0 // колесо мечей крутится перед Altair 2 с; она на паузе и неуязвима; S — отмена
+        real AltairSR_Front = 150.0 // колесо стоит на этой дистанции перед Altair
+        real AltairSR_Radius = 230.0 // радиус колеса (модель jundaoluopan_02: 857 при scale 1)
+        real AltairSR_WheelHeight = 250.0 // высота центра колеса
+        real AltairSR_SpinScale = 1.5 // скорость анимации колеса
+        real AltairSR_Aoe = 260.0 // радиус урона перед Altair (центр — AltairSR_Front + 50)
         real AltairSR_Period = 0.3
         real AltairSR_Decor = 20.0
-        real AltairSR_DamageInt = 0.15 // урон кольца: Int x 0.15 + атака x 0.1
+        real AltairSR_DamageInt = 0.15 // урон за удар: Int x 0.15 + атака x 0.1
         real AltairSR_DamageAtk = 0.1
+        private integer AltairSR_EscKey = StringHash("esc") // MAIN: ButtonPressed.j ставит это по S, пока KEY_INVUL == 1
+        private trigger AltairSR_KeyTrigger = CreateTrigger() // TEST и MAIN: своя клавиша S (AltairSR_OnStopKey)
 
         // ==================== ST: Rain of Swords ====================
         integer AltairST_ID = 'A129'
@@ -297,10 +322,11 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         real AltairST_Duration = 3.0
         real AltairST_Height = 450.0 // высота полёта Altair
         real AltairST_RiseTime = 0.4
+        integer AltairST_Anim = 15 // анимация Altair в воздухе
         real AltairST_Aoe = 700.0
-        real AltairST_SpawnPeriod = 0.06 // меч каждые N секунд
-        real AltairST_DropHeight = 900.0
-        real AltairST_DropSpeed = 2400.0
+        real AltairST_SpawnPeriod = 0.03 // меч каждый тик: ~33 меча в секунду, ~100 за каст
+        real AltairST_SwordScale = 3.0 // модель jundaozhouyu_01_danti: сабля 61 x scale, падает с 700 x scale
+        real AltairST_FallTime = 0.3 // модель падает до земли 0.3 с — тогда урон
         real AltairST_ImpactAoe = 160.0
         real AltairST_Decor = 50.0 // в секунду по всей площади дождя
         real AltairST_DamageInt = 0.5 // урон меча: Int x 0.5 + атака x 0.3
@@ -437,7 +463,10 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
     // AltairSword_Loop   MoveEff2 каждый тик; если dmg > 0 — бьёт врагов в полосе width по одному разу
     //                    (группа hits общая на весь каст, поэтому враг получает урон только от одного меча веера);
     //                    в конце дистанции или на краю арены — гаснет.
-    // Меч wos_Erza_sword2 лежит плашмя вдоль X: yaw = направление острия.
+    // Сабля wos_Moon_texiao_jundaozhenlie_01_danti лежит вдоль X (остриё +X): yaw = направление острия.
+    // Модели мечей Moon (jundao): zhenlie_01_danti — одна сабля, zhenlie_01 — строй из 7 сабель,
+    //   luopan_02 — кольцо сабель (радиус 857, Stand крутится), zhouyu_01_danti — сабля падает с 700 за 0.3 с
+    //   и торчит в земле (одна анимация Death 2 с: ставить через DestroyEffect), juhe_01 — 4 сабли сходятся в точку.
     private struct AltairSword
         private static integer array m_AltairSword
         private static integer MUI_AltairSword = -1
@@ -449,13 +478,33 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         real dmax // дальность
         real width // полуширина полосы урона
         real dmg // 0 = меч только визуальный
-        group hits // общая на каст; число мечей, которые её держат, лежит в AltairTable[группа][0]
+        group hits // общая на каст; число держателей (мечи + сам каст SW) лежит в AltairTable[группа][0]
+
+        // Ещё один держатель общей группы (меч или каст SW, пока не выпущены все волны).
+        static method AltairSword_Hold takes group whichGroup returns nothing
+            if whichGroup != null then
+                call SaveInteger(AltairTable, GetHandleId(whichGroup), 0, LoadInteger(AltairTable, GetHandleId(whichGroup), 0) + 1)
+            endif
+        endmethod
+
+        // Держатель отпустил группу; последний её удаляет.
+        static method AltairSword_Release takes group whichGroup returns nothing
+            local integer users
+            if whichGroup != null then
+                set users = LoadInteger(AltairTable, GetHandleId(whichGroup), 0) - 1
+                if users <= 0 then
+                    call RemoveSavedInteger(AltairTable, GetHandleId(whichGroup), 0)
+                    call DestroyGroup(whichGroup)
+                else
+                    call SaveInteger(AltairTable, GetHandleId(whichGroup), 0, users)
+                endif
+            endif
+        endmethod
 
         static method AltairSword_Loop takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real step
-            local integer users
             local unit u
             loop
                 exitwhen i > MUI_AltairSword
@@ -484,15 +533,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                 else
                     // КОНЕЦ: долетел или край арены — меч гаснет; последний меч каста удаляет общую группу.
                     call ColorEffDummy3(e, 0.0, 255, 255, 255, 0.15)
-                    if hits != null then
-                        set users = LoadInteger(AltairTable, GetHandleId(hits), 0) - 1
-                        if users <= 0 then
-                            call RemoveSavedInteger(AltairTable, GetHandleId(hits), 0)
-                            call DestroyGroup(hits)
-                        else
-                            call SaveInteger(AltairTable, GetHandleId(hits), 0, users)
-                        endif
-                    endif
+                    call thistype.AltairSword_Release(hits)
                     set e = null
                     set hits = null
                     set c = null
@@ -521,11 +562,12 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set dmg = NewDmg
             set d = 0.0
             set hits = NewHits
-            if hits != null then
-                // Ещё один меч держит общую группу.
-                call SaveInteger(AltairTable, GetHandleId(hits), 0, LoadInteger(AltairTable, GetHandleId(hits), 0) + 1)
-            endif
-            set e = EffectSpawn("war3mapImported\\wos_Erza_sword2.mdx", NewX, NewY, a*bj_RADTODEG, 1.0, 0.45, NewHeight)
+            call thistype.AltairSword_Hold(hits) // ещё один меч держит общую группу
+            set e = EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaozhenlie_01_danti.mdl", NewX, NewY, a*bj_RADTODEG, 1.0, 2.5, NewHeight) // сабля Moon: 86 x 2.5, остриё по +X
+            // Stand модели (0.9 с, цикл) — прозрачность 0 -> пик на 0.4 с -> 0: сабля была видна с задержкой и мигала.
+            // Замораживаем кадр на пике, чтобы сабля была видна сразу и весь полёт.
+            call BlzSetSpecialEffectTime(e, 0.4)
+            call BlzSetSpecialEffectTimeScale(e, 0.0)
             if MUI_AltairSword == 0 then
                 call AltairTick_On(0)
             endif
@@ -535,7 +577,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
     // ==================== COMMON: состояние героя (форма, стаки мечей, кнопки) ====================
     // Один экземпляр на Altair, живёт всю игру (AltairTable[герой][0]).
     // AltairHero_Register  первый каст/спавн: выдаёт кнопки обеих форм, показывает Holopsicon.
-    // AltairHero_Loop      тик: +1 стак каждые AltairSF_StackPeriod, окно рекаста SE, сброс КД отклонённого каста,
+    // AltairHero_Loop      тик: +1 стак каждые AltairSF_StackPeriod, окно кнопки W2, сброс КД отклонённого каста,
     //                      мечи-охранники SF, перерисовка кнопок Sword Princess раз в 0.09 с.
     // Сама смена формы (визуал, КД, разлёт мечей) — в функциях AltairG_Start / AltairSG_Start внизу файла.
     private struct AltairHero
@@ -551,8 +593,8 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         real guardAngle
         integer array holoLevel[7] // уровни Q..T на прошлой перерисовке (кнопки Sword Princess повторяют их)
         boolean array swordDisabled[7] // какие кнопки Sword Princess сейчас серые
-        integer seCost // текущая цена SE: 2 -> 4 -> 6 при рекасте в окне
-        real seWindow // сколько ещё длится окно рекаста SE
+        integer seCost // текущая цена SE: 2 -> 4 -> 6, пока кольцо живо (ставит AltairSE)
+        real w2Window // сколько ещё секунд вместо W показана W2 (0 = показана W)
         integer refundAbility // снять КД этой способности на следующем тике (каст отклонён или G закрыл реалм)
         real refreshTimer
 
@@ -596,7 +638,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             loop
                 exitwhen slot >= AltairSF_GuardBlades // AltairSF_GuardBlades = 4
                 if enabled and guard[slot] == null then
-                    set guard[slot] = EffectSpawn("war3mapImported\\wos_Erza_sword2.mdx", GetUnitX(c), GetUnitY(c), 0.0, 1.0, 0.3, 90.0)
+                    set guard[slot] = EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaozhenlie_01_danti.mdl", GetUnitX(c), GetUnitY(c), 0.0, 1.0, 1.8, 90.0)
                 elseif not enabled and guard[slot] != null then
                     call ColorEffDummy3(guard[slot], 0.0, 255, 255, 255, 0.2)
                     set guard[slot] = null
@@ -605,11 +647,36 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             endloop
         endmethod
 
+        // Кнопка W2 вместо W на AltairW2_Window секунд (после прибытия W). Только в форме Holopsicon.
+        method OpenW2 takes integer level returns nothing
+            local player owner = GetOwningPlayer(c)
+            if form == Altair_FormHolopsicon then
+                call SetUnitAbilityLevel(c, AltairW2_ID, level)
+                call SetPlayerAbilityAvailable(owner, AltairW_ID, false)
+                call SetPlayerAbilityAvailable(owner, AltairW2_ID, true)
+                set w2Window = AltairW2_Window // 4
+            endif
+            set owner = null
+        endmethod
+
+        // Окно W2 закрыто (время вышло, W2 нажата или сменилась форма): снова кнопка W.
+        method CloseW2 takes nothing returns nothing
+            local player owner = GetOwningPlayer(c)
+            if w2Window > 0.0 then
+                set w2Window = 0.0
+                call WUI_HeroProgress(c, AltairW2_ID, "Fate Barrier (W)", 0.0, 0.0, true)
+            endif
+            call SetPlayerAbilityAvailable(owner, AltairW2_ID, false)
+            call SetPlayerAbilityAvailable(owner, AltairW_ID, form == Altair_FormHolopsicon)
+            set owner = null
+        endmethod
+
         // Прячет кнопки одной формы и показывает кнопки другой (SetPlayerAbilityAvailable — на всего игрока).
         method ApplyForm takes integer newForm returns nothing
             local integer slot = 0
             local player owner = GetOwningPlayer(c)
             set form = newForm
+            call CloseW2() // W2 живёт только в Holopsicon; цикл ниже выставит W по форме
             loop
                 exitwhen slot > 6
                 call SetPlayerAbilityAvailable(owner, AltairHoloAbility[slot], form == Altair_FormHolopsicon)
@@ -681,11 +748,13 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                             call AddStacks(1)
                         endif
                     endif
-                    // ОКНО РЕКАСТА SE: истекло — цена снова 2.
-                    if seWindow > 0.0 then
-                        set seWindow = seWindow - 0.03
-                        if seWindow <= 0.0 then
-                            set seCost = AltairSE_Cost // 2
+                    // ОКНО W2: полоска времени; истекло — снова кнопка W.
+                    if w2Window > 0.0 then
+                        set w2Window = w2Window - 0.03
+                        if w2Window <= 0.0 or not AltairAlive(c) then
+                            call CloseW2()
+                        else
+                            call WUI_HeroProgress(c, AltairW2_ID, "Fate Barrier (W)", w2Window, AltairW2_Window, true) // AltairW2_Window = 4
                         endif
                     endif
                     // СБРОС КД, заказанный RefundCooldown/RefuseCast.
@@ -706,7 +775,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                             exitwhen slot >= AltairSF_GuardBlades // 4
                             set angle = guardAngle + slot*2.0*bj_PI/AltairSF_GuardBlades
                             call BlzSetSpecialEffectPosition(guard[slot], GetUnitX(c) + AltairSF_GuardRadius*Cos(angle), GetUnitY(c) + AltairSF_GuardRadius*Sin(angle), z + 90.0) // AltairSF_GuardRadius = 110
-                            call BlzSetSpecialEffectYaw(guard[slot], angle)
+                            call BlzSetSpecialEffectYaw(guard[slot], angle + bj_PI/2.0) // остриём по ходу вращения
                             set slot = slot + 1
                         endloop
                     endif
@@ -749,7 +818,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set swordToggle = false
             set guardAngle = 0.0
             set seCost = AltairSE_Cost // 2
-            set seWindow = 0.0
+            set w2Window = 0.0
             set refundAbility = 0
             set refreshTimer = 0.0
             loop
@@ -768,6 +837,10 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                 call UnitMakeAbilityPermanent(c, true, AltairSwordAbility[slot])
                 set slot = slot + 1
             endloop
+            // W2 выдаётся сразу и спрятана (показывает OpenW2); клавиша S отменяет SR (AltairSR_OnStopKey).
+            call UnitAddAbility(c, AltairW2_ID)
+            call UnitMakeAbilityPermanent(c, true, AltairW2_ID)
+            call BlzTriggerRegisterPlayerKeyEvent(AltairSR_KeyTrigger, GetOwningPlayer(c), OSKEY_S, 0, true)
             call SaveInteger(AltairTable, GetHandleId(c), 0, this)
             call ApplyForm(Altair_FormHolopsicon)
             if MUI_AltairHero == 0 then
@@ -818,7 +891,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                     call MoveEff2(e, step, a)
                 else
                     // ПОПАДАНИЕ: пуля исчезает, вспышка и иногда пыль.
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_hit-juhuang1.mdl", GetEffX(e), GetEffY(e), GetRandomReal(0.0, 359.0), 1.5, 0.5, 5.0))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_hit-juhuang1.mdl", GetEffX(e), GetEffY(e), GetRandomReal(0.0, 359.0), 1.5, 0.5,GetRandomReal(50,100)))
                     if GetRandomInt(1, 3) == 1 then
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_dustbrown.mdl", GetEffX(e), GetEffY(e), GetRandomReal(0.0, 359.0), 1.5, 0.4, 0.0))
                     endif
@@ -842,7 +915,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set m_AltairQBullet[MUI_AltairQBullet] = this
             set a = Atan2(toY - fromY, toX - fromX)
             set d = SquareRoot((toX - fromX)*(toX - fromX) + (toY - fromY)*(toY - fromY))
-            set e = EffectSpawn("war3mapImported\\wos_alucard bullet.mdl", fromX, fromY, a*bj_RADTODEG, 2.0, 0.8, 70.0)
+            set e = EffectSpawn("war3mapImported\\wos_alucard bullet.mdl", fromX, fromY, a*bj_RADTODEG, 2.0, 0.8, 120.0)
             if MUI_AltairQBullet == 0 then
                 call AltairTick_On(1)
             endif
@@ -871,14 +944,20 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             loop
                 exitwhen i > MUI_AltairQ
                 set this = m_AltairQ[i]
-                if AltairAlive(c) and r < rmax then
+                if AltairAlive(c) and r <= rmax then
                     set r = RoundReal(r + 0.03, 2)
                     // Ствол — в 75 перед героем в сторону точки.
                     set a = GAngle2(c, x, y)
                     set muzzleX = GetUnitX(c) + 75.0*Cos(a)
                     set muzzleY = GetUnitY(c) + 75.0*Sin(a)
                     // УРОН на AltairQ_DamageAt.
-                    if r == AltairQ_DamageAt then // AltairQ_DamageAt = 0.15
+                    if r == AltairQ_DamageAt then 
+                    call SetUnitTimeScale(c,0.5)
+                    call MakeSound("war3mapimported\\Hero_Altair_Q5")
+                        call VisionTimed(GetOwningPlayer(c), x, y, AltairQ_Aoe*1.6, 2.0) // AltairQ_Aoe = 300
+                    endif
+                    if r == AltairQ_DamageAt or r == AltairQ_DamageAt+0.15 or r == AltairQ_DamageAt+0.3 or r == AltairQ_DamageAt+0.45 then // AltairQ_DamageAt = 0.15
+                        call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_AFBpulverize.mdl",c,"hand left"))
                         call GroupEnumUnitsInRange(AltairGroup, x, y, AltairQ_Aoe, NoDecor_Cond) // AltairQ_Aoe = 300
                         loop
                             set u = FirstOfGroup(AltairGroup)
@@ -887,13 +966,13 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 call DamageSource(AltairQ_ID)
                                 call dmgphys(c, u, dmg)
+                                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 call StunUnit(c, u, AltairQ_Stun) // AltairQ_Stun = 0.5
-                                call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_hit-juhuang1.mdl", u, "chest"))
                             endif
                         endloop
                         call DecorRemove(c, x, y, AltairQ_Aoe, AltairQ_Decor) // AltairQ_Aoe = 300, AltairQ_Decor = 20
-                        call VisionTimed(GetOwningPlayer(c), x, y, AltairQ_Aoe*1.6, 2.0) // AltairQ_Aoe = 300
                     endif
+                    
                     // ПУЛЯ каждый тик в случайную точку круга (равномерно по площади — sqrt).
                     set distance = AltairQ_Aoe*SquareRoot(GetRandomReal(0.0, 1.0)) // AltairQ_Aoe = 300
                     set a = GetRandomReal(0.0, 2.0*bj_PI)
@@ -903,10 +982,10 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                     if flashCount <= 0 then
                         set flashCount = 4
                         set a = GAngle2(c, x, y)
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_huoqiang02_T1.mdx", muzzleX, muzzleY, a*bj_RADTODEG, 2.0, 0.35, 90.0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_alucard bulletfire.mdl", muzzleX, muzzleY, a*bj_RADTODEG, 1.5, 0.8, 90.0))
                     endif
                 else
+                    call StopSpellUnit2(c)
                     // КОНЕЦ очереди (время вышло или Altair умерла).
                     set c = null
                     set m_AltairQ[i] = m_AltairQ[MUI_AltairQ]
@@ -934,9 +1013,12 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set rmax = AltairQ_SprayTime // 0.6
             set flashCount = 0 // первая вспышка на первом тике
             set dmg = GetHeroInt(c, true)*(AltairQ_DamageIntBase + AltairQ_DamageIntStep*(lvl - 1)) + AltairQ_DamageStatic + AltairQ_DamageStaticStep*(lvl - 1) // Int x (3 + 1/ур.) + 75 + 25/ур.
+            set dmg = dmg /4 
             call SetUnitFacing(c, GAngle2(c, x, y)*bj_RADTODEG)
-            call SetUnitAnimation(c, "attack")
-            call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_yc_bluemorphcircle3.mdl", x, y, 0.0, 2.0, AltairQ_Aoe/220.0, 5.0), 0.25, 255, 255, 255, 0.35) // AltairQ_Aoe = 300
+            call StartSpellUnit2(c)
+            call SetUnitTimeScale(c,1.5)
+            call SetUnitAnimationByIndex(c,11)
+            //call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_yc_bluemorphcircle3.mdl", x, y, 0.0, 2.0, AltairQ_Aoe/220.0, 5.0), 0.25, 255, 255, 255, 0.35) // AltairQ_Aoe = 300
             call MakeSound("war3mapImported\\Hero_Altair_Q" + I2S(GetRandomInt(1, 3))) // Q1 «Глупец», Q2 «Попробуй ещё раз», Q3 «Увы, жаль»
             if MUI_AltairQ == 0 then
                 call AltairTick_On(2)
@@ -944,15 +1026,24 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         endmethod
     endstruct
 
-    // ==================== W: Third / Ninth Movement ====================
+    // ==================== W / W2: Third / Ninth Movement + барьер ====================
     // КАК РАБОТАЕТ W:
     //   AltairW.AltairW_Start  рывок к цели (союзник или враг), вспышка на старте, герой «в касте» (StartSpellUnit2).
     //   AltairW.AltairW_Loop   MoveUnit со скоростью AltairW_Speed, шлейф образов (белые к союзнику, чёрные к врагу);
-    //                          в AltairW_ContactRange — ПРИБЫТИЕ:
+    //                          в AltairW_ContactRange — ПРИБЫТИЕ, вокруг цели лепестки:
     //                            союзник (Third Movement): снять дебаффы, блок одного удара (AltairWBlock), лечение во времени;
-    //                            враг (Ninth Movement): снять все баффы и щиты, магический урон.
+    //                            враг (Ninth Movement): снять все баффы и щиты, магический урон, дебафф B077
+    //                              (AltairWAura.AltairWAura_Erase: пока он висит, новые баффы/щиты врага стираются);
+    //                          после прибытия пауза рывка снимается, а кнопка W на AltairW2_Window (4 с) меняется на W2
+    //                          (AltairHero.OpenW2; полоска времени и возврат кнопки — AltairHero_Loop).
     //                          Конец: прибытие / AltairW_MaxDashTime / смерть одного из двоих.
     //   Блок съедается в Altair_IncomingDamage (AltairWBlock.AltairWBlock_Use); Lust Sin его пробивает.
+    // КАК РАБОТАЕТ W2 (кнопка без цели, живёт 4 с после прибытия W):
+    //   AltairWAura.AltairWAura_Barrier  Altair на паузе AltairW_AuraTime (1.5 с), щит KEY_SHIELD (как Laxus T:
+    //                          DmgSys блокирует удары, в статах надпись Shield), бафф B076, барьер Shinra Tensei.
+    //   AltairWAura.AltairWAura_Loop     каждый тик врагов внутри барьера выталкивает к краю (до AltairW_AuraAoe -
+    //                          AltairW_AuraEdge — дальше не толкает, поэтому на краю они остаются в радиусе урона);
+    //                          каждые AltairW_AuraPeriod — магический урон всем врагам в AltairW_AuraAoe.
 
     // Блок одного удара Third Movement на союзнике (AltairTable[unit][1]).
     private struct AltairWBlock
@@ -1017,6 +1108,171 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         endmethod
     endstruct
 
+    // Два независимых эффекта W на одной Altair (AltairTable[герой][9]):
+    //   барьер W2 (active): пауза + щит KEY_SHIELD + урон и выталкивание врагов к краю, AltairW_AuraTime секунд;
+    //   стирание (td): пока на враге висит дебафф B077 (3..7 с), его новые баффы/щиты/блок W снимаются
+    //                  каждые AltairW_ErasePeriod.
+    // Экземпляр живёт, пока активен хотя бы один из двух. Смерть Altair — барьер сразу заканчивается.
+    private struct AltairWAura
+        private static integer array m_AltairWAura
+        private static integer MUI_AltairWAura = -1
+        unit c
+        unit td // враг под дебаффом (null = стирания нет)
+        real r // сколько длится стирание
+        real rmax // длительность дебаффа W (3..7 с)
+        real erase // до следующего стирания баффов цели
+        boolean active // барьер W2: пауза + щит + урон/выталкивание
+        real auraR // сколько длится барьер
+        integer pulses // сколько импульсов урона осталось
+        real pulse // до следующего импульса урона
+        real dmg // урон одного импульса
+        effect e // модель барьера
+
+        // Найти экземпляр этой Altair или создать пустой.
+        static method AltairWAura_Get takes unit NewC returns thistype
+            local thistype this = LoadInteger(AltairTable, GetHandleId(NewC), 9)
+            if this == 0 then
+                set this = thistype.create()
+                set MUI_AltairWAura = MUI_AltairWAura + 1
+                set m_AltairWAura[MUI_AltairWAura] = this
+                set c = NewC
+                set td = null
+                set active = false
+                set e = null
+                call SaveInteger(AltairTable, GetHandleId(c), 9, this)
+                if MUI_AltairWAura == 0 then
+                    call AltairTick_On(19)
+                endif
+            endif
+            return this
+        endmethod
+
+        // Конец барьера: модель гаснет, щит и бафф сняты, Altair снова управляема.
+        method AuraEnd takes nothing returns nothing
+            set active = false
+            call BlzPlaySpecialEffect(e, ANIM_TYPE_DEATH)
+            call ColorEffDummy3(e, 0.5, 255, 255, 255, 0.3)
+            set e = null
+            call SaveInteger(hs, GetHandleId(c), KEY_SHIELD, 0)
+            call UnitRemoveAbility(c, AltairW_Buff_ID)
+            call StopSpellUnit2(c) // пауза, взятая AltairWAura_Barrier
+        endmethod
+
+        static method AltairWAura_Loop takes nothing returns nothing
+            local thistype this
+            local integer i = 0
+            local real x
+            local real y
+            local real distance
+            local real edge = AltairW_AuraAoe - AltairW_AuraEdge // 350 - 40 = 310: сюда выталкивает
+            local boolean hit
+            local unit u
+            loop
+                exitwhen i > MUI_AltairWAura
+                set this = m_AltairWAura[i]
+                // ---------- БАРЬЕР W2 ----------
+                if active then
+                    set auraR = RoundReal(auraR + 0.03, 2)
+                    if not AltairAlive(c) or auraR > AltairW_AuraTime then // AltairW_AuraTime = 1.5
+                        call this.AuraEnd()
+                    else
+                        set x = GetUnitX(c)
+                        set y = GetUnitY(c)
+                        call BlzSetSpecialEffectX(e, x)
+                        call BlzSetSpecialEffectY(e, y)
+                        call SaveInteger(hs, GetHandleId(c), KEY_SHIELD, 1) // щит держится весь барьер
+                        // ИМПУЛЬС урона раз в AltairW_AuraPeriod (первый — сразу).
+                        set pulse = pulse - 0.03
+                        set hit = pulse <= 0.0 and pulses > 0
+                        if hit then
+                            set pulse = pulse + AltairW_AuraPeriod // 0.25
+                            set pulses = pulses - 1
+                            call DecorRemove(c, x, y, AltairW_AuraAoe, AltairW_Decor) // AltairW_AuraAoe = 350, AltairW_Decor = 20
+                        endif
+                        call GroupEnumUnitsInRange(AltairGroup, x, y, AltairW_AuraAoe, NoDecor_Cond) // AltairW_AuraAoe = 350
+                        loop
+                            set u = FirstOfGroup(AltairGroup)
+                            exitwhen u == null
+                            call GroupRemoveUnit(AltairGroup, u)
+                            if u != c and SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
+                                // ВЫТАЛКИВАНИЕ каждый тик: от Altair наружу, но не дальше края (edge) —
+                                // враг остаётся в радиусе урона и получает каждый импульс.
+                                set distance = SR3(u, x, y)
+                                if distance < edge then
+                                    call MoveUnit(u, RMinBJ(AltairW_AuraPushSpeed*0.03, edge - distance), GAngle3(x, y, u)) // AltairW_AuraPushSpeed = 900
+                                endif
+                                if hit then
+                                    call DamageSource(AltairW2_ID)
+                                    call dmgmag(c, u, dmg)
+                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                                endif
+                            endif
+                        endloop
+                    endif
+                endif
+                // ---------- СТИРАНИЕ (Ninth Movement) ----------
+                if td != null then
+                    set r = RoundReal(r + 0.03, 2)
+                    if r >= rmax or not AltairAlive(td) or (r > 0.3 and GetUnitAbilityLevel(td, AltairW_Debuff_ID) == 0) then
+                        set td = null // дебафф истёк (r > 0.3: даммику нужен миг, чтобы его повесить)
+                    else
+                        set erase = erase - 0.03
+                        if erase <= 0.0 then
+                            set erase = erase + AltairW_ErasePeriod // 1.0
+                            call BuffClear(td) // только позитивные баффы (дебафф B077 не трогает)
+                            call AltairWBlock.AltairWBlock_Use(td)
+                            call SaveInteger(hs, GetHandleId(td), KEY_SHIELD, 0)
+                            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_AFBpulverize.mdl", td, "origin"))
+                        endif
+                    endif
+                endif
+                if not active and td == null then
+                    // КОНЕЦ: барьера нет, стирать некого.
+                    call RemoveSavedInteger(AltairTable, GetHandleId(c), 9)
+                    set c = null
+                    set m_AltairWAura[i] = m_AltairWAura[MUI_AltairWAura]
+                    set MUI_AltairWAura = MUI_AltairWAura - 1
+                    set i = i - 1
+                    if MUI_AltairWAura == -1 then
+                        call AltairTick_Off(19)
+                    endif
+                    call this.destroy()
+                endif
+                set i = i + 1
+            endloop
+            set u = null
+        endmethod
+
+        // Из AltairW при прибытии к врагу: дебафф B077 на 3..7 с и стирание его новых баффов.
+        static method AltairWAura_Erase takes unit NewC, unit NewTd, integer NewLvl, real duration returns nothing
+            local thistype this = thistype.AltairWAura_Get(NewC)
+            set td = NewTd
+            set r = 0.0
+            set rmax = duration
+            set erase = AltairW_ErasePeriod // 1.0
+            call BuffUnit01(c, td, AltairW_DebuffSpell_ID, "slow", NewLvl) // дебафф B077 на 3..7 с
+        endmethod
+
+        // W2: барьер вокруг Altair. Повторный вызов при активном барьере — отсчёт и урон заново.
+        static method AltairWAura_Barrier takes unit NewC, integer NewLvl returns nothing
+            local thistype this = thistype.AltairWAura_Get(NewC)
+            if not active then
+                set active = true
+                call StartSpellUnit2(c) // пауза на весь барьер (снимает AuraEnd)
+                set e = EffectSpawnColor("war3mapImported\\wos_Shinra Tensei.mdl", GetUnitX(c), GetUnitY(c), GetUnitFacing(c), 1.0, AltairW_AuraScale, AltairW_AuraHeight, 125, 175, 255, 255) // AltairW_AuraScale = 2.2
+            endif
+            set auraR = 0.0
+            set pulses = R2I(AltairW_AuraTime/AltairW_AuraPeriod + 0.5) // 1.5 / 0.25 = 6
+            set pulse = 0.0 // первый импульс сразу
+            set dmg = (GetHeroInt(c, true)*(AltairW_AuraDamageIntBase + AltairW_AuraDamageIntStep*(NewLvl - 1)) + AltairW_AuraDamageStatic + AltairW_AuraDamageStaticStep*(NewLvl - 1))/I2R(pulses) // Int x (1.5 + 0.3/ур.) + 75 + 25/ур. за 1.5 с
+            call SaveInteger(hs, GetHandleId(c), KEY_SHIELD, 1) // щит как у Laxus T: блок в DmgSys + надпись Shield
+            call SetUnitAnimation(c, "spell")
+            call BuffUnit01(c, c, AltairW_BuffSpell_ID, "bloodlust", NewLvl) // бафф B076 на 1.5 с
+            call ColorEffDummy3(EffectSpawnScale("war3mapImported\\wos_whitering.mdx", GetUnitX(c), GetUnitY(c), 0.0, 1.0, 0.5, 10.0, 0.25, 0.5, AltairW_AuraAoe/110.0), 0.25, 255, 255, 255, 0.35) // AltairW_AuraAoe = 350
+            call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), AltairW_AuraAoe*1.6, 2.0)
+        endmethod
+    endstruct
+
     private struct AltairW
         private static integer array m_AltairW
         private static integer MUI_AltairW = -1
@@ -1074,22 +1330,28 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Altair3.mdx", x, y, 0.0, 1.0, 0.8, 0.0))
                             call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_HealBlue.mdl", td, "origin"))
                             call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_yc_bluemorphcircle3.mdl", x, y, 0.0, 1.0, 0.8, 5.0), 0.25, 255, 255, 255, 0.35)
+                            call AltairHero.AltairHero_Get(c).OpenW2(lvl) // 4 с на W2
                         elseif SpellBool(td) and IsUnitEnemy(td, GetOwningPlayer(c)) then
-                            // Ninth Movement: стираются все баффы, включая щиты (и блок W, если он был), затем урон.
+                            // Ninth Movement: лепестки, стираются все баффы, включая щиты (и блок W, если он был), затем урон.
                             call UnitRemoveBuffs(td, true, false)
                             call AltairWBlock.AltairWBlock_Use(td)
                             call SaveInteger(hs, GetHandleId(td), KEY_SHIELD, 0)
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_KyorakuPetals.mdx", x, y, GetRandomReal(0.0, 359.0), 1.0, 1.6, 0.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_KyorakuPetals.mdx", x, y, GetRandomReal(0.0, 359.0), 1.3, 1.1, 60.0))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_mirrorzi_effect_ansekuosanbo.mdx", x, y, GetRandomReal(0.0, 359.0), 1.0, 1.3, 0.0))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", x, y, GetUnitFacing(td), 1.0, 1.3, 0.0))
                             call DamageSource(AltairW_ID)
                             call dmgmag(c, td, GetHeroInt(c, true)*(AltairW_DamageIntBase + AltairW_DamageIntStep*(lvl - 1)) + AltairW_DamageStatic + AltairW_DamageStaticStep*(lvl - 1)) // Int x (2 + 0.4/ур.) + 50 + 25/ур.
+                            // Дебафф врагу — после снятия баффов (иначе его сразу сотрёт).
+                            call AltairWAura.AltairWAura_Erase(c, td, lvl, duration)
+                            call AltairHero.AltairHero_Get(c).OpenW2(lvl) // 4 с на W2
                         endif
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_jingzi_jiansheng01_e1_l2.mdl", x, y, GetUnitFacing(c), 1.5, 0.8, 60.0))
                         call DecorRemove(c, x, y, 200.0, AltairW_Decor) // AltairW_Decor = 20
                         call VisionTimed(GetOwningPlayer(c), x, y, 500.0, 2.0)
                     endif
                 else
-                    // КОНЕЦ: герой снова управляем.
+                    // КОНЕЦ: герой снова управляем (W2 берёт свою паузу сама).
                     call StopSpellUnit2(c)
                     set c = null
                     set td = null
@@ -1137,25 +1399,54 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
     endstruct
 
     // ==================== E: Outline Origin ====================
-    // КАК РАБОТАЕТ E:
-    //   AltairE.AltairE_Start  анимация 6, звук, на Altair создаётся сфера e (SpaceLaceration).
-    //   AltairE.AltairE_Loop   сфера e держится на Altair; r == AltairE_StringTime (0.3) — ВЫСТРЕЛ:
-    //                            DestroyEffect(e);
-    //                            всем юнитам в AltairE_Aoe (и союзникам, и врагам) -AltairE_CooldownReduction ко всем КД;
-    //                            врагам ещё магический урон;
-    //                            сломанный декор в круге и всё, что забрал R, воскрешается (AltairE_RestoreDecor).
-    //                          Если Altair умерла до выстрела — сфера убирается, выстрела нет.
-    //   AltairE_RestoreDecor идёт отдельным потоком (.execute): урон и КД ауры уже съели лимит операций,
+    // КАК РАБОТАЕТ E (ускорена: один импульс, пауза снимается раньше):
+    //   AltairE.AltairE_Start  анимация 11 со скоростью AltairE_AnimSpeed (1.6), звук, герой «в касте».
+    //   AltairE.AltairE_Loop   r == AltairE_DomeTime (0.15): купол над Altair (поднят на AltairE_SphereHeight);
+    //                          r == AltairE_StartTime (0.27): ОДИН импульс по кругу AltairE_Aoe —
+    //                            всем героям (союзники, враги и сама Altair) -AltairE_CooldownReduction ко всем
+    //                            геройским кнопкам (AltairE_ReduceHeroCooldowns), врагам ещё снятие позитивных
+    //                            баффов и магический урон (один раз); декор в круге и всё, что забрал R, воскрешается;
+    //                          r == AltairE_UnpauseTime (0.42): Altair снова управляема;
+    //                          r == AltairE_EndTime (0.6): death-анимация купола, конец.
+    //                          Если Altair умерла до импульса — купол убирается, импульса нет.
+    //   AltairE_RestoreDecor идёт отдельным потоком (.execute): урон и КД импульса уже съели лимит операций,
     //   и в том же потоке воскрешение молча обрывалось. AltairE_CollectDeadDecor — callback перебора декора.
     //   Движок не воскрешает декор, пока на его месте стоят юниты: их на миг уносят в угол карты и возвращают.
     private struct AltairE
         private static integer array m_AltairE
         private static integer MUI_AltairE = -1
         unit c
-        effect e // сфера на Altair: создаётся в AltairE_Start, DestroyEffect в момент выстрела
+        effect e // купол на Altair: создаётся на 0.15, death-анимация на 0.6
         real r // прошло с каста
-        real rmax // AltairE_StringTime
+        real rmax // AltairE_EndTime
         real dmg
+        boolean paused // пауза каста ещё не снята
+
+        // -AltairE_CooldownReduction ко всем ГЕРОЙСКИМ кнопкам юнита, кроме skipId (своя E у Altair).
+        // Геройские кнопки любого героя (Q, Q2, Q3, W, W2 ... T, T2, F, G и их подмены) — это способности не от
+        // предметов, стоящие в сетке команд на местах Q W E R (ряд 2, столбцы 0..3) и F G T (ряд 1, столбцы 1..3);
+        // спрятанные вторые кнопки (SetPlayerAbilityAvailable) тоже лежат на юните и тоже перебираются.
+        static method AltairE_ReduceHeroCooldowns takes unit whichUnit, real amount, integer skipId returns nothing
+            local integer index = 0
+            local ability spell = BlzGetUnitAbilityByIndex(whichUnit, 0)
+            local integer id
+            local integer bx
+            local integer by
+            loop
+                exitwhen spell == null
+                set id = BlzGetAbilityId(spell)
+                if id != skipId and BlzGetUnitAbilityCooldownRemaining(whichUnit, id) > 0.0 and not BlzGetAbilityBooleanField(spell, ABILITY_BF_ITEM_ABILITY) then
+                    set bx = BlzGetAbilityIntegerField(spell, ABILITY_IF_BUTTON_POSITION_NORMAL_X)
+                    set by = BlzGetAbilityIntegerField(spell, ABILITY_IF_BUTTON_POSITION_NORMAL_Y)
+                    if (by == 2 and bx >= 0 and bx <= 3) or (by == 1 and bx >= 1 and bx <= 3) then
+                        call ReduceCooldown(whichUnit, id, amount)
+                    endif
+                endif
+                set index = index + 1
+                set spell = BlzGetUnitAbilityByIndex(whichUnit, index)
+            endloop
+            set spell = null
+        endmethod
 
         // Callback EnumDestructablesInRect: сломанный декор в круге (служебные B016/B017/B018 не трогаем).
         static method AltairE_CollectDeadDecor takes nothing returns nothing
@@ -1247,8 +1538,8 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                         endloop
                     endif
                     // Метка восстановления: круг и часы над декором.
-                    call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_yc_bluemorphcircle3.mdl", x, y, 0.0, 1.0, 0.6, 10.0), 0.25, 255, 255, 255, 0.35)
-                    call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_clockwisetimer3.mdl", x, y, 0.0, 1.5, 0.8, 40.0), 0.25, 255, 255, 255, 0.35)
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_BRS.mdl", x, y, 0.0, 1.0, 1, 0.0)) // AltairR_TakenRingBig = 1.4
+                    
                 endif
                 set index = index + 1
             endloop
@@ -1259,59 +1550,76 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         static method AltairE_Loop takes nothing returns nothing
             local thistype this
             local integer i = 0
-            local integer k
             local real x
             local real y
-            local ability spell
             local unit u
             loop
                 exitwhen i > MUI_AltairE
                 set this = m_AltairE[i]
                 if AltairAlive(c) and r < rmax then
                     set r = RoundReal(r + 0.03, 2)
-                    // НАТЯЖЕНИЕ: сфера держится на Altair.
-                    call BlzSetSpecialEffectX(e, GetUnitX(c))
-                    call BlzSetSpecialEffectY(e, GetUnitY(c))
-                    if r == AltairE_StringTime then // AltairE_StringTime = 0.3
-                        // ВЫСТРЕЛ: сфера исчезает, все в круге возвращаются к истоку.
-                        call DestroyEffect(e)
-                        set e = null
-                        set x = GetUnitX(c)
-                        set y = GetUnitY(c)
-                        call GroupEnumUnitsInRange(AltairGroup, x, y, AltairE_Aoe, NoDecor_Cond) // AltairE_Aoe = 650
-                        loop
-                            set u = FirstOfGroup(AltairGroup)
-                            exitwhen u == null
-                            call GroupRemoveUnit(AltairGroup, u)
-                            if u != c and AltairAlive(u) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
-                                // Все КД юнита (союзник и враг) -AltairE_CooldownReduction: перебор всех его способностей.
-                                set k = 0
-                                set spell = BlzGetUnitAbilityByIndex(u, 0)
-                                loop
-                                    exitwhen spell == null
-                                    call ReduceCooldown(u, BlzGetAbilityId(spell), AltairE_CooldownReduction) // AltairE_CooldownReduction = 5
-                                    set k = k + 1
-                                    set spell = BlzGetUnitAbilityByIndex(u, k)
-                                endloop
-                                call ColorEffDummy3(AddSpecialEffectTarget("war3mapImported\\wos_clockwisetimer3.mdl", u, "overhead"), 0.25, 255, 255, 255, 0.35)
-                                if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
-                                    call DamageSource(AltairE_ID)
-                                    call dmgmag(c, u, dmg)
-                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
-                                endif
-                            endif
-                        endloop
+                    set x = GetUnitX(c)
+                    set y = GetUnitY(c)
+                    // КУПОЛ 0.15: поза каста замирает, над Altair раскрывается купол.
+                    if r == AltairE_DomeTime then // AltairE_DomeTime = 0.15
+                        call SetUnitTimeScale(c, 0)
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_Moon_texiao_anqizhao_01.mdl", x, y, 0.0, 1.25, AltairE_SphereScale*5.25, 125.0 + AltairE_SphereHeight)) // AltairE_SphereScale = 1, AltairE_SphereHeight = 60
+                        set e = EffectSpawn("war3mapImported\\wos_Moon_texiao_SpaceLaceration_01 a.mdl", x, y, 0.0, 1.75, AltairE_SphereScale, AltairE_SphereHeight) // AltairE_SphereScale = 1, AltairE_SphereHeight = 60
+                        call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_AFBpulverize.mdl", c, "hand left"))
+                    endif
+                    // ИМПУЛЬС 0.27 (один раз): обзор, воскрешение декора, -КД героям, урон врагам.
+                    if r == AltairE_StartTime then // AltairE_StartTime = 0.27
+                        call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_AFBpulverize.mdl", c, "hand left"))
+                        call BlzPlaySpecialEffect(e, ANIM_TYPE_STAND)
                         call VisionTimed(GetOwningPlayer(c), x, y, AltairE_Aoe*1.4, 2.0) // AltairE_Aoe = 650
                         // Восстановление декора — отдельным потоком (см. шапку).
                         set AltairEnumX = x
                         set AltairEnumY = y
                         set AltairEnumRadius = AltairE_Aoe // 650
                         call thistype.AltairE_RestoreDecor.execute()
+                        call GroupEnumUnitsInRange(AltairGroup, x, y, AltairE_Aoe, NoDecor_Cond) // AltairE_Aoe = 650
+                        loop
+                            set u = FirstOfGroup(AltairGroup)
+                            exitwhen u == null
+                            call GroupRemoveUnit(AltairGroup, u)
+                            if AltairAlive(u) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
+                                // Герою (союзник, враг, сама Altair): геройские кнопки -5 с; своя E у Altair не трогается.
+                                if IsUnitType(u, UNIT_TYPE_HERO) then
+                                    call thistype.AltairE_ReduceHeroCooldowns(u, AltairE_CooldownReduction, AltairE_ID) // AltairE_CooldownReduction = 5
+                                endif
+                                if u != c then
+                                    call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_AFBpulverize.mdl", u, "origin"))
+                                    if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                        // Врагу: сняты позитивные эффекты, затем урон (один раз за каст).
+                                        call BuffClear(u) // GearSystems: только позитивные баффы (UnitRemoveBuffs снял бы и BHds-дебаффы)
+                                        call DamageSource(AltairE_ID)
+                                        call dmgmag(c, u, dmg)
+                                        call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                                    endif
+                                endif
+                            endif
+                        endloop
+                    endif
+                    // Купол держится на Altair.
+                    if e != null then
+                        call BlzSetSpecialEffectX(e, x)
+                        call BlzSetSpecialEffectY(e, y)
+                    endif
+                    // ПАУЗА СНЯТА 0.42: Altair снова управляема, купол ещё догорает.
+                    if r == AltairE_UnpauseTime and paused then // AltairE_UnpauseTime = 0.42
+                        set paused = false
+                        call StopSpellUnit2(c) // сам возвращает TimeScale 1
                     endif
                 else
-                    // КОНЕЦ (после выстрела или если Altair умерла раньше — тогда сфера просто убирается).
+                    // КОНЕЦ 0.6 (или Altair умерла раньше): death-анимация купола.
+                    if paused then
+                        set paused = false
+                        call StopSpellUnit2(c)
+                    endif
                     if e != null then
-                        call DestroyEffect(e)
+                        call BlzSetSpecialEffectTimeScale(e, 0.75)
+                        call BlzPlaySpecialEffect(e, ANIM_TYPE_DEATH)
+                        call ColorEffDummy3(e, 0.4, 255, 255, 255, 0.25)
                         set e = null
                     endif
                     set c = null
@@ -1325,7 +1633,6 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                 endif
                 set i = i + 1
             endloop
-            set spell = null
             set u = null
         endmethod
 
@@ -1336,10 +1643,14 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set m_AltairE[MUI_AltairE] = this
             set c = NewC
             set r = 0.0
-            set rmax = AltairE_StringTime // 0.3
+            set rmax = AltairE_EndTime // 0.6
+            set e = null
+            set paused = true
             set dmg = GetHeroInt(c, true)*(AltairE_DamageIntBase + AltairE_DamageIntStep*(lvl - 1)) // Int x (1.5 + 0.4/ур.)
-            call SetAnimIndex(c, 0.03, 6)
-            set e = EffectSpawn("war3mapImported\\wos_Moon_texiao_SpaceLaceration_01 a.mdl", GetUnitX(c), GetUnitY(c), 0.0, 2.0, AltairE_SphereScale, 0.0) // AltairE_SphereScale = 1.3
+            call StartSpellUnit2(c)
+            call SetAnimIndex(c, 0.03, 11)
+            call SetUnitTimeScale(c, AltairE_AnimSpeed) // AltairE_AnimSpeed = 1.6
+            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_AFBpulverize.mdl", c, "hand left"))
             call AltairVoice.AltairVoice_Start("war3mapImported\\Hero_Altair_E1", 0.92, 2.34) // «Holopsicon, Thirteenth Movement: Outline Origin» (E1a 0.92 с, E1b 1.42 с)
             if MUI_AltairE == 0 then
                 call AltairTick_On(5)
@@ -2318,10 +2629,10 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         method PlacePortal takes real NewX, real NewY returns nothing
             set x = NewX
             set y = NewY
-            set portal = EffectSpawn3("war3mapImported\\wos_effect_mythic_VoidRiftPurple.mdx", x, y, (GAngle2(c, x, y) + bj_PI)*bj_RADTODEG, 1.0, AltairT_PortalScale, AltairT_PortalHeight, -90.0) // AltairT_PortalScale = 3.2, AltairT_PortalHeight = 230
+            set portal = EffectSpawn3("war3mapImported\\wos_effect_mythic_VoidRiftPurple.mdx", x, y, (GAngle2(c, x, y) + bj_PI)*bj_RADTODEG, 1.0, AltairT_PortalScale, AltairT_PortalHeight, -90.0) // AltairT_PortalScale = 9.6, AltairT_PortalHeight = 690
             call BlzSetSpecialEffectColor(portal, 255, 225, 150)
             call BlzPlaySpecialEffect(portal, ANIM_TYPE_BIRTH)
-            set ground = EffectSpawn("war3mapImported\\wos_yc_bluemorphcircle2.mdl", x, y, 0.0, 1.0, 2.2, 5.0)
+            set ground = EffectSpawn("war3mapImported\\wos_yc_bluemorphcircle2.mdl", x, y, 0.0, 1.0, 2.2*AltairT_EnterRadius/140.0, 5.0) // круг на земле = зона входа (AltairT_EnterRadius = 220)
             call ColorEffDummy3(EffectSpawnScale("war3mapImported\\wos_whitering.mdx", x, y, 0.0, 1.0, 0.5, 10.0, 0.35, 0.5, 4.0), 0.25, 255, 255, 255, 0.35)
         endmethod
 
@@ -2437,7 +2748,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                         endloop
                         // НОВИЧКИ: юнит (или сама Altair) зашёл в открытый портал — входит, пока есть места.
                         if memberCount < AltairT_MaxMembers then // AltairT_MaxMembers = 4
-                            call GroupEnumUnitsInRange(AltairGroup, x, y, AltairT_EnterRadius, NoDecor_Cond) // AltairT_EnterRadius = 140
+                            call GroupEnumUnitsInRange(AltairGroup, x, y, AltairT_EnterRadius, NoDecor_Cond) // AltairT_EnterRadius = 220
                             loop
                                 set u = FirstOfGroup(AltairGroup)
                                 exitwhen u == null
@@ -2535,7 +2846,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             call PlacePortal(NewX, NewY)
             call AltairVoice.AltairVoice_Start("war3mapImported\\Hero_Altair_T1", 0.97, 2.52) // «Holopsicon, Twenty-third Movement: Fate Reconstruction» (T1a 0.97 с, T1b 1.55 с)
             // Зеркальные врата в центре реалма (тот же разлом, поменьше).
-            set gate = EffectSpawn3("war3mapImported\\wos_effect_mythic_VoidRiftPurple.mdx", GetRectCenterX(realm), GetRectCenterY(realm), 0.0, 1.0, AltairT_PortalScale*0.6, AltairT_PortalHeight, -90.0) // 3.2 x 0.6, 230
+            set gate = EffectSpawn3("war3mapImported\\wos_effect_mythic_VoidRiftPurple.mdx", GetRectCenterX(realm), GetRectCenterY(realm), 0.0, 1.0, AltairT_GateScale, AltairT_GateHeight, -90.0) // AltairT_GateScale = 1.92, AltairT_GateHeight = 230
             call BlzSetSpecialEffectColor(gate, 255, 225, 150)
             call BlzPlaySpecialEffect(gate, ANIM_TYPE_BIRTH)
             call SetUnitAnimation(c, "spell")
@@ -2638,6 +2949,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                         set r = rmax
                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_mirrorzi_effect_ansekuosanbo.mdx", td, "chest"))
                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_daoguang_blue_hitsword.mdx", td, "chest"))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaojuhe_01.mdl", GetUnitX(td), GetUnitY(td), GAngle(c, td)*bj_RADTODEG, 1.0, 0.6, 60.0)) // 4 сабли сходятся в цель
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_effect_fate_jiujian_chongjibo.mdx", GetUnitX(td), GetUnitY(td), GAngle(c, td)*bj_RADTODEG, 1.0, 1.0, 80.0))
                         if SpellBool(td) and IsUnitEnemy(td, GetOwningPlayer(c)) then
                             call DamageSource(AltairF_ID)
@@ -2694,7 +3006,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             loop
                 exitwhen k >= swords
                 set angle = facing + bj_PI + (k - (swords - 1)*0.5)*0.5 // за спиной, веером
-                set blade[k] = EffectSpawn("war3mapImported\\wos_Erza_sword2.mdx", GetUnitX(c) + 90.0*Cos(angle), GetUnitY(c) + 90.0*Sin(angle), facing*bj_RADTODEG, 1.0, 0.3, 90.0 + 15.0*k)
+                set blade[k] = EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaozhenlie_01_danti.mdl", GetUnitX(c) + 90.0*Cos(angle), GetUnitY(c) + 90.0*Sin(angle), facing*bj_RADTODEG, 1.0, 2.2, 90.0 + 15.0*k)
                 set bz[k] = BlzGetLocalSpecialEffectZ(blade[k])
                 set k = k + 1
             endloop
@@ -2783,9 +3095,10 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
 
     // ==================== SQ: Sword Rush ====================
     // КАК РАБОТАЕТ SQ:
-    //   AltairSQ.AltairSQ_Start  платит AltairSQ_Cost стаков, два меча по бокам, рывок на AltairSQ_Range.
-    //   AltairSQ.AltairSQ_Loop   MoveUnit героя, бьёт врагов в AltairSQ_Width по разу (как атака, on-hit предметы);
-    //                            в конце пути / на краю арены / при смерти — финальный взмах.
+    //   AltairSQ.AltairSQ_Start  платит AltairSQ_Cost стаков, два строя сабель по бокам, рывок на AltairSQ_Range.
+    //   AltairSQ.AltairSQ_Loop   MoveUnit героя (как Kirito Q, но никого не тянет), бьёт врагов в AltairSQ_Width
+    //                            по линии по разу (как атака, on-hit предметы);
+    //                            в конце пути / на краю арены / при смерти — финальный взмах, сабли сходятся в точку.
     private struct AltairSQ
         private static integer array m_AltairSQ
         private static integer MUI_AltairSQ = -1
@@ -2831,8 +3144,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                             call GroupAddUnit(hits, u)
                             call DamageSource(AltairSQ_ID)
                             call dmgatk(c, u, dmg)
-                            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_daoguang_blue_hitsword.mdx", u, "chest"))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_Opdef (571)2.mdl", GetUnitX(u), GetUnitY(u), 0.0, 1.0, 1.5, 76.0))
+                            call DestroyEffect(AddSpecialEffectTarget("Objects\\Spawnmodels\\Human\\HumanBlood\\HumanBloodFootman.mdl", u, "chest")) // только кровь
                         endif
                     endloop
                     call DecorRemove(c, x, y, AltairSQ_Width, AltairSQ_Decor) // AltairSQ_Width = 150, AltairSQ_Decor = 20
@@ -2840,6 +3152,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                     // КОНЕЦ: финальный взмах, мечи гаснут, герой снова управляем.
                     call StopSpellUnit2(c)
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_jingzi_jiansheng01_e1_l2.mdl", GetUnitX(c), GetUnitY(c), a*bj_RADTODEG, 1.5, 1.2, 60.0))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaojuhe_01.mdl", GetUnitX(c) + 120.0*Cos(a), GetUnitY(c) + 120.0*Sin(a), a*bj_RADTODEG, 1.0, 0.5, 60.0))
                     call ColorEffDummy3(left, 0.0, 255, 255, 255, 0.15)
                     call ColorEffDummy3(right, 0.0, 255, 255, 255, 0.15)
                     call DestroyGroup(hits)
@@ -2878,8 +3191,8 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set trailCount = 0
             set dmg = GetHeroInt(c, true)*(AltairSQ_DamageIntBase + AltairSQ_DamageIntStep*(lvl - 1)) + GetAttack(c)*AltairSQ_DamageAtk // Int x (1 + 0.2/ур.) + атака x 1
             set hits = CreateGroup()
-            set left = EffectSpawn("war3mapImported\\wos_Erza_sword2.mdx", GetUnitX(c), GetUnitY(c), a*bj_RADTODEG, 1.0, 0.4, 70.0)
-            set right = EffectSpawn("war3mapImported\\wos_Erza_sword2.mdx", GetUnitX(c), GetUnitY(c), a*bj_RADTODEG, 1.0, 0.4, 70.0)
+            set left = EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaozhenlie_01.mdl", GetUnitX(c), GetUnitY(c), a*bj_RADTODEG, 1.0, 1.3, 70.0) // строй из 7 сабель
+            set right = EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaozhenlie_01.mdl", GetUnitX(c), GetUnitY(c), a*bj_RADTODEG, 1.0, 1.3, 70.0)
             call StartSpellUnit2(c)
             call SetUnitFacing(c, a*bj_RADTODEG)
             call SetUnitAnimation(c, "attack")
@@ -2895,88 +3208,119 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
 
     // ==================== SW: Sword Storm ====================
     // КАК РАБОТАЕТ SW:
-    //   AltairSW.AltairSW_Start  платит AltairSW_Cost стаков и сразу бросает веер из AltairSW_Swords мечей
-    //                            в конусе AltairSW_Cone. Своего тика нет: полёт и урон — AltairSword.AltairSword_Loop
-    //                            (MoveEff2; общая группа hits: каждый враг получает урон один раз за веер).
+    //   AltairSW.AltairSW_Start  платит AltairSW_Cost стаков, ставит Altair на паузу (StartSpellUnit2) и в тот же
+    //                            момент выпускает все AltairSW_Swords (8) сабель веером по конусу AltairSW_Cone
+    //                            (80 = ±40 от направления каста): одна высота, одна скорость — залп ровной дугой.
+    //   AltairSW.AltairSW_Loop   через AltairSW_Pause (0.3 с) снимает паузу (StopSpellUnit2).
+    //   Полёт и урон — AltairSword.AltairSword_Loop (MoveEff2). У каждой сабли своя группа hits: каждая бьёт
+    //   врага один раз на Int x AltairSW_DamageInt, но разные сабли могут попасть в одного врага.
     private struct AltairSW
+        private static integer array m_AltairSW
+        private static integer MUI_AltairSW = -1
+        unit c
+        real r // сколько ещё держать паузу
+
+        static method AltairSW_Loop takes nothing returns nothing
+            local thistype this
+            local integer i = 0
+            loop
+                exitwhen i > MUI_AltairSW
+                set this = m_AltairSW[i]
+                set r = r - 0.03
+                if r <= 0.0 or not AltairAlive(c) then
+                    // КОНЕЦ ПАУЗЫ: герой снова управляем.
+                    call StopSpellUnit2(c)
+                    set c = null
+                    set m_AltairSW[i] = m_AltairSW[MUI_AltairSW]
+                    set MUI_AltairSW = MUI_AltairSW - 1
+                    set i = i - 1
+                    if MUI_AltairSW == -1 then
+                        call AltairTick_Off(20)
+                    endif
+                    call this.destroy()
+                endif
+                set i = i + 1
+            endloop
+        endmethod
+
+        // false = не хватает стаков.
         static method AltairSW_Start takes unit NewC, real NewX, real NewY returns boolean
             local AltairHero h = AltairHero.AltairHero_Get(NewC)
-            local integer sword = 0
-            local integer lvl = IMaxBJ(1, GetUnitAbilityLevel(NewC, AltairSW_ID))
-            local real center
+            local thistype this
+            local real x = GetUnitX(NewC)
+            local real y = GetUnitY(NewC)
+            local real a = GAngle2(NewC, NewX, NewY)
             local real dmg
             local real angle
-            local group hits
+            local integer sword = 0
             if not h.SpendStacks(AltairSW_Cost) then // AltairSW_Cost = 6
                 call h.RefuseCast(AltairSW_ID, "Not enough sword stacks")
                 return false
             endif
-            set center = GAngle2(NewC, NewX, NewY)
-            set dmg = GetHeroInt(NewC, true)*(AltairSW_DamageIntBase + AltairSW_DamageIntStep*(lvl - 1)) + GetAttack(NewC)*AltairSW_DamageAtk // Int x (1.2 + 0.3/ур.) + атака x 0.8
-            set hits = CreateGroup()
-            call SetUnitFacing(NewC, center*bj_RADTODEG)
-            call SetUnitAnimation(NewC, "spell")
-            call DestroyEffect(EffectSpawn("war3mapImported\\wos_effect_fate_jiujian_galibang_qixuan.mdx", GetUnitX(NewC), GetUnitY(NewC), center*bj_RADTODEG, 1.0, 1.4, 90.0))
-            call VisionTimed(GetOwningPlayer(NewC), GetUnitX(NewC) + AltairSW_Range*0.5*Cos(center), GetUnitY(NewC) + AltairSW_Range*0.5*Sin(center), AltairSW_Range*0.7, 2.0) // AltairSW_Range = 1000
-            // Мечи равномерно по конусу, стартуют чуть позади героя, высота и скорость слегка разные.
+            // ПАУЗА кастера на AltairSW_Pause.
+            set this = thistype.create()
+            set MUI_AltairSW = MUI_AltairSW + 1
+            set m_AltairSW[MUI_AltairSW] = this
+            set c = NewC
+            set r = AltairSW_Pause // 0.3
+            call StartSpellUnit2(c)
+            call SetUnitFacing(c, a*bj_RADTODEG)
+            call SetUnitAnimation(c, "spell")
+            if MUI_AltairSW == 0 then
+                call AltairTick_On(20)
+            endif
+            // ЗАЛП: все сабли разом, равномерно от -Cone/2 до +Cone/2.
+            set dmg = GetHeroInt(c, true)*AltairSW_DamageInt // Int x 0.9 за каждую саблю
             loop
-                exitwhen sword >= AltairSW_Swords // 9
-                set angle = center + (sword - (AltairSW_Swords - 1)*0.5)*AltairSW_Cone*bj_DEGTORAD/(AltairSW_Swords - 1) // AltairSW_Cone = 40
-                call AltairSword.AltairSword_Throw(NewC, GetUnitX(NewC) - 40.0*Cos(angle), GetUnitY(NewC) - 40.0*Sin(angle), 80.0 + GetRandomReal(0.0, 60.0), angle, AltairSW_Speed + GetRandomReal(-150.0, 150.0), AltairSW_Range, AltairSW_Width, dmg, hits) // AltairSW_Speed = 1800, AltairSW_Range = 1000, AltairSW_Width = 110
+                exitwhen sword >= AltairSW_Swords // AltairSW_Swords = 8
+                set angle = a + (sword - (AltairSW_Swords - 1)*0.5)*AltairSW_Cone*bj_DEGTORAD/(AltairSW_Swords - 1) // AltairSW_Cone = 80
+                call AltairSword.AltairSword_Throw(c, x + 40.0*Cos(angle), y + 40.0*Sin(angle), 90.0, angle, AltairSW_Speed, AltairSW_Range, AltairSW_Width, dmg, CreateGroup()) // AltairSW_Speed = 1800, AltairSW_Range = 1000, AltairSW_Width = 110
                 set sword = sword + 1
             endloop
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_effect_fate_jiujian_galibang_qixuan.mdx", x, y, a*bj_RADTODEG, 1.0, 1.4, 90.0))
+            call VisionTimed(GetOwningPlayer(c), x + AltairSW_Range*0.5*Cos(a), y + AltairSW_Range*0.5*Sin(a), AltairSW_Range*0.7, 2.0) // AltairSW_Range = 1000
             call MakeSound("war3mapImported\\Hero_Altair_GW" + I2S(GetRandomInt(1, 2)))
-            set hits = null
             return true
         endmethod
     endstruct
 
     // ==================== SE: Spinning Swords ====================
     // КАК РАБОТАЕТ SE:
-    //   AltairSE.AltairSE_Start  платит seCost стаков (2 -> 4 -> 6 при рекасте в окне AltairSE_RecastWindow);
-    //                            кольцо мечей вокруг героя — новое или усиленное (+мечи, +сила, срок заново).
-    //   AltairSE.AltairSE_Loop   вращение (орбита вокруг героя), каждые AltairSE_Period урон по AltairSE_Aoe;
-    //                            конец через AltairSE_Duration. Мечи лежат горизонтально остриём наружу.
+    //   AltairSE.AltairSE_Start  платит seCost стаков мечей (2 -> 4 -> 6, пока кольцо живо). Первое нажатие создаёт
+    //                            кольцо сабель вокруг героя; каждое следующее, пока кольцо живо, «пересоздаёт» его:
+    //                            +1 стак (до AltairSE_MaxStacks), анимация кольца быстрее, урон сильнее,
+    //                            отсчёт времени снова с 0. На кнопке SE (TasChargeBox) — «1/6», «2/6»...
+    //   AltairSE.AltairSE_Loop   кольцо следует за героем, каждые AltairSE_Period урон по AltairSE_Aoe,
+    //                            полоска времени (WUI_HeroProgress); через AltairSE_Duration (3 с) без пересоздания — конец.
     private struct AltairSE
         private static integer array m_AltairSE
         private static integer MUI_AltairSE = -1
         unit c
-        real r // сколько ещё крутится
-        real power // 1 / 1.5 / 2 по рекасту
+        real r // прошло с последнего нажатия
+        real rmax // AltairSE_Duration
+        integer stacks // 1..6: сколько раз кольцо создано/пересоздано
         real dmg
-        real a // угол кольца
         real tickTimer
-        integer blades
-        effect array blade[24]
+        effect e // кольцо сабель (jundaoluopan_02)
 
         static method AltairSE_Loop takes nothing returns nothing
             local thistype this
             local integer i = 0
-            local integer slot
-            local real bladeAngle
-            local real z
+            local AltairHero h
             local unit u
             loop
                 exitwhen i > MUI_AltairSE
                 set this = m_AltairSE[i]
-                set r = r - 0.03
-                if r > 0.0 and AltairAlive(c) then
-                    // ВРАЩЕНИЕ: сильнее рекаст — быстрее крутится.
-                    set a = a + AltairSE_SpinSpeed*0.03*(0.75 + 0.25*power) // AltairSE_SpinSpeed = 12
-                    set z = BlzGetUnitZ(c) + AltairSE_Height // AltairSE_Height = 60
-                    set slot = 0
-                    loop
-                        exitwhen slot >= blades
-                        set bladeAngle = a + slot*2.0*bj_PI/blades
-                        call BlzSetSpecialEffectPosition(blade[slot], GetUnitX(c) + AltairSE_Radius*Cos(bladeAngle), GetUnitY(c) + AltairSE_Radius*Sin(bladeAngle), z) // AltairSE_Radius = 190
-                        call BlzSetSpecialEffectYaw(blade[slot], bladeAngle)
-                        set slot = slot + 1
-                    endloop
-                    // УРОН каждые AltairSE_Period.
+                set r = r + 0.03
+                if r < rmax and AltairAlive(c) then
+                    // Кольцо держится на герое; полоска показывает, сколько осталось до конца.
+                    call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), BlzGetUnitZ(c) + AltairSE_Height) // AltairSE_Height = 40
+                    call WUI_HeroProgressText(c, AltairSE_ID, "Spinning Swords " + I2S(stacks) + "/" + I2S(AltairSE_MaxStacks), rmax - r, rmax, true, R2SW(rmax - r, 1, 1)) // текст секунд каждый тик
+                    // УРОН каждые AltairSE_Period; сила растёт со стаками.
                     set tickTimer = tickTimer + 0.03
                     if tickTimer >= AltairSE_Period then // AltairSE_Period = 0.25
                         set tickTimer = tickTimer - AltairSE_Period
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_erdaoliujianqi.mdx", GetUnitX(c), GetUnitY(c), a*bj_RADTODEG, 2.0, 0.8, 30.0))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_erdaoliujianqi.mdx", GetUnitX(c), GetUnitY(c), GetRandomReal(0.0, 359.0), 2.0, 0.8, 30.0))
                         call GroupEnumUnitsInRange(AltairGroup, GetUnitX(c), GetUnitY(c), AltairSE_Aoe, NoDecor_Cond) // AltairSE_Aoe = 300
                         loop
                             set u = FirstOfGroup(AltairGroup)
@@ -2984,7 +3328,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                             call GroupRemoveUnit(AltairGroup, u)
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 call DamageSource(AltairSE_ID)
-                                call dmgatk(c, u, dmg*power)
+                                call dmgatk(c, u, dmg*(1.0 + AltairSE_PowerStep*(stacks - 1))) // AltairSE_PowerStep = 0.2: x1 .. x2
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_daoguang_blue_hitsword.mdx", u, "chest"))
                             endif
@@ -2993,14 +3337,16 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                         call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), AltairSE_Aoe*1.6, 0.5)
                     endif
                 else
-                    // КОНЕЦ: мечи гаснут.
-                    set slot = 0
-                    loop
-                        exitwhen slot >= blades
-                        call ColorEffDummy3(blade[slot], 0.0, 255, 255, 255, 0.12)
-                        set blade[slot] = null
-                        set slot = slot + 1
-                    endloop
+                    // КОНЕЦ: кольцо гаснет, стаки и цена сброшены, счётчик и полоска убраны.
+                    call BlzPlaySpecialEffect(e, ANIM_TYPE_DEATH)
+                    call ColorEffDummy3(e, 0.3, 255, 255, 255, 0.2)
+                    set e = null
+                    call TasAbilityChargeBox_SetValue(c, AltairSE_ID, "")
+                    call WUI_HeroProgress(c, AltairSE_ID, "Spinning Swords", 0.0, 0.0, true)
+                    set h = AltairHero.AltairHero_Get(c)
+                    if h != 0 then
+                        set h.seCost = AltairSE_Cost // 2
+                    endif
                     call RemoveSavedInteger(AltairTable, GetHandleId(c), 5)
                     set c = null
                     set m_AltairSE[i] = m_AltairSE[MUI_AltairSE]
@@ -3016,106 +3362,88 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set u = null
         endmethod
 
-        // false = не хватает стаков.
+        // false = не хватает стаков мечей.
         static method AltairSE_Start takes unit NewC returns boolean
             local AltairHero h = AltairHero.AltairHero_Get(NewC)
             local thistype this = LoadInteger(AltairTable, GetHandleId(NewC), 5)
             local integer lvl = IMaxBJ(1, GetUnitAbilityLevel(NewC, AltairSE_ID))
             local integer cost = h.seCost // 2 -> 4 -> 6
-            local integer recast = (cost - AltairSE_Cost)/AltairSE_CostStep // 0, 1, 2 (AltairSE_Cost = 2, AltairSE_CostStep = 2)
-            local integer wanted
             if not h.SpendStacks(cost) then
                 call h.RefuseCast(AltairSE_ID, "Not enough sword stacks")
                 return false
             endif
             if this == 0 then
-                // Первый каст в окне: новое кольцо.
+                // Первое нажатие: новое кольцо (радиус AltairSE_Radius = 260; модель 857 при scale 1).
                 set this = thistype.create()
                 set MUI_AltairSE = MUI_AltairSE + 1
                 set m_AltairSE[MUI_AltairSE] = this
                 set c = NewC
-                set blades = 0
-                set a = GetUnitFacing(c)*bj_DEGTORAD
+                set stacks = 0
                 set tickTimer = AltairSE_Period // 0.25: первый удар сразу
+                set e = EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaoluopan_02.mdl", GetUnitX(c), GetUnitY(c), 0.0, 1.0, AltairSE_Radius/857.0, AltairSE_Height) // AltairSE_Radius = 260, AltairSE_Height = 40
                 call SaveInteger(AltairTable, GetHandleId(c), 5, this)
                 if MUI_AltairSE == 0 then
                     call AltairTick_On(13)
                 endif
             endif
-            set power = 1.0 + AltairSE_PowerStep*recast // AltairSE_PowerStep = 0.5
+            // Создание / пересоздание: +1 стак, отсчёт с 0, анимация кольца быстрее.
+            set stacks = IMinBJ(AltairSE_MaxStacks, stacks + 1) // AltairSE_MaxStacks = 6
+            set r = 0.0
+            set rmax = AltairSE_Duration // 3
             set dmg = GetHeroInt(c, true)*(AltairSE_DamageIntBase + AltairSE_DamageIntStep*(lvl - 1)) + GetAttack(c)*AltairSE_DamageAtk // Int x (0.3 + 0.05/ур.) + атака x 0.15
-            set r = AltairSE_Duration // 1.5
-            // Добавить мечи до 8 / 12 / 16 (AltairSE_Blades = 8, AltairSE_BladesStep = 4).
-            set wanted = IMinBJ(24, AltairSE_Blades + AltairSE_BladesStep*recast)
-            loop
-                exitwhen blades >= wanted
-                set blade[blades] = EffectSpawn("war3mapImported\\wos_Erza_sword2.mdx", GetUnitX(c), GetUnitY(c), 0.0, 1.0, 0.3, AltairSE_Height) // AltairSE_Height = 60
-                set blades = blades + 1
-            endloop
+            call BlzSetSpecialEffectTimeScale(e, 1.0 + AltairSE_SpinStep*(stacks - 1)) // AltairSE_SpinStep = 0.3: x1 .. x2.5
+            call TasAbilityChargeBox_SetValue(c, AltairSE_ID, I2S(stacks) + "/" + I2S(AltairSE_MaxStacks)) // «1/6», «2/6»...
             call ColorEffDummy3(EffectSpawnScale("war3mapImported\\wos_whitering.mdx", GetUnitX(c), GetUnitY(c), 0.0, 1.0, 0.5, 10.0, 0.2, 0.5, AltairSE_Aoe/110.0), 0.25, 255, 255, 255, 0.35) // AltairSE_Aoe = 300
             call SetUnitAnimation(c, "spell")
             call MakeSound("war3mapImported\\Hero_Altair_GE" + I2S(GetRandomInt(1, 2)))
-            // Следующий рекаст в окне дороже.
+            // Следующее пересоздание дороже.
             set h.seCost = IMinBJ(AltairSE_CostMax, cost + AltairSE_CostStep) // AltairSE_CostMax = 6, AltairSE_CostStep = 2
-            set h.seWindow = AltairSE_RecastWindow // 4
             return true
         endmethod
     endstruct
 
     // ==================== SR: Shield of Swords ====================
     // КАК РАБОТАЕТ SR:
-    //   AltairSR.AltairSR_Start  платит AltairSR_Cost стаков: кольцо мечей + стена мечей в сторону каста.
-    //   AltairSR.AltairSR_Loop   вращение кольца, каждые AltairSR_Period урон вокруг; конец по времени / смерти.
-    //   Сам блок урона с направления (дуга AltairSR_Arc) — в Altair_IncomingDamage (AltairSR.AltairSR_Blocks).
+    //   AltairSR.AltairSR_Start  платит AltairSR_Cost стаков; Altair на паузе (StartSpellUnit2) и неуязвима
+    //                            (KEY_INVUL: DmgSys блокирует удары); перед ней в сторону каста встаёт вертикальное
+    //                            колесо сабель (jundaoluopan_02, pitch -90) и крутится на месте.
+    //   AltairSR.AltairSR_Loop   каждые AltairSR_Period небольшой урон врагам перед Altair (AltairSR_Aoe);
+    //                            полоска времени; конец через AltairSR_Duration (2 с), при смерти или по клавише S.
+    //   Отмена по S (как Tomioka F): AltairSR_OnStopKey — своя клавиша S (работает и в TEST),
+    //   в MAIN тот же флаг «esc» ставит ButtonPressed.j, пока KEY_INVUL == 1.
     private struct AltairSR
         private static integer array m_AltairSR
         private static integer MUI_AltairSR = -1
         unit c
-        real r // сколько ещё держится
-        real blockAngle // направление щита
-        real a // угол кольца
+        real r // прошло с каста
+        real rmax // AltairSR_Duration
+        real a // направление щита
         real tickTimer
         real dmg
-        effect array blade[24] // 0..15 кольцо, 16..21 стена
+        boolean cancel // нажата S
+        effect e // колесо сабель
 
         static method AltairSR_Loop takes nothing returns nothing
             local thistype this
             local integer i = 0
-            local integer slot
-            local real bladeAngle
-            local real z
+            local real x
+            local real y
             local unit u
             loop
                 exitwhen i > MUI_AltairSR
                 set this = m_AltairSR[i]
-                set r = r - 0.03
-                if r > 0.0 and AltairAlive(c) then
-                    set a = a + AltairSR_SpinSpeed*0.03 // AltairSR_SpinSpeed = 6
-                    set z = BlzGetUnitZ(c)
-                    // Кольцо вращается.
-                    set slot = 0
-                    loop
-                        exitwhen slot >= AltairSR_RingBlades // 16
-                        set bladeAngle = a + slot*2.0*bj_PI/AltairSR_RingBlades
-                        call BlzSetSpecialEffectPosition(blade[slot], GetUnitX(c) + AltairSR_Radius*Cos(bladeAngle), GetUnitY(c) + AltairSR_Radius*Sin(bladeAngle), z + 60.0) // AltairSR_Radius = 170
-                        call BlzSetSpecialEffectYaw(blade[slot], bladeAngle)
-                        set slot = slot + 1
-                    endloop
-                    // Неподвижная стена мечей показывает закрытое направление (два ряда по высоте).
-                    loop
-                        exitwhen slot >= AltairSR_RingBlades + AltairSR_WallBlades // 16 + 6
-                        set bladeAngle = blockAngle + (slot - AltairSR_RingBlades - (AltairSR_WallBlades - 1)*0.5)*AltairSR_Arc*bj_DEGTORAD/AltairSR_WallBlades // AltairSR_Arc = 120
-                        call BlzSetSpecialEffectPosition(blade[slot], GetUnitX(c) + AltairSR_WallRadius*Cos(bladeAngle), GetUnitY(c) + AltairSR_WallRadius*Sin(bladeAngle), z + 40.0 + 45.0*ModuloInteger(slot, 2)) // AltairSR_WallRadius = 120
-                        call BlzSetSpecialEffectYaw(blade[slot], bladeAngle)
-                        set slot = slot + 1
-                    endloop
-                    // УРОН кольцом каждые AltairSR_Period.
+                set r = r + 0.03
+                if r < rmax and AltairAlive(c) and not cancel and LoadInteger(hs, GetHandleId(c), AltairSR_EscKey) == 0 then
+                    call WUI_HeroProgress(c, AltairSR_ID, "Shield of Swords (S - cancel)", rmax - r, rmax, true)
+                    // УРОН перед Altair каждые AltairSR_Period.
                     set tickTimer = tickTimer + 0.03
                     if tickTimer >= AltairSR_Period then // AltairSR_Period = 0.3
                         set tickTimer = tickTimer - AltairSR_Period
-                        call DecorRemove(c, GetUnitX(c), GetUnitY(c), AltairSR_Radius + 60.0, AltairSR_Decor) // AltairSR_Radius = 170, AltairSR_Decor = 20
-                        call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 600.0, 0.5)
-                        call GroupEnumUnitsInRange(AltairGroup, GetUnitX(c), GetUnitY(c), AltairSR_Radius + 60.0, NoDecor_Cond) // AltairSR_Radius = 170
+                        set x = GetUnitX(c) + (AltairSR_Front + 50.0)*Cos(a) // AltairSR_Front = 150
+                        set y = GetUnitY(c) + (AltairSR_Front + 50.0)*Sin(a)
+                        call DecorRemove(c, x, y, AltairSR_Aoe, AltairSR_Decor) // AltairSR_Aoe = 260, AltairSR_Decor = 20
+                        call VisionTimed(GetOwningPlayer(c), x, y, 600.0, 0.5)
+                        call GroupEnumUnitsInRange(AltairGroup, x, y, AltairSR_Aoe, NoDecor_Cond) // AltairSR_Aoe = 260
                         loop
                             set u = FirstOfGroup(AltairGroup)
                             exitwhen u == null
@@ -3128,14 +3456,14 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                         endloop
                     endif
                 else
-                    // КОНЕЦ: мечи гаснут, блок пропадает вместе с экземпляром.
-                    set slot = 0
-                    loop
-                        exitwhen slot >= AltairSR_RingBlades + AltairSR_WallBlades // 16 + 6
-                        call ColorEffDummy3(blade[slot], 0.0, 255, 255, 255, 0.2)
-                        set blade[slot] = null
-                        set slot = slot + 1
-                    endloop
+                    // КОНЕЦ (время / смерть / S): колесо гаснет, неуязвимость и пауза сняты.
+                    call BlzPlaySpecialEffect(e, ANIM_TYPE_DEATH)
+                    call ColorEffDummy3(e, 0.3, 255, 255, 255, 0.2)
+                    set e = null
+                    call SaveInteger(hs, GetHandleId(c), KEY_INVUL, 0)
+                    call SaveInteger(hs, GetHandleId(c), AltairSR_EscKey, 0)
+                    call StopSpellUnit2(c)
+                    call WUI_HeroProgress(c, AltairSR_ID, "Shield of Swords (S - cancel)", 0.0, 0.0, true)
                     call RemoveSavedInteger(AltairTable, GetHandleId(c), 6)
                     set c = null
                     set m_AltairSR[i] = m_AltairSR[MUI_AltairSR]
@@ -3151,93 +3479,95 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set u = null
         endmethod
 
-        // Из Altair_IncomingDamage: true = удар пришёл из закрытой щитом дуги.
-        static method AltairSR_Blocks takes unit target, unit source returns boolean
-            local thistype this = LoadInteger(AltairTable, GetHandleId(target), 6)
-            if this == 0 or r <= 0.0 then
-                return false
-            endif
-            // Угол между направлением на атакующего и направлением щита меньше половины дуги.
-            if Cos(GAngle(target, source) - blockAngle) >= Cos(AltairSR_Arc*0.5*bj_DEGTORAD) then // AltairSR_Arc = 120
-                call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_daoguang_blue_hitsword.mdx", target, "chest"))
-                return true
-            endif
-            return false
+        // Клавиша S игрока: его активный SR заканчивается на следующем тике.
+        static method AltairSR_OnStopKey takes nothing returns nothing
+            local integer i = 0
+            local thistype this
+            loop
+                exitwhen i > MUI_AltairSR
+                set this = m_AltairSR[i]
+                if GetOwningPlayer(c) == GetTriggerPlayer() then
+                    set cancel = true
+                endif
+                set i = i + 1
+            endloop
         endmethod
 
-        // false = не хватает стаков. Повторный каст во время щита — новый срок и новое направление.
+        // false = не хватает стаков (или щит уже стоит — тогда каст не засчитан).
         static method AltairSR_Start takes unit NewC, real NewX, real NewY returns boolean
             local AltairHero h = AltairHero.AltairHero_Get(NewC)
             local thistype this = LoadInteger(AltairTable, GetHandleId(NewC), 6)
-            local integer lvl = IMaxBJ(1, GetUnitAbilityLevel(NewC, AltairSR_ID))
-            local integer slot = 0
+            if this != 0 then
+                return false
+            endif
             if not h.SpendStacks(AltairSR_Cost) then // AltairSR_Cost = 8
                 call h.RefuseCast(AltairSR_ID, "Not enough sword stacks")
                 return false
             endif
-            if this == 0 then
-                set this = thistype.create()
-                set MUI_AltairSR = MUI_AltairSR + 1
-                set m_AltairSR[MUI_AltairSR] = this
-                set c = NewC
-                set a = 0.0
-                set tickTimer = 0.0
-                loop
-                    exitwhen slot >= AltairSR_RingBlades + AltairSR_WallBlades // 16 + 6
-                    set blade[slot] = EffectSpawn("war3mapImported\\wos_Erza_sword2.mdx", GetUnitX(c), GetUnitY(c), 0.0, 1.0, 0.25, 60.0)
-                    set slot = slot + 1
-                endloop
-                call SaveInteger(AltairTable, GetHandleId(c), 6, this)
-                if MUI_AltairSR == 0 then
-                    call AltairTick_On(14)
-                endif
-            endif
-            set blockAngle = GAngle2(c, NewX, NewY)
-            set r = AltairSR_Duration + AltairSR_DurationStep*(lvl - 1) // 3 + 0.5/ур.
+            set this = thistype.create()
+            set MUI_AltairSR = MUI_AltairSR + 1
+            set m_AltairSR[MUI_AltairSR] = this
+            set c = NewC
+            set r = 0.0
+            set rmax = AltairSR_Duration // 2
+            set a = GAngle2(c, NewX, NewY)
+            set tickTimer = AltairSR_Period // 0.3: первый удар сразу
+            set cancel = false
             set dmg = GetHeroInt(c, true)*AltairSR_DamageInt + GetAttack(c)*AltairSR_DamageAtk // Int x 0.15 + атака x 0.1
-            call SetUnitFacing(c, blockAngle*bj_RADTODEG)
+            call StartSpellUnit2(c)
+            call SaveInteger(hs, GetHandleId(c), AltairSR_EscKey, 0)
+            call SaveInteger(hs, GetHandleId(c), KEY_INVUL, 1) // неуязвима, пока стоит щит
+            call SetUnitFacing(c, a*bj_RADTODEG)
             call SetUnitAnimation(c, "spell")
+            // Колесо: горизонтальное кольцо, pitch -90 = стоймя, плоскостью к направлению каста.
+            set e = EffectSpawn3("war3mapImported\\wos_Moon_texiao_jundaoluopan_02.mdl", GetUnitX(c) + AltairSR_Front*Cos(a), GetUnitY(c) + AltairSR_Front*Sin(a), a*bj_RADTODEG, AltairSR_SpinScale, AltairSR_Radius/857.0, AltairSR_WheelHeight, -90.0) // AltairSR_Front = 150, AltairSR_SpinScale = 1.5, AltairSR_Radius = 230, AltairSR_WheelHeight = 250
             call ColorEffDummy3(EffectSpawnScale("war3mapImported\\wos_whitering.mdx", GetUnitX(c), GetUnitY(c), 0.0, 1.0, 0.5, 10.0, 0.2, 0.5, 2.0), 0.25, 255, 255, 255, 0.35)
             call MakeSound("war3mapImported\\Hero_Altair_GR" + I2S(GetRandomInt(1, 2)))
+            call SaveInteger(AltairTable, GetHandleId(c), 6, this)
+            if MUI_AltairSR == 0 then
+                call AltairTick_On(14)
+            endif
             return true
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            call TriggerAddAction(AltairSR_KeyTrigger, function thistype.AltairSR_OnStopKey)
         endmethod
     endstruct
 
     // ==================== ST: Rain of Swords ====================
     // КАК РАБОТАЕТ ST:
-    //   AltairST.AltairST_Start  платит AltairST_Cost стаков, Altair неуязвима (StartSpellUnit) и взлетает (SetFly).
-    //   AltairST.AltairST_Loop   каждые AltairST_SpawnPeriod роняет меч (AltairSTSword) в случайную точку круга;
-    //                            раз в 1 с ломает декор; r == AltairST_Duration (или смерть) — посадка.
-    //   AltairSTSword.AltairSTSword_Loop  меч падает вертикально, на земле урон по AltairST_ImpactAoe.
+    //   AltairST.AltairST_Start  платит AltairST_Cost стаков, Altair неуязвима (StartSpellUnit), взлетает (SetFly)
+    //                            и держит анимацию AltairST_Anim (15).
+    //   AltairST.AltairST_Loop   каждый тик (AltairST_SpawnPeriod, ~33 в секунду) роняет саблю (AltairSTSword)
+    //                            в случайную точку круга; раз в 1 с ломает декор; r == AltairST_Duration (3 с)
+    //                            или смерть — посадка.
+    //   AltairSTSword.AltairSTSword_Loop  модель сама падает сверху вниз остриём и втыкается в землю за
+    //                            AltairST_FallTime (0.3 с) — в этот момент урон по AltairST_ImpactAoe.
 
-    // Один падающий меч ST.
+    // Одна падающая сабля ST. Модель jundaozhouyu_01_danti: единственная анимация (падение 0.3 с + торчит в земле),
+    // поэтому эффект сразу отдаётся DestroyEffect — он доиграет её и исчезнет сам; здесь только время до удара.
     private struct AltairSTSword
         private static integer array m_AltairSTSword
         private static integer MUI_AltairSTSword = -1
         unit c
-        effect e
-        real height // над землёй
+        real x // куда падает
+        real y
+        real r // прошло с появления
         real dmg
 
         static method AltairSTSword_Loop takes nothing returns nothing
             local thistype this
             local integer i = 0
-            local real x
-            local real y
             local unit u
             loop
                 exitwhen i > MUI_AltairSTSword
                 set this = m_AltairSTSword[i]
-                set height = height - AltairST_DropSpeed*0.03 // AltairST_DropSpeed = 2400
-                set x = GetEffX(e)
-                set y = GetEffY(e)
-                if height > 0.0 then
-                    call BlzSetSpecialEffectZ(e, AltairGroundZ(x, y) + height)
-                else
-                    // УДАР О ЗЕМЛЮ: меч гаснет, урон вокруг.
-                    call ColorEffDummy3(e, 0.25, 255, 255, 255, 0.2)
+                set r = r + 0.03
+                if r >= AltairST_FallTime then // AltairST_FallTime = 0.3
+                    // УДАР О ЗЕМЛЮ: урон вокруг.
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_jingzi_jiansheng01_e1_l2.mdl", x, y, GetRandomReal(0.0, 359.0), 1.5, 0.6, 5.0))
-                    if GetRandomInt(1, 3) == 1 then
+                    if GetRandomInt(1, 4) == 1 then
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_dustbrown.mdl", x, y, GetRandomReal(0.0, 359.0), 1.5, 0.6, 0.0))
                     endif
                     call GroupEnumUnitsInRange(AltairGroup, x, y, AltairST_ImpactAoe, NoDecor_Cond) // AltairST_ImpactAoe = 160
@@ -3251,7 +3581,6 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                             call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                         endif
                     endloop
-                    set e = null
                     set c = null
                     set m_AltairSTSword[i] = m_AltairSTSword[MUI_AltairSTSword]
                     set MUI_AltairSTSword = MUI_AltairSTSword - 1
@@ -3266,7 +3595,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set u = null
         endmethod
 
-        // Меч появляется на AltairST_DropHeight над случайной точкой круга (равномерно по площади) остриём вниз.
+        // Сабля появляется высоко над случайной точкой круга (равномерно по площади) и падает остриём вниз.
         static method AltairSTSword_Drop takes unit NewC, real centerX, real centerY returns nothing
             local thistype this = thistype.create()
             local real distance = AltairST_Aoe*SquareRoot(GetRandomReal(0.0, 1.0)) // AltairST_Aoe = 700
@@ -3274,9 +3603,11 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set MUI_AltairSTSword = MUI_AltairSTSword + 1
             set m_AltairSTSword[MUI_AltairSTSword] = this
             set c = NewC
-            set height = AltairST_DropHeight // 900
+            set x = centerX + distance*Cos(angle)
+            set y = centerY + distance*Sin(angle)
+            set r = 0.0
             set dmg = GetHeroInt(c, true)*AltairST_DamageInt + GetAttack(c)*AltairST_DamageAtk // Int x 0.5 + атака x 0.3
-            set e = EffectSpawn3("war3mapImported\\wos_Erza_sword2.mdx", centerX + distance*Cos(angle), centerY + distance*Sin(angle), angle*bj_RADTODEG, 1.0, 0.45, height, 90.0) // лезвие вдоль X: pitch 90 = остриём вниз
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_Moon_texiao_jundaozhouyu_01_danti.mdl", x, y, GetRandomReal(0.0, 359.0), 1.0, AltairST_SwordScale, 0.0)) // AltairST_SwordScale = 3
             if MUI_AltairSTSword == 0 then
                 call AltairTick_On(15)
             endif
@@ -3291,7 +3622,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         real y
         real r // прошло с каста
         real rmax // AltairST_Duration
-        real spawnTimer // накопитель до следующего меча
+        real spawnTimer // накопитель до следующей сабли
         real decorTimer
         effect e // круг на земле
 
@@ -3312,10 +3643,10 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
                         call DecorRemove(c, x, y, AltairST_Aoe, AltairST_Decor) // AltairST_Aoe = 700, AltairST_Decor = 50
                         call VisionTimed(GetOwningPlayer(c), x, y, AltairST_Aoe*1.4, 1.2)
                     endif
-                    // МЕЧИ каждые AltairST_SpawnPeriod.
+                    // САБЛИ каждые AltairST_SpawnPeriod (0.03 = каждый тик, ~33 в секунду).
                     set spawnTimer = spawnTimer + 0.03
                     loop
-                        exitwhen spawnTimer < AltairST_SpawnPeriod // AltairST_SpawnPeriod = 0.06
+                        exitwhen spawnTimer < AltairST_SpawnPeriod // AltairST_SpawnPeriod = 0.03
                         set spawnTimer = spawnTimer - AltairST_SpawnPeriod
                         call AltairSTSword.AltairSTSword_Drop(c, x, y)
                     endloop
@@ -3342,18 +3673,18 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             endloop
         endmethod
 
-        // false = не хватает стаков. Повторный каст во время дождя: стаки списаны, новый дождь не начинается.
+        // false = не хватает стаков (или дождь уже идёт — тогда каст не засчитан).
         static method AltairST_Start takes unit NewC returns boolean
             local AltairHero h = AltairHero.AltairHero_Get(NewC)
             local thistype this = LoadInteger(AltairTable, GetHandleId(NewC), 7)
+            if this != 0 then
+                return false
+            endif
             if not h.SpendStacks(AltairST_Cost) then // AltairST_Cost = 30
                 call h.RefuseCast(AltairST_ID, "Not enough sword stacks")
                 return false
             endif
             call MakeSound("war3mapImported\\Hero_Altair_GT" + I2S(GetRandomInt(1, 2)))
-            if this != 0 then
-                return true
-            endif
             set this = thistype.create()
             set MUI_AltairST = MUI_AltairST + 1
             set m_AltairST[MUI_AltairST] = this
@@ -3366,7 +3697,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             set decorTimer = 1.0 // декор ломается на первом тике
             set e = EffectSpawn("war3mapImported\\wos_yc_bluemorphcircle2.mdl", x, y, 0.0, 1.0, AltairST_Aoe/150.0, 5.0) // AltairST_Aoe = 700
             call StartSpellUnit(c) // неуязвимость на время дождя
-            call SetUnitAnimation(c, "spell")
+            call SetUnitAnimationByIndex(c, AltairST_Anim) // AltairST_Anim = 15
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_blackblink.mdx", x, y, 0.0, 1.0, 1.2, 0.0))
             call EffectSpawn2("war3mapImported\\wos_Altair4.mdx", x, y, 0.0, 1.0, AltairST_Aoe/550.0, 0.0, 2.5) // AltairST_Aoe = 700
             call SaveInteger(AltairTable, GetHandleId(c), 7, this)
@@ -3457,6 +3788,12 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
             if AltairTick_Active[18] then
                 call AltairVoice.AltairVoice_Loop()
             endif
+            if AltairTick_Active[19] then
+                call AltairWAura.AltairWAura_Loop()
+            endif
+            if AltairTick_Active[20] then
+                call AltairSW.AltairSW_Loop()
+            endif
         endmethod
 
         private static method onInit takes nothing returns nothing
@@ -3472,15 +3809,26 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         call AltairHero.AltairHero_Register(hero)
     endfunction
 
-    // TEST (Escape): полные стаки и сброс цены SE.
+    // TEST (Escape): полные стаки, сброс цены SE и КД ВСЕХ кнопок обеих форм (+ W2), включая КД,
+    // выставленные вручную (BlzStartUnitAbilityCooldown: R, T, G/SG-блок смены формы). Адаптер TEST
+    // сам снимает только Q..G, кнопки Sword Princess и W2 — здесь.
     function Altair_ResetForTest takes unit hero returns nothing
         local AltairHero h
+        local integer slot = 0
         call Altair_Register(hero)
         set h = AltairHero.AltairHero_Get(hero)
         if h != 0 then
             set h.stacks = h.MaxStacks()
             set h.seCost = AltairSE_Cost // 2
+            set h.refundAbility = 0
         endif
+        loop
+            exitwhen slot > 6
+            call BlzEndUnitAbilityCooldown(hero, AltairHoloAbility[slot])
+            call BlzEndUnitAbilityCooldown(hero, AltairSwordAbility[slot])
+            set slot = slot + 1
+        endloop
+        call BlzEndUnitAbilityCooldown(hero, AltairW2_ID)
     endfunction
 
     // Death.j: смерть Altair закрывает её реалм, гасит F и SF; смерть любого героя даёт стаки.
@@ -3500,8 +3848,9 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
     endfunction
 
     // DmgSys, входящий урон (до DamageCheck). Порядок проверок:
-    //   1) блок W на любом союзнике; 2) F (удар от 200 — блок и отражение); 3) щит SR с направления;
-    //   4) SF-тоггл (атаки -10%, 2 стака за удар). LustSin = блок, который Lust Sin пробивает.
+    //   1) блок W на любом союзнике; 2) F (удар от 200 — блок и отражение);
+    //   3) SF-тоггл (атаки -10%, 2 стака за удар). LustSin = блок, который Lust Sin пробивает.
+    //   Щит барьера W2 (KEY_SHIELD) и неуязвимость SR (KEY_INVUL) блокирует сам DmgSys — здесь их нет.
     function Altair_IncomingDamage takes unit source, unit target, real damage, integer damageType returns real
         local AltairHero h
         local boolean enemy
@@ -3522,9 +3871,6 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
         if enemy and AltairF.AltairF_Block(target, source, damage, damageType) then
             return LustSin(source, target, damage, damage)
         endif
-        if enemy and AltairSR.AltairSR_Blocks(target, source) then
-            return LustSin(source, target, damage, damage)
-        endif
         if h.swordToggle and damageType == 0 then
             set damage = damage*AltairSF_AttackTaken // AltairSF_AttackTaken = 0.9
             call h.AddStacks(-AltairSF_AttackCost) // AltairSF_AttackCost = 2
@@ -3534,7 +3880,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
 
     // ==================== ВХОДЫ ИЗ CastCheck.j ====================
     // Каждая функция: Altair_Register (состояние героя) -> <Способность>.<Способность>_Start.
-    // false у SQ/SW/SE/SR/ST/R/T/W = каст не засчитан.
+    // false у SQ/SW/SE/SR/ST/R/T/W/W2 = каст не засчитан.
     function AltairQ_Start takes unit hero, real x, real y returns nothing
         call Altair_Register(hero)
         call AltairQ.AltairQ_Start(hero, x, y)
@@ -3543,6 +3889,19 @@ library AltairSpells initializer InitAltairSpells uses GearSystems, AAADest
     function AltairW_Start takes unit hero, unit target returns boolean
         call Altair_Register(hero)
         return AltairW.AltairW_Start(hero, target)
+    endfunction
+
+    // W2: барьер. Кнопка видна только 4 с после прибытия W; нажатие закрывает окно (возвращает кнопку W).
+    function AltairW2_Start takes unit hero returns boolean
+        local AltairHero h
+        call Altair_Register(hero)
+        set h = AltairHero.AltairHero_Get(hero)
+        if h == 0 then
+            return false
+        endif
+        call h.CloseW2()
+        call AltairWAura.AltairWAura_Barrier(hero, IMaxBJ(1, GetUnitAbilityLevel(hero, AltairW_ID)))
+        return true
     endfunction
 
     function AltairE_Start takes unit hero returns nothing

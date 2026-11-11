@@ -719,8 +719,8 @@ function ARules_GetCastRange takes unit hero, integer abilId, ability ab, intege
     elseif abilId == LaxusQ2_ID then
         return LaxusQ_Range2
     elseif abilId == MahoragaE_ID then
-        return MahoragaE_Range
-    elseif abilId == MahoragaE3_ID then
+        return MahoragaE_Range + MahoragaE_ClickRangeBonus
+    elseif abilId == MahoragaE3_ID or abilId == MahoragaGE2_ID then
         return MahoragaE3_Range
     elseif abilId == TsunaE_ID then
         return TsunaE_RangeBase + TsunaE_RangeAdd * (level - 1)
@@ -2100,7 +2100,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_002_CrocodileW_ID takes nothing returns nothing
-        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Dur("Cast Time", CrocodileW_CastTime) + T_PropS("Radius", I2S(R2I(CrocodileW_AoeBase)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep * 2)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep * 3)) + " / " + I2S(R2I(CrocodileW_Aoe))) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Prop("Max Passive Mana Burns", I2R(CrocodileW_ManaBurnHits)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("Q Combo", "Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage, " + FormatReal(CrocodileW_ComboStunEarly) + " sec stun and a partial pull.") + T_Bonus("Hero Lv. " + I2S(CrocodileW_ComboFullLevel), "Q Combo stun " + FormatReal(CrocodileW_ComboStun) + " sec and pulls enemies all the way to the center.") + T_Bonus("R Combo", "Extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Cast pause is halved. Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Dur("Cast Time", CrocodileW_CastTime) + T_PropS("Radius", I2S(R2I(CrocodileW_AoeBase)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep * 2)) + " / " + I2S(R2I(CrocodileW_AoeBase + CrocodileW_AoeStep * 3)) + " / " + I2S(R2I(CrocodileW_Aoe))) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Prop("Max Passive Mana Burns", I2R(CrocodileW_ManaBurnHits)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("Q Combo", FormatReal(CrocodileW_ComboStunEarly) + " sec stun and a partial pull; Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage from Q Lv. " + I2S(CrocodileW_ComboDamageQLevel) + ".") + T_Bonus("Hero Lv. " + I2S(CrocodileW_ComboFullLevel), "Q Combo stun " + FormatReal(CrocodileW_ComboStun) + " sec and pulls enemies up to " + I2S(R2I(CrocodileW_ComboPullRangeFactor * 100)) + "% of the way to the center.") + T_Bonus("R Combo", "Extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Cast pause is halved. Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_003_CrocodileE_ID takes nothing returns nothing
@@ -2500,7 +2500,7 @@ endif
 
     function WOS_UTB_Init_085_KiritoR_ID takes nothing returns nothing
         
-        call SpellData.createSimple(KiritoR_ID, 5, 1, 2, KiritoR_DamageAgiBase, KiritoR_DamageAgiStep, "Duration: <L:" + FormatReal(KiritoR_DurationBase) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 2) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 3) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 4) + "> sec|n" + T_Rad(KiritoR_DamageAoe) + "|nQuick strikes: " + I2S(KiritoR_QuickHits) + " hits; strong strike: " + I2S(KiritoR_StrongHits) + " hits. Each hit counts as a basic attack.", T_Bonus("Final Strike (13th)", "Agility x <L:" + FormatReal(KiritoR_Damage2AgiBase) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 2) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 3) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 4) + "> Dmg")).setPreviewChannel()
+        call SpellData.createSimple(KiritoR_ID, 5, 1, 2, KiritoR_DamageAgiBase, KiritoR_DamageAgiStep, "Duration: <L:" + FormatReal(KiritoR_DurationBase) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 2) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 3) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 4) + "> sec|n" + T_Rad(KiritoR_DamageAoe) + "|nEach attack: instant strike + poke " + FormatReal(KiritoR_PokeAgi) + "x Agi, blinks to the target (CD " + FormatReal(KiritoR_BlinkCD) + " sec), +attack speed. each strike stuns " + FormatReal(KiritoR_StunDuration) + " sec.", T_Bonus("Final Strike (" + I2S(KiritoR_QuickAttacks + 1) + "th, invulnerable)", "Agility x <L:" + FormatReal(KiritoR_Damage2AgiBase) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 2) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 3) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 4) + "> Dmg")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_086_KiritoT_ID takes nothing returns nothing
@@ -2908,11 +2908,15 @@ endif
         call SpellData.createSimple(MahoragaE3_ID, 5, 1, 2, MahoragaE3_DamageAgiBase, 0.0, T_Rad(MahoragaE3_DamageAoe) + T_Prop("Bonus Damage to Buildings %", MahoragaE3_DamageAddForBuildings), "").setPreviewChannel()
     endfunction
 
+    function WOS_UTB_Init_493_MahoragaGE2_ID takes nothing returns nothing
+        call SpellData.createSimple(MahoragaGE2_ID, 1, 1, 2, MahoragaE3_DamageAgiBase, 0.0, T_Rad(MahoragaE3_DamageAoe) + T_Prop("Bonus Damage to Buildings %", MahoragaE3_DamageAddForBuildings), T_Bonus("After G", "Replaces E for " + I2S(R2I(MahoragaGE2_Window)) + " sec when Cursed Cleave hits")).setPreviewChannel()
+    endfunction
+
     function WOS_UTB_Init_174_Mahoraga_ID takes nothing returns nothing
         local HeroData form
         
         set form = HeroData.create(Mahoraga_ID, 0, MahoragaQ_ID, MahoragaW_ID, MahoragaE_ID, MahoragaR_ID, MahoragaT_ID, MahoragaF_ID, MahoragaG_ID, MahoragaQ2_ID, MahoragaW2_ID, MahoragaE2_ID)
-        call form.addExtra(MahoragaE3_ID, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        call form.addExtra(MahoragaE3_ID, MahoragaGE2_ID, 0, 0, 0, 0, 0, 0, 0, 0)
     endfunction
 
     function WOS_UTB_Init_175_HarribelQ_ID takes nothing returns nothing
@@ -3653,7 +3657,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_333_KyorakuE_ID takes nothing returns nothing
-        call SpellData.create(KyorakuE_ID, 5, 2, 2, KyorakuE_DamageAgiBase, KyorakuE_DamageAgiStep, KyorakuE_Damage2StaticBase, KyorakuE_Damage2StaticStep, T_Rad(KyorakuE_DamageAoe) + T_Dur("Duration", KyorakuE_DurationBase), "").setPreviewChannel().setPreviewDirected()
+        call SpellData.create(KyorakuE_ID, 5, 2, 2, KyorakuE_DamageAgiBase, KyorakuE_DamageAgiStep, KyorakuE_Damage2StaticBase, KyorakuE_Damage2StaticStep, T_Rad(KyorakuE_DamageAoe) + T_Dur("Duration", KyorakuE_DurationBase), T_Bonus("Lv. 25", "Unlocks E2 ability.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_334_KyorakuR_ID takes nothing returns nothing
@@ -4886,7 +4890,8 @@ endif
         set UTB_InitJobs[490] = "WOS_UTB_Init_490_Frostnova"
         set UTB_InitJobs[491] = "WOS_UTB_Init_491_InoriE2_ID"
         set UTB_InitJobs[492] = "WOS_UTB_Init_492_FrierenTR_ID"
-        set UTB_InitJobCount = 492
+        set UTB_InitJobs[493] = "WOS_UTB_Init_493_MahoragaGE2_ID"
+        set UTB_InitJobCount = 493
         set UTB_InitJobIndex = 1
     endfunction
 

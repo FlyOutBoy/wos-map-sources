@@ -38,6 +38,7 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       // Counters are 12% larger than the original 0.012 box / 0.008 font.
       public constant real BOX_SIZE = 0.0135
       public constant real FONT_SIZE = 0.009
+      public constant real CHAR_EXTRA = 0.0055 // + ширина на каждый символ сверх двух
    endglobals
 
    // Normal FRAME counterpart of the library's native command charge counter.
@@ -270,6 +271,9 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
             set Wanted[pos] = true
             if BlzFrameGetText(FrameText[pos]) != value then
                call BlzFrameSetText(FrameText[pos], value)
+               // Длинные значения («3/6») расширяют фон и текст влево от правого угла кнопки.
+               call BlzFrameSetSize(FrameIcon[pos], BOX_SIZE + CHAR_EXTRA*IMaxBJ(0, StringLength(value) - 2), BOX_SIZE)
+               call BlzFrameSetSize(FrameText[pos], BOX_SIZE + CHAR_EXTRA*IMaxBJ(0, StringLength(value) - 2), BOX_SIZE)
             endif
          endif
          set i = i - 1

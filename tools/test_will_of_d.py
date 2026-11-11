@@ -16,7 +16,7 @@ class WillOfD(unittest.TestCase):
         cd=[]
         vm.g.update(hs={},SH_WILL_OF_D_END='will end',HealRegenClock=None,
             WillOfD_ID=1,WillOfD_CD_ID=2,WillOfD_BuffAbi_ID=3,WillOfD_Buff_ID=4,
-            WillOfD_Duration=3.,WillOfD_CD=180.,Kairoseki_Buff_ID=5,Tekkai_Buff_ID=6,
+            WillOfD_Duration=3.,WillOfD_CD=70.,Kairoseki_Buff_ID=5,Tekkai_Buff_ID=6,
             NaofumiShieldEvolved_ID=7,CurrentRound=1,
             HasCachedItem=lambda u,i:int(i==1),IsUnitType=lambda u,t:(u.life>.405 if t=='UNIT_TYPE_HERO' else u.life<=.405),
             TimerStart=lambda *_:None,PauseTimer=lambda *_:None,
@@ -32,10 +32,10 @@ class WillOfD(unittest.TestCase):
     def hit(self,vm,c,u,amount=200.):
         return vm.run('ItemsAnime_FinalDamage',(c,u,amount,1,False))
 
-    def test_lethal_hit_starts_180_second_cooldown_and_keeps_one_hp(self):
+    def test_lethal_hit_starts_70_second_cooldown_and_keeps_one_hp(self):
         vm,ns,c,u,cd=self.fixture()
         self.assertEqual(99.,self.hit(vm,c,u))
-        self.assertEqual([180.],cd)
+        self.assertEqual([70.],cd)
         u.life=1.;vm.elapsed=1.
         self.assertEqual(0.,self.hit(vm,c,u))
         self.assertEqual(1,ns.count)
@@ -49,7 +49,7 @@ class WillOfD(unittest.TestCase):
             vm.run('Tick')
             self.assertEqual(0,ns.count)
             self.assertFalse(vm.effects)
-            self.assertEqual([180.],cd)
+            self.assertEqual([70.],cd)
 
     def test_other_positive_dispel_cannot_leave_an_invisible_immortality_timer(self):
         vm,ns,c,u,_=self.fixture()
@@ -82,10 +82,10 @@ class WillOfD(unittest.TestCase):
     def test_item_and_native_cooldown_descriptions_match_runtime(self):
         abilities=json.loads((ROOT/'object-data/abilities.json').read_text(encoding='utf-8-sig'))
         items=json.loads((ROOT/'object-data/items.json').read_text(encoding='utf-8-sig'))
-        self.assertEqual(180.,abilities['A138']['cooldown level 1'])
+        self.assertEqual(70.,abilities['A138']['cooldown level 1'])
         for field in ('description','extended_tooltip'):
             text=items['I056'][field]
-            self.assertIn('180 sec',text)
+            self.assertIn('70 sec',text)
             self.assertIn('Kairoseki Cuffs',text)
             self.assertIn('Dispellable',text)
 

@@ -1130,7 +1130,7 @@ private function WOS_STATS_MoveRow takes integer row, real y, boolean expanded r
         call WOS_STATS_PlaceSpan(WOS_STATS_RowBack[row], y, WOS_STATS_EXPANDED_ROW_WIDTH, WOS_STATS_EXPANDED_ROW_HEIGHT)
         call WOS_STATS_PlaceSpan(WOS_STATS_RowContent[row], y, WOS_STATS_EXPANDED_ROW_WIDTH, WOS_STATS_EXPANDED_ROW_HEIGHT)
         call BlzFrameSetSize(WOS_STATS_HeroIcon[row], WOS_STATS_ScaleSize(0.021), WOS_STATS_ScaleSize(0.021))
-        call WOS_STATS_ResizeText(WOS_STATS_PlayerName[row], 0.096, 0.016, 0.61)
+        call WOS_STATS_ResizeText(WOS_STATS_PlayerName[row], 0.096, 0.018, 0.71) // nick +17%
         call WOS_STATS_ResizeText(WOS_STATS_MvpText[row], 0.057, 0.012, 0.56)
         call BlzFrameSetSize(WOS_STATS_MvpHover[row], WOS_STATS_ScaleSize(0.032), WOS_STATS_ScaleSize(WOS_STATS_EXPANDED_ROW_HEIGHT))
         call WOS_STATS_ResizeText(WOS_STATS_KillText[row], WOS_STATS_ExpandedColumnWidth(0), 0.017, 0.76)
@@ -1164,7 +1164,7 @@ private function WOS_STATS_MoveRow takes integer row, real y, boolean expanded r
         call BlzFrameSetSize(WOS_STATS_RowBack[row], WOS_STATS_ScaleSize(WOS_STATS_ROW_WIDTH), WOS_STATS_ScaleSize(WOS_STATS_ROW_HEIGHT))
         call BlzFrameSetSize(WOS_STATS_RowContent[row], WOS_STATS_ScaleSize(WOS_STATS_ROW_WIDTH), WOS_STATS_ScaleSize(WOS_STATS_ROW_HEIGHT))
         call BlzFrameSetSize(WOS_STATS_HeroIcon[row], WOS_STATS_ScaleSize(WOS_STATS_HERO_ICON_SIZE), WOS_STATS_ScaleSize(WOS_STATS_HERO_ICON_SIZE))
-        call WOS_STATS_ResizeText(WOS_STATS_PlayerName[row], 0.082, 0.012, 0.50)
+        call WOS_STATS_ResizeText(WOS_STATS_PlayerName[row], 0.082, 0.014, 0.59) // nick +18%
         call WOS_STATS_ResizeText(WOS_STATS_MvpText[row], 0.048, 0.0095, 0.46)
         call BlzFrameSetSize(WOS_STATS_MvpHover[row], WOS_STATS_ScaleSize(0.022), WOS_STATS_ScaleSize(WOS_STATS_ROW_HEIGHT))
         call WOS_STATS_ResizeText(WOS_STATS_KillText[row], WOS_STATS_ColumnWidth(0), 0.012, 0.56)
@@ -1936,7 +1936,7 @@ private function WOS_STATS_CreateRow takes integer row returns nothing
         set WOS_STATS_MvpHover[row] = WOS_STATS_CreateHoverArea(WOS_STATS_RowContent[row], 0.211, y, 0.030, WOS_STATS_ROW_HEIGHT, 690 + row)
         call WOS_STATS_CreateSimpleTooltip(WOS_STATS_MvpHover[row], "|cffffd36bMVP|r = highest contribution, |cffc6cbd1SVP|r = best of the other team\nKills + damage + healing + tanking - deaths", 0.185, 0.034, 5400 + row)
 
-        set WOS_STATS_PlayerName[row] = WOS_STATS_CreateText(WOS_STATS_RowContent[row], 0.275, y, 0.068, 0.011, 0.46, TEXT_JUSTIFY_LEFT, "", 800 + row)
+        set WOS_STATS_PlayerName[row] = WOS_STATS_CreateText(WOS_STATS_RowContent[row], 0.275, y, 0.068, 0.013, 0.54, TEXT_JUSTIFY_LEFT, "", 800 + row)
         set WOS_STATS_KillText[row] = WOS_STATS_CreateText(WOS_STATS_RowContent[row], WOS_STATS_ColumnX(0), y, WOS_STATS_ColumnWidth(0), 0.011, 0.49, TEXT_JUSTIFY_CENTER, "0", 820 + row)
         set WOS_STATS_DeathText[row] = WOS_STATS_CreateText(WOS_STATS_RowContent[row], WOS_STATS_ColumnX(1), y, WOS_STATS_ColumnWidth(1), 0.011, 0.49, TEXT_JUSTIFY_CENTER, "0", 840 + row)
         set WOS_STATS_DamageText[row] = WOS_STATS_CreateText(WOS_STATS_RowContent[row], WOS_STATS_ColumnX(2), y, WOS_STATS_ColumnWidth(2), 0.011, 0.47, TEXT_JUSTIFY_CENTER, "0", 860 + row)
